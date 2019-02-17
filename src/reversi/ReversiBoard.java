@@ -35,14 +35,14 @@ public class ReversiBoard {
         // return moveOnBoard && ... TODO:
     }
 
-    private boolean moveOnBoard(int x, int y) {
+    private boolean isInBounds(int x, int y) {
         return x < getBoardSize() && y < getBoardSize();
     }
 
     public void playMove(int x, int y, int playerNr) {
         throw new NotImplementedException();
 
-        board[y][x] = playerNr;
+//        board[y][x] = playerNr;
         // TODO: play rules
     }
 }
