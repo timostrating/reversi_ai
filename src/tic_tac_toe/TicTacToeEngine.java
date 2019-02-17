@@ -24,14 +24,14 @@ public class TicTacToeEngine {
                 }
 
                 GameState state = board.getGameState();
-                if (state == GameState.Player1Wins) {
+                if (state == GameState.PLAYER_1_WINS) {
                     System.out.println("Player 1 has won");
                     break;
-                } else if (state == GameState.Player2Wins) {
+                } else if (state == GameState.PLAYER_2_WINS) {
                     System.out.println("Player 2 has won");
                     break;
-                } else if (state == GameState.Draw) {
-                    System.out.println("Draw");
+                } else if (state == GameState.DRAW) {
+                    System.out.println("DRAW");
                     break;
                 } else {
                     playerNr = playerNr % 2 + 1;
