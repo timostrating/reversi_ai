@@ -3,8 +3,6 @@ package tic_tac_toe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class TicTacToeBoardTest {
 
     TicTacToeBoard board;
@@ -22,6 +20,6 @@ class TicTacToeBoardTest {
         board.playMove(1, 1, 2);
         board.playMove(2, 2, 1);
         board.playMove(2, 0, 2);
-        assert board.getGameState() == TicTacToeBoard.GameState.Player2Wins;
+        assert board.getGameState() == TicTacToeBoard.GameState.PLAYER_2_WINS;
     }
 }
