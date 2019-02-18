@@ -48,11 +48,13 @@ public class ReversiBoard {
                y >= 0 && y < getBoardSize();
     }
 
-
-
-
     public GameState getGameState() {
-        if (movesLeft())
+        if (!containsCell(CellState.O)) // player 2 is outplayed
+            return GameState.PLAYER_1_WINS;
+        if (!containsCell(CellState.X)) // player 1 is outplayed
+            return GameState.PLAYER_2_WINS;
+
+        if (!containsCell(CellState.EMPTY)) // No moves left
             return GameState.PLAYING;
 
         int score_X = 0;
@@ -74,10 +76,10 @@ public class ReversiBoard {
         return GameState.PLAYER_2_WINS;
     }
 
-    private boolean movesLeft() {
+    private boolean containsCell(CellState state) {
         for (int y=0; y<getBoardSize(); y++)
             for (int x=0; x<getBoardSize(); x++)
-                if (board[y][x] == CellState.EMPTY)
+                if (board[y][x] == state)
                     return true;
 
         return false;

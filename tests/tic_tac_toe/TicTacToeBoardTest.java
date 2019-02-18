@@ -1,5 +1,6 @@
 package tic_tac_toe;
 
+import Util.GameRules;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +15,12 @@ class TicTacToeBoardTest {
 
     @Test
     void playMove() {
-        board.playMove(0, 0, 1);
-        board.playMove(0, 2, 2);
-        board.playMove(1, 2, 1);
-        board.playMove(1, 1, 2);
-        board.playMove(2, 2, 1);
-        board.playMove(2, 0, 2);
-        assert board.getGameState() == TicTacToeBoard.GameState.PLAYER_2_WINS;
+        board.playMove(0, 1);
+        board.playMove(2, 2);
+        board.playMove(5, 1);
+        board.playMove(4, 2);
+        board.playMove(8, 1);
+        board.playMove(6, 2);
+        assert board.getGameState() == GameRules.GameState.PLAYER_2_WINS;
     }
 }

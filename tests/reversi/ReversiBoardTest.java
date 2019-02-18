@@ -41,6 +41,38 @@ class ReversiBoardTest {
     // 6 - - - - - - - -
     // 7 - - - - - - - -
 
+    @Test void player2Outplayed() {
+        assert board.playMove(4, 2, 1);
+        assert board.playMove(3, 2, 2);
+        assert board.playMove(2, 2, 1);
+        assert board.playMove(5, 2, 2);
+        assert board.playMove(6, 2, 1);
+        assert board.playMove(4, 5, 2);
+        assert board.playMove(4, 6, 1);
+        assert board.playMove(5, 4, 2);
+        assert board.playMove(3, 5, 1);
+        assert board.playMove(4, 1, 2);
+        assert board.playMove(4, 0, 1);
+        assert board.playMove(2, 4, 2);
+        assert board.playMove(6, 5, 1);
+        assert board.playMove(3, 6, 2);
+        assert board.playMove(1, 4, 1);
+        assert board.playMove(5, 5, 2);
+        assert board.playMove(2, 5, 1);
+        assert board.playMove(5, 6, 2);
+        assert board.playMove(4, 7, 1);
+        assert board.getGameState() == ReversiBoard.GameState.PLAYER_1_WINS;
+    }
+    //   0 1 2 3 4 5 6 7
+    // 0 - - - - X - - -
+    // 1 - - - - X - - -
+    // 2 - - X X X X X -
+    // 3 - - - X X - - -
+    // 4 - X X X X X - -
+    // 5 - - X X X X X -
+    // 6 - - - X X X - -
+    // 7 - - - - X - - -
+
 
     @Test
     void playFirstMove() {
