@@ -3,7 +3,7 @@ package Util;
 import java.util.Scanner;
 
 public class HumanPlayer implements Player {
-    int nr;
+    final int nr;
     Scanner scanner;
 
     public HumanPlayer(int nr) {

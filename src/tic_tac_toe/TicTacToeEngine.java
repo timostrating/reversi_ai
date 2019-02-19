@@ -5,12 +5,12 @@ import Util.HumanPlayer;
 public class TicTacToeEngine {
 
     public static void main(String[] args) {
+        TicTacToe game = new TicTacToe();
 
-        HumanPlayer p1 = new HumanPlayer(1);
+        TicTacToeAI ai1 = new TicTacToeAI(1, game);
         HumanPlayer p2 = new HumanPlayer(2);
 
-        TicTacToeBoard board = new TicTacToeBoard();
-        board.onNextPlayer.add(() -> System.out.println(board.toString()));
-        board.playGame(p1, p2);
+        game.onNextPlayer.register(() -> System.out.println(game.toString()));
+        game.playGame(ai1, p2);
     }
 }

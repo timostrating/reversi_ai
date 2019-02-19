@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 
 class TicTacToeBoardTest {
 
-    TicTacToeBoard board;
+    TicTacToe board;
 
     @BeforeEach
     void BeforeEach() {
-        board = new TicTacToeBoard();
+        board = new TicTacToe();
     }
 
     @Test
