@@ -83,14 +83,15 @@ public class Load3dModelTest implements ApplicationListener {
             doneLoading();
 
         // https://github.com/libgdx/libgdx/wiki/Path-interface-and-Splines
-        current += Gdx.graphics.getDeltaTime() * 0.15f;
+        current += Gdx.graphics.getDeltaTime() * 0.05f;
         if(current >= 1)
             current -= 1;
         myCatmull.valueAt(pos, current);
         cam.position.set(pos);
         cam.lookAt(Vector3.Zero);
-//        cam.lookAt(pos.x, 0, pos.z);
-//        cam.rotate(Vector3.Y, angleBetween(cam.position, cam.direction));
+        cam.up.set(cam.direction.y, cam.direction.x, 0).crs(cam.direction).nor();
+        if (cam.up.y < 0)
+            cam.up.scl(-1);
         cam.update();
 
 //        camController.update();
