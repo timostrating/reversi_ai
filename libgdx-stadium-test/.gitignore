@@ -1,6 +1,8 @@
 
 ## Custom
 /out
+*.blend1
+*.mtl
 
 ## Java
 *.class
