@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Array;
 
 public class BattleShaderTest implements ApplicationListener {
 
@@ -24,13 +25,20 @@ public class BattleShaderTest implements ApplicationListener {
     String fragmentShader;
 
     Texture tex;
+    Array<Texture> lookupTextures = new Array<Texture>();
     SpriteBatch batch;
     OrthographicCamera cam;
     ShaderProgram shader;
 
     @Override
     public void create() {
-        tex = new Texture(Gdx.files.internal("badlogic.jpg"));
+        tex = new Texture(Gdx.files.internal("pokemon-stadium.png"));
+
+        lookupTextures.add(new Texture(Gdx.files.internal("textures/angular_pattern.png")));
+        lookupTextures.add(new Texture(Gdx.files.internal("textures/spiral_pattern.png")));
+        lookupTextures.add(new Texture(Gdx.files.internal("textures/poke_pattern.png")));
+        lookupTextures.add(new Texture(Gdx.files.internal("textures/noise_pattern.png")));
+        lookupTextures.add(new Texture(Gdx.files.internal("textures/topbottom_pattern.png")));
 
         //important since we aren't using some uniforms and attributes that SpriteBatch expects
         ShaderProgram.pedantic = false;
@@ -52,12 +60,24 @@ public class BattleShaderTest implements ApplicationListener {
         if (shader.getLog().length()!=0)
             System.out.println(shader.getLog());
 
+        shader.begin();
+        shader.setUniformi("u_lookup_texture", 1);
+        shader.end();
+
+        //bind dirt to glActiveTexture(GL_TEXTURE1)
+        lookupTextures.get(1).bind(1);
+
+        //now we need to reset glActiveTexture to zero!!!! since sprite batch does not do this for us
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+
         batch = new SpriteBatch(1000, shader);
         batch.setShader(shader);
 
         cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.setToOrtho(false);
     }
+
+    Long startTime = System.currentTimeMillis();
 
     @Override
     public void resize(int width, int height) {
@@ -74,10 +94,20 @@ public class BattleShaderTest implements ApplicationListener {
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        shader.begin();
+        shader.setUniformf("u_fade", Gdx.graphics.getWidth() / 1000.0f);
+        shader.setUniformf("u_time", (System.currentTimeMillis() - startTime) / 1000.0f);
+        shader.end();
+
+        int current = (int)((System.currentTimeMillis() - startTime) / (2 * 1000)) % 5;
+        lookupTextures.get(current).bind(1);
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0); // we need to reset glActiveTexture to zero!!!!
+
         batch.begin();
 
         //notice that LibGDX coordinate system origin is lower-left
         batch.draw(tex, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
 
         batch.end();
     }

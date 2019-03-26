@@ -105,14 +105,6 @@ public class Load3dModelTest implements ApplicationListener {
         model3dBatch.end();
     }
 
-    // https://stackoverflow.com/a/28596355
-    public float angleBetween(Vector3 a, Vector3 b) {
-        return MathUtils.atan2((a.sub(b)).len(), (a.add(b)).len());
-    }
-    public float angleBetween(Vector2 a, Vector2 b) {
-        return a.sub(b).angle();
-    }
-
     @Override
     public void dispose () {
         model3dBatch.dispose();
