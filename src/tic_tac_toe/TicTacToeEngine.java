@@ -4,7 +4,7 @@ import Util.HumanPlayer;
 
 public class TicTacToeEngine {
 
-    public static void main(String[] args) {
+    public TicTacToeEngine() {
         TicTacToe game = new TicTacToe();
 
         TicTacToeAIScore ai1 = new TicTacToeAIScore(1, game);
