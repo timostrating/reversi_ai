@@ -14,16 +14,12 @@ public class TicTacToe extends GameRules {
 
     @Override
     public void playGame(Player... players) {
+        super.playGame(players);
         int curPlayer = 0;
         while (board.containsCell(CellState.EMPTY.ordinal()) && this.getGameState() == GameState.PLAYING) {
             nextPlayer(players[curPlayer % 2]);
             curPlayer++;
         }
-    }
-
-    @Override
-    public void playerPlays(Player p) {
-        while (!playMove(p.getInput(), p.getNr()));
     }
 
     public TicTacToe() {

@@ -1,5 +1,6 @@
 package tic_tac_toe;
 
+import Util.Callback;
 import Util.HumanPlayer;
 import Util.Player;
 
@@ -8,10 +9,14 @@ public class TicTacToeEngine {
     public static void main(String[] args) {
         TicTacToe game = new TicTacToe();
 
-        Player ai1 = new TicTacToeAIMiniMax(1, game);
-        Player p2 = new HumanPlayer(2);
+        Player ai1 = new TicTacToeAIMiniMax(game);
+        Player ai2 = new TicTacToeAIMiniMax(game);
+        Player p2 = new HumanPlayer();
 
-        game.onNextPlayer.register(() -> System.out.println(game.toString()));
-        game.playGame(ai1, p2);
+        Callback printBoard = () -> System.out.println(game.toString());
+
+        game.onNextPlayer.register(printBoard);
+        game.onGameOver.register(printBoard);
+        game.playGame(ai1, ai2);
     }
 }

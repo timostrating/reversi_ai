@@ -2,18 +2,12 @@ package Util;
 
 import java.util.Scanner;
 
-public class HumanPlayer implements Player {
-    final int nr;
+public class HumanPlayer extends Player {
+    int nr;
     Scanner scanner;
 
-    public HumanPlayer(int nr) {
-        this.nr = nr;
+    public HumanPlayer() {
         scanner = new Scanner(System.in);
-    }
-
-    @Override
-    public int getNr() {
-        return nr;
     }
 
     @Override

@@ -3,7 +3,7 @@ package tic_tac_toe;
 import Util.Player;
 
 // Renamed van TicTacToeAI naar TicTacToeAIScore
-public class TicTacToeAIScore implements Player {
+public class TicTacToeAIScore extends Player {
 
     private final int nr;
     private final TicTacToe game;
@@ -17,11 +17,6 @@ public class TicTacToeAIScore implements Player {
     public TicTacToeAIScore(int nr, TicTacToe game) {
         this.nr = nr;
         this.game = game;
-    }
-
-    @Override
-    public int getNr() {
-        return nr;
     }
 
     @Override
