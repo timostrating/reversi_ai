@@ -9,8 +9,8 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 		// new LwjglApplication(new MyGdxGame(), config);
-		new LwjglApplication(new BattleShaderTest(), config);
-//		new LwjglApplication(new Load3dModelTest(), config); 	// Note: libJDX code does not have a main loop
-			// we give libJDX a application Listener and it wil main loop it for us
+//		new LwjglApplication(new BattleShaderTest(), config);
+		new LwjglApplication(new Load3dModelTest(), config); 	// Note: libJDX code does not have a main loop
+			// we give libJDX a application Listener and it will main loop it for us
 	}
 }
