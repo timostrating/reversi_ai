@@ -1,6 +1,6 @@
 package Util;
 
-import static Util.GameRules.GameState.*;
+import static Util.GameRules.GameState.PLAYING;
 
 public abstract class GameRules {
     public enum GameState {PLAYING, DRAW, PLAYER_1_WINS, PLAYER_2_WINS  /* PLAYER_3.4.5..N_WINS*/ }
@@ -25,7 +25,8 @@ public abstract class GameRules {
 
         onNextPlayer.notifyObjects(Callback::callback);
         playerPlays(p);
-        if (getGameState() != PLAYING)
+
+        if (getGameState() != PLAYING) // TODO Fix this
             onGameOver.notifyObjects(Callback::callback);
     }
 

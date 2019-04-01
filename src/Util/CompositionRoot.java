@@ -2,6 +2,7 @@ package Util;
 
 import GUI.Lobby;
 import javafx.application.Application;
+import netwerk.Connection;
 import sun.applet.Main;
 import tic_tac_toe.TicTacToeEngine;
 
@@ -10,17 +11,16 @@ public class CompositionRoot {
     static CompositionRoot compositionRoot = null;
 
     public Lobby lobby;
-
-    public TicTacToeEngine ticTacToeEngine;
+    public Connection connection;
+    public Arcade arcade;
 
     private CompositionRoot() {
-
         this.lobby = new Lobby();
-        this.ticTacToeEngine = new TicTacToeEngine();
-
+        this.connection = new Connection();
+        this.arcade = new Arcade();
     }
 
-    public static CompositionRoot createCompostionRoot() {
+    public static CompositionRoot getInstance() {
         if (compositionRoot == null) {
              compositionRoot = new CompositionRoot();
         }
@@ -28,10 +28,7 @@ public class CompositionRoot {
     }
 
     public static void main(String[] args) {
-        createCompostionRoot();
+        getInstance();
     }
-
-
-
 }
 

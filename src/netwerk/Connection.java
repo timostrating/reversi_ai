@@ -43,19 +43,23 @@ public class Connection {
         }
     }
 
-    public String[] getGameList() throws IOException{
+    public String[] getGameList() {
         String[] gameList;
         String gameString;
 
         toServer.println("get gamelist");
-        fromServer.readLine();
+        try {
+            fromServer.readLine();
+            gameString = fromServer.readLine();
+            gameString = gameString.substring(gameString.indexOf("[") + 1, gameString.indexOf("]") - 1);
+            gameString = gameString.replace("\"", "");
+            gameList = gameString.split(", ");
+            return gameList;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        gameString = fromServer.readLine();
-        gameString = gameString.substring(gameString.indexOf("[") + 1, gameString.indexOf("]") - 1);
-        gameString = gameString.replace("\"", "");
-        gameList = gameString.split(", ");
-
-        return gameList;
+        return new String[] {};
     }
 
     public String[] getPlayerList() throws IOException{
@@ -88,8 +92,10 @@ public class Connection {
         getTurn();
     }
 
-    public void getMove(){
-        // stuur move
+    public int getMove(){
+        // TODO stuur move
+
+        return -999;
     }
 
     public void ready(String x) throws IOException {

@@ -1,7 +1,6 @@
 package reversi;
 
 import reversi.ReversiBoard.GameState;
-
 import java.util.Scanner;
 
 public class ReversiEngine {

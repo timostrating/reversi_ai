@@ -26,7 +26,6 @@ public class TicTacToeAIMiniMax extends Player {
     }
 
     private TicTacToe game;
-    private int setCount = 0;
 
     List<Integer> openPositions = new LinkedList<>();
 
@@ -35,7 +34,6 @@ public class TicTacToeAIMiniMax extends Player {
         for (int i=0; i <= 8; i++)
             openPositions.add(i);
         game.onValidMovePlayed.register((x)->openPositions.remove(x));
-        game.onNextPlayer.register(()->setCount++);
     }
 
     @Override
@@ -81,7 +79,7 @@ public class TicTacToeAIMiniMax extends Player {
         for (int posIndex = 0; posIndex < openPositions.size(); posIndex++) {
             int pos = openPositions.get(posIndex);
             game.board.set(pos, player);
-            openPositions.remove(posIndex); // TODO
+            openPositions.remove(posIndex);
 
 
             PosAndScore posAndScore = minimax(depth-1, alpha, beta, (player%2) +1);
