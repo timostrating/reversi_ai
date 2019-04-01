@@ -24,7 +24,6 @@ public class TicTacToeAIScore implements Player {
         return nr;
     }
 
-
     @Override
     public int getInput() {
         int[][] board = game.board.getBoard();

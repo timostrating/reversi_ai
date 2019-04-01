@@ -2,6 +2,7 @@ package com.mygdx.game.desktop;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,13 +13,15 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 public class Load3dModelTest implements ApplicationListener {
     private PerspectiveCamera cam;
-    private CameraInputController camController;
     private ModelBatch model3dBatch;
+    private CameraInputController camController;
     private AssetManager assets;
     private Array<ModelInstance> instances = new Array<ModelInstance>();
     private Environment environment;
@@ -38,14 +41,15 @@ public class Load3dModelTest implements ApplicationListener {
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(10f, 10f, 10f);
         cam.lookAt(0,0,0);
-        cam.near = 1f;
-        cam.far = 300f;
+        cam.near = 0.0001f; // 1
+        cam.far = 3000000f; // 300
         cam.update();
 
 //        camController = new CameraInputController(cam);
 //        Gdx.input.setInputProcessor(camController);
 
         // https://xoppa.github.io/blog/loading-models-using-libgdx/
+        // https://github.com/libgdx/libgdx/wiki/Importing-Blender-models-in-LibGDX
         assets = new AssetManager();
         assets.load("stadium.obj", Model.class);
         loading = true;
@@ -82,21 +86,27 @@ public class Load3dModelTest implements ApplicationListener {
         if (loading && assets.update())
             doneLoading();
 
-        // https://github.com/libgdx/libgdx/wiki/Path-interface-and-Splines
+         https://github.com/libgdx/libgdx/wiki/Path-interface-and-Splines
         current += Gdx.graphics.getDeltaTime() * 0.05f;
         if(current >= 1)
             current -= 1;
         myCatmull.valueAt(pos, current);
         cam.position.set(pos);
         cam.lookAt(Vector3.Zero);
+        System.out.print(cam.direction);
         cam.up.set(cam.direction.y, cam.direction.x, 0).crs(cam.direction).nor();
+        System.out.print(cam.direction);
+        System.out.print(" met up ");
+        System.out.println(cam.up);
         if (cam.up.y < 0)
             cam.up.scl(-1);
         cam.update();
 
 //        camController.update();
+//        camController.keyDown(Input.Keys.TAB);
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.gl.glClearColor(135/255f, 206/255f, 235/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         model3dBatch.begin(cam);

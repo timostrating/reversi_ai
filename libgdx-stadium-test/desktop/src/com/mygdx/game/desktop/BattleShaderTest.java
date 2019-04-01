@@ -62,6 +62,7 @@ public class BattleShaderTest implements ApplicationListener {
 
         shader.begin();
         shader.setUniformi("u_lookup_texture", 1);
+        shader.setUniform4fv("u_maincolor", new float[]{0,0,0, 1}, 0, 4);
         shader.end();
 
         //bind dirt to glActiveTexture(GL_TEXTURE1)
@@ -86,7 +87,7 @@ public class BattleShaderTest implements ApplicationListener {
 
         //bind the shader, then set the uniform, then unbind the shader
         shader.begin();
-        shader.setUniformf("resolution", width, height);
+        shader.setUniformf("u_resolution", width, height);
         shader.end();
     }
 
@@ -95,7 +96,7 @@ public class BattleShaderTest implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shader.begin();
-        shader.setUniformf("u_fade", Gdx.graphics.getWidth() / 1000.0f);
+        shader.setUniformf("u_fade", 0f); //Gdx.graphics.getWidth() / 1000.0f);
         shader.setUniformf("u_time", (System.currentTimeMillis() - startTime) / 1000.0f);
         shader.end();
 

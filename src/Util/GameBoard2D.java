@@ -4,9 +4,13 @@ public class GameBoard2D {
 
     int[][] board;
     int boardSize;
+    int cellCount;
+
+    Delegate<CallbackWithParam<Integer>> onSetPlayed = new Delegate<>();
 
     public GameBoard2D(int boardSize) {
         this.boardSize = boardSize;
+        this.cellCount = boardSize * boardSize;
         this.board = new int[boardSize][boardSize];
     }
 
@@ -38,8 +42,8 @@ public class GameBoard2D {
         return board[y][x];
     }
 
-    public int set(int x, int y, int v) {
-        return board[y][x] = v;
+    public void set(int x, int y, int v) {
+        board[y][x] = v;
     }
 
     @Override
@@ -49,7 +53,7 @@ public class GameBoard2D {
 //        sb.append("  0 1 2");
         for (int y = 0; y < boardSize; y++) {
             for (int x = 0; x < boardSize; x++)
-                sb.append(board[y][x] + " ");
+                sb.append(board[y][x]).append(" ");
             sb.append("\n");
         }
 
