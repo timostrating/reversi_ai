@@ -33,20 +33,25 @@ public class PlayField extends Application{
             grid.getRowConstraints().add(row);
         }
 
-        for (int i = 0; i < columns; i++) {
-            for (int j = 0; j < rows; j++) {
+        for (int x = 0; x < columns; x++) {
+            for (int y = 0; y < rows; y++) {
                 Pane pane = new Pane();
+
+                final int X = x;
+                final int Y = y * rows;
                 pane.setOnMouseReleased(e -> {
+                    System.out.println(X + Y );
                     pane.getChildren().add(Anims.getAtoms(1));
+
                 });
                 pane.getStyleClass().add("game-grid-cell");
-                if (i == 0) {
+                if (x == 0) {
                     pane.getStyleClass().add("first-column");
                 }
-                if (j == 0) {
+                if (y == 0) {
                     pane.getStyleClass().add("first-row");
                 }
-                grid.add(pane, i, j);
+                grid.add(pane, x, y);
             }
         }
 
