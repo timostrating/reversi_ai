@@ -2,6 +2,7 @@ package tic_tac_toe;
 
 import Util.Player;
 
+// Renamed van TicTacToeAI naar TicTacToeAIScore
 public class TicTacToeAIScore implements Player {
 
     private final int nr;
