@@ -4,11 +4,7 @@ import Util.Player;
 import static GUI.Lobby.getPaneNr;
 import static GUI.Lobby.setPaneNR;
 
-public class GUIPlayer implements Player {
-    @Override
-    public int getNr() {
-        return 2;
-    }
+public class GUIPlayer extends Player {
 
     @Override
     public int getInput() {

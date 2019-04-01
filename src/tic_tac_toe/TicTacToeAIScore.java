@@ -5,7 +5,6 @@ import Util.Player;
 // Renamed van TicTacToeAI naar TicTacToeAIScore
 public class TicTacToeAIScore extends Player {
 
-    private final int nr;
     private final TicTacToe game;
 
     int[] score = new int[]{
@@ -14,8 +13,7 @@ public class TicTacToeAIScore extends Player {
         3, 2, 3
     };
 
-    public TicTacToeAIScore(int nr, TicTacToe game) {
-        this.nr = nr;
+    public TicTacToeAIScore(TicTacToe game) {
         this.game = game;
     }
 
