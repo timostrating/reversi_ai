@@ -17,10 +17,20 @@ PLAYER_2 = -1
 
 
 def evaluate(board_state):
+    nr_of_1s = 0
+    nr_of_2s = 0
+
+    for x, row in enumerate(board_state):
+        for y, cell in enumerate(row):
+            if cell == PLAYER_1:
+                nr_of_1s += 1
+            elif cell == PLAYER_2:
+                nr_of_2s += 1
+
     if is_winner(board_state, PLAYER_1):
-        return +1
+        return +1 / nr_of_1s
     if is_winner(board_state, PLAYER_2):
-        return -1
+        return -1 / nr_of_2s
     return 0
 
 
@@ -39,6 +49,12 @@ def game_over(board_state):
 
 def empty_cells(board_state):
     cells = []
+    
+    for y in range(0, len(board_state)):
+        for x in range(0, len(board_state)):
+            if board_state[x][y] == 0:
+                cells.append([x, y])
+
     for x, row in enumerate(board_state):
         for y, cell in enumerate(row):
             if cell == 0:
