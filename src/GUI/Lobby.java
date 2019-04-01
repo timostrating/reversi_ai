@@ -1,5 +1,8 @@
 package GUI;
 
+import Util.Arcade;
+import Util.CompositionRoot;
+import Util.GameRules;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -21,8 +24,12 @@ public class Lobby extends Application {
     private Timeline timeline;
     private Label timerLabel = new Label();
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
+    private int paneNr = 0;
 
-    static int paneNr = 0;
+    GridPane grid;
+    Pane[][] panes;
+
+
     @Override
     public void start(Stage primaryStage){
 
@@ -56,7 +63,7 @@ public class Lobby extends Application {
 
         // Games
         Scene ticTacToeScene = createPlayField(3,3);
-        Scene reversiScene = createPlayField(8,8);
+//        Scene reversiScene = createPlayField(8,8);
 
         // Stage
         primaryStage.setTitle("Lobby"); // Set the stage title
@@ -64,20 +71,23 @@ public class Lobby extends Application {
        // primaryStage.setMaximized(true);
         primaryStage.show(); // Display the stage
 
-
         //Register Buttons
-        spel1.setOnAction(event -> primaryStage.setScene(ticTacToeScene));
-        spel2.setOnAction(event -> primaryStage.setScene(reversiScene));
+        spel1.setOnAction(event -> {
+            primaryStage.setScene(ticTacToeScene);
+            Arcade arcade = CompositionRoot.getInstance().arcade;
+            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe);
+            game.onValidMovePlayed.register((i)-> {panes[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms(1));}); // TODO: hardcoded size  and nr 1 ?
+            arcade.playGame(game, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.TicTacToeAIMiniMax);
+        });
+//        spel2.setOnAction(event -> primaryStage.setScene(reversiScene));
 
     }
 
-    public static Scene createPlayField(int rows, int columns) {
+    public Scene createPlayField(int rows, int columns) {
 
         //stage.setTitle("Reversi");
-
-        GridPane grid = new GridPane();
-
-
+        grid = new GridPane();
+        panes = new Pane[rows][columns];
         grid.getStyleClass().add("game-grid");
 
         for(int i = 0; i < columns; i++) {
@@ -93,13 +103,13 @@ public class Lobby extends Application {
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows; y++) {
                 Pane pane = new Pane();
+                panes[x][y] = pane;
                 final int X = x + 1;
                 final int Y = y * rows;
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
                     setPaneNR(X, Y);
                     pane.getChildren().add(PlayField.Anims.getAtoms(1));
-
                 });
                 pane.getStyleClass().add("game-grid-cell");
                 if (x == 0) {
@@ -112,20 +122,16 @@ public class Lobby extends Application {
             }
         }
 
-
         Scene scene = new Scene(grid, (columns * 40) + 100, (rows * 40) + 100, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
 
         return scene;
     }
 
-    public static void setPaneNR(int x, int y) {
-        paneNr = x + y;
-    }
 
-    public static int getPaneNr() {
-        return paneNr;
-    }
+    public void setPaneNR(int x, int y) { paneNr = x + y; }
+    public int getPaneNr() { return paneNr; }
+    public void resetPaneNR() { paneNr = -1; }
 
     public void createTimer() {
 
@@ -146,9 +152,7 @@ public class Lobby extends Application {
     }
 
 
-
-
-    public static void main(String[] args) {
-        Application.launch(args);
+    public static void main(String[] args) { // TODO This is only for testing
+        Application.launch();
     }
 }

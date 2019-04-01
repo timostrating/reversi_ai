@@ -10,6 +10,7 @@ import tic_tac_toe.TicTacToeAIScore;
  * The Arcade class is a Factory for the games and different kind of players
  */
 public class Arcade {
+
     public enum GameFactory {
         TicTacToe;
 //        Reversi(ReversiBoard)
@@ -43,9 +44,16 @@ public class Arcade {
     }
 
 
+    public GameRules createGame(GameFactory gameType) {
+        return gameType.toObject();
+    }
+
     public void playGame(GameFactory gameType , PlayerFactory... ps) {
         GameRules game = gameType.toObject();
+        playGame(game, ps);
+    }
 
+    public void playGame(GameRules game , PlayerFactory... ps) {
         game.onNextPlayer.register(() -> System.out.println(game));
         game.onGameOver.register(() -> System.err.println(game));
 
@@ -57,6 +65,12 @@ public class Arcade {
 
     public static void main(String[] args) {
         Arcade arcade = new Arcade();
-        arcade.playGame(GameFactory.TicTacToe, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.HumanPlayer);
+
+        GameRules game = arcade.createGame(GameFactory.TicTacToe);
+
+        game.onValidMovePlayed.register((i)->System.out.println(i));
+        game.onValidMovePlayed.register((i)->System.out.println(i));
+
+        arcade.playGame(game, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
     }
 }

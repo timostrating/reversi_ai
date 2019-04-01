@@ -1,17 +1,22 @@
 package GUI;
 
+import Util.CompositionRoot;
 import Util.Player;
-import static GUI.Lobby.getPaneNr;
-import static GUI.Lobby.setPaneNR;
 
 public class GUIPlayer extends Player {
 
+    Lobby gui;
+
+    public GUIPlayer() {
+        gui = CompositionRoot.getInstance().lobby;
+    }
+
     @Override
     public int getInput() {
-        int paneNr = getPaneNr();
+        int paneNr = gui.getPaneNr();
         while (true) {
             if (paneNr != -1) {
-                setPaneNR(-1, 0);
+                gui.resetPaneNR();
                 return paneNr;
             }
         }
