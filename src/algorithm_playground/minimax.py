@@ -55,8 +55,7 @@ def print_board(board):
         print(row)
     print("")
 
-
-def minimax(board, depth, player):
+def minimax(board, depth, alpha, beta, player):
     """ https://github.com/Cledersonbc/tic-tac-toe-minimax/blob/master/py_version/minimax.py """
     if player == MAX:
         best = [-1, -1, -infinity]
@@ -70,21 +69,31 @@ def minimax(board, depth, player):
     for cell in empty_cells(board):
         x, y = cell[0], cell[1]
         board[x][y] = player
-        print_board(board)
-        score = minimax(board, depth - 1, -player)
+        # print_board(board)
+        score = minimax(board, depth - 1, alpha, beta, -player)
         board[x][y] = 0
         score[0], score[1] = x, y
 
+        evaluation = score[2]
+
         if player == MAX:
-            if score[2] > best[2]:
+            if evaluation > best[2]:
                 best = score
+
+            alpha = max(alpha, evaluation)
+            if beta <= alpha:
+                break
         else:
-            if score[2] < best[2]:
+            if evaluation < best[2]:
                 best = score
+
+            beta = min(beta, evaluation)
+            if beta <= alpha:
+                break
 
     return best
 
 
-depth = 999;  # len(empty_cells(board))
-score = minimax(board, depth, PLAYER_1)
-print(f"(x = {score[0]}, y = {score[0]}) score = {score[0]}")
+depth = 999  # len(empty_cells(board))
+score = minimax(board, depth, -infinity, +infinity, PLAYER_1)
+print(f"(x = {score[0]}, y = {score[1]}) score = {score[2]}")
