@@ -13,10 +13,16 @@ public class Delegate<T> {
     // TODO: if multithreading is required => build a fully Tread safe implementation of C# delegates.
     private ArrayList<T> list = new ArrayList<>();
 
+    private int timesNotified = 0;
+
     public Delegate() { }
     public Delegate(boolean multiThreaded) {
         if (multiThreaded)
             throw new NotImplementedException();
+    }
+
+    public int getTimesNotified() {
+        return timesNotified;
     }
 
     /**
@@ -64,6 +70,7 @@ public class Delegate<T> {
      * @param notifier the Lambda or method reference that will point to the function that we will call
      */
     public void notifyObjects(Notifier<T> notifier) {
+        timesNotified ++;
         for (T object : list)
             notifier.notify(object);
     }
