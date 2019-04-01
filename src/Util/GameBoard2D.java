@@ -42,6 +42,12 @@ public class GameBoard2D {
         board[i] = v;
     }
 
+    public int amount(int v) {
+        int amount = 0;
+        for (int a : board) if (a == v) amount++;
+        return amount;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

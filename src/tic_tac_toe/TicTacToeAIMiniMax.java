@@ -11,6 +11,21 @@ import static Util.GameRules.GameState.PLAYER_2_WINS;
 
 public class TicTacToeAIMiniMax implements Player {
 
+    private class PosAndScore {
+        int pos;
+        float score;
+
+        PosAndScore(int pos, float score) {
+            this.pos = pos;
+            this.score = score;
+        }
+
+        @Override
+        public String toString() {
+            return "Position: " + pos + ", Score: " + score;
+        }
+    }
+
     private int nr;
     private TicTacToe game;
     private int setCount = 0;
@@ -33,62 +48,57 @@ public class TicTacToeAIMiniMax implements Player {
 
     @Override
     public int getInput() {
-        int[] best = minimax(999, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+        PosAndScore best = minimax(999, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
         System.out.println(best);
-        return best[0];
+        return best.pos;
     }
 
     final int MAX = 1;
     final int MIN = 2;
 
-    private int eval(GameRules.GameState state) { // TODO
+    private float eval(GameRules.GameState state) { // TODO
         if (state == PLAYER_1_WINS)
-            return +1;
+            return +1f / game.board.amount(MAX);
         if (state == PLAYER_2_WINS)
-            return -1;
+            return -1f / game.board.amount(MIN);
         return 0;
     }
 
-    private int[] minimax(int depth, int alpha, int beta, int player) {
-        int[] best = new int[]{-1, -1}; // (position, score)
+    private PosAndScore minimax(int depth, float alpha, float beta, int player) {
+        PosAndScore best = new PosAndScore(-1, -1); // (position, score)
 
         if (player == MAX)
-            best[1] = Integer.MIN_VALUE;
+            best.score = Integer.MIN_VALUE;
         else
-            best[1] = Integer.MAX_VALUE;
+            best.score = Integer.MAX_VALUE;
 
         if (depth == 0 || game.getGameState() != GameRules.GameState.PLAYING) { // TODO
-            int score = eval(game.getGameState());
-            best[1] = score;
+            float score = eval(game.getGameState());
+            best.score = score;
         }
 
         for (int posIndex = 0; posIndex < openPositions.size(); posIndex++) {
-            System.out.println(player);
-            System.out.println(openPositions);
-            System.out.println(game.board.toString());
-
-
             int pos = openPositions.get(posIndex);
             game.board.set(pos, player);
             openPositions.remove(posIndex); // TODO
 
 
-            int[] posAndScore = minimax(depth-1, alpha, beta, (player%2) +1);
+            PosAndScore posAndScore = minimax(depth-1, alpha, beta, (player%2) +1);
             game.board.set(pos, 0);
             openPositions.add(posIndex, pos);
-            posAndScore[0] = pos;
+            posAndScore.pos = pos;
 
             if (player == MAX) {
-                if (best[1] < posAndScore[1])
+                if (best.score < posAndScore.score)
                     best = posAndScore;
 
-                alpha = Math.max(alpha, posAndScore[1]);
+                alpha = Math.max(alpha, posAndScore.score);
             }
             else {
-                if (best[1] > posAndScore[1])
+                if (best.score > posAndScore.score)
                     best = posAndScore;
 
-                beta = Math.min(beta, posAndScore[1]);
+                beta = Math.min(beta, posAndScore.score);
             }
 
             if (beta <= alpha)
