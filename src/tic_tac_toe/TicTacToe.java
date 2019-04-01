@@ -55,20 +55,17 @@ public class TicTacToe extends GameRules {
     }
 
     public boolean playMove(int i, int playerNr) {
-        int x = i % 3;
-        int y = i / 3;
-
-        if (isValidMove(x, y)) {
+        if (isValidMove(i) && getGameState() == GameState.PLAYING) {
             onValidMovePlayed.notifyObjects(o -> o.callback(i));
-            board.set(x, y, CellState.values()[playerNr].ordinal());
+            board.set(i, CellState.values()[playerNr].ordinal());
             return true;
         }
 
         return false;
     }
 
-    private boolean isValidMove(int x, int y) {
-        return board.isInBounds(x, y) && board.get(x, y) == CellState.EMPTY.ordinal();
+    private boolean isValidMove(int i) {
+        return board.isInBounds(i) && board.get(i) == CellState.EMPTY.ordinal();
     }
 
     @Override

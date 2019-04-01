@@ -26,12 +26,12 @@ public class TicTacToeAIScore implements Player {
 
     @Override
     public int getInput() {
-        int[][] board = game.board.getBoard();
+        int[] board = game.board.getBoard();
 
         int highScore = 0;
         int highScoreIndex = 0;
         for (int i=0; i<score.length; i++) {
-            if (board[i/3][i%3] == 0) {
+            if (board[i] == 0) {
                 if (highScore < score[i]) {
                     highScore = score[i];
                     highScoreIndex = i;
