@@ -1,8 +1,6 @@
 package tic_tac_toe;
 
-import Util.GameBoard2D;
-import Util.GameRules;
-import Util.Player;
+import Util.*;
 
 import static Util.BoardHelper.areAllEqual;
 
@@ -61,6 +59,7 @@ public class TicTacToe extends GameRules {
         int y = i / 3;
 
         if (isValidMove(x, y)) {
+            onValidMovePlayed.notifyObjects(o -> o.callback(i));
             board.set(x, y, CellState.values()[playerNr].ordinal());
             return true;
         }

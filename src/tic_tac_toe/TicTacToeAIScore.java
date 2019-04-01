@@ -2,7 +2,7 @@ package tic_tac_toe;
 
 import Util.Player;
 
-public class TicTacToeAI implements Player {
+public class TicTacToeAIScore implements Player {
 
     private final int nr;
     private final TicTacToe game;
@@ -13,7 +13,7 @@ public class TicTacToeAI implements Player {
         3, 2, 3
     };
 
-    public TicTacToeAI(int nr, TicTacToe game) {
+    public TicTacToeAIScore(int nr, TicTacToe game) {
         this.nr = nr;
         this.game = game;
     }
@@ -22,7 +22,6 @@ public class TicTacToeAI implements Player {
     public int getNr() {
         return nr;
     }
-
 
     @Override
     public int getInput() {

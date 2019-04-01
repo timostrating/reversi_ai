@@ -4,6 +4,7 @@ public abstract class GameRules {
     public enum GameState {PLAYING, DRAW, PLAYER_1_WINS, PLAYER_2_WINS  /* PLAYER_3.4.5..N_WINS*/ }
 
     public Delegate<Callback> onNextPlayer = new Delegate<>();
+    public Delegate<CallbackWithParam<Integer>> onValidMovePlayed = new Delegate<>();
 
     public abstract void playGame(Player[] players);
     public void nextPlayer(Player p) {
