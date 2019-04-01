@@ -6,7 +6,7 @@ import Util.Player;
 
 public class TicTacToeEngine {
 
-    public static void main(String[] args) {
+    public TicTacToeEngine() {
         TicTacToe game = new TicTacToe();
 
         Player ai1 = new TicTacToeAIMiniMax(game);
