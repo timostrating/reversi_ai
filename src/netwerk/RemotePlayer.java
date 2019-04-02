@@ -13,6 +13,7 @@ public class RemotePlayer extends Player {
 
     @Override
     public int getInput() {
-        return connection.getMove();
+        //TODO fixen
+        return 0;
     }
 }
