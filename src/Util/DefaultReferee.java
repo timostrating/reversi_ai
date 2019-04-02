@@ -1,21 +1,21 @@
-package tic_tac_toe;
+package Util;
 
-import Util.*;
+import tic_tac_toe.TicTacToe;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TicTacToeReferee implements Referee {
+public class DefaultReferee implements Referee {
 
-    private TicTacToe game;
+    private GameRules game;
 
-    public TicTacToeReferee(TicTacToe game) {
+    public DefaultReferee(GameRules game) {
         this.game = game;
     }
 
     @Override
     public void letTheGameStart() {
         int curPlayer = 0;
-        while (game.board.containsCell(TicTacToe.CellState.EMPTY.ordinal()) && game.getGameState() == GameRules.GameState.PLAYING) {
+        while (game.getGameState() == GameRules.GameState.PLAYING) {
             game.nextPlayer(game.getPlayer(curPlayer % 2));
             curPlayer++;
         }
@@ -45,5 +45,6 @@ public class TicTacToeReferee implements Referee {
             }
         }
     }
+
 
 }
