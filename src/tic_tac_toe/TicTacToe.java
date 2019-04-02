@@ -22,6 +22,11 @@ public class TicTacToe extends GameRules {
         }
     }
 
+    @Override
+    public void playerPlays(Player p) {
+        while (!playMove(p.getInput(), p.getNr()));
+    }
+
     public TicTacToe() {
         this.board = new GameBoard2D(BOARD_SIZE);
         board.reset();
