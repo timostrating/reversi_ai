@@ -2,6 +2,7 @@ package Util;
 
 import GUI.GUIPlayer;
 import netwerk.RemotePlayer;
+import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
 import tic_tac_toe.TicTacToeAIMiniMax;
 import tic_tac_toe.TicTacToeAIScore;
@@ -13,13 +14,13 @@ import tic_tac_toe.TicTacToeReferee;
 public class Arcade {
 
     public enum GameFactory {
-        TicTacToe;
-//        Reversi(Reversi)
+        TicTacToe,
+        Reversi;
 
         public GameRules toObject(){
             switch (this.ordinal()) {
                 case 0: return new TicTacToe();
-//                case 1: return new Reversi();
+                case 1: return new Reversi();
             }
             return null;
         }
@@ -45,11 +46,13 @@ public class Arcade {
     }
 
     public enum RefereeFactory {
-        TicTacToeReferee;
+        TicTacToeReferee,
+        ReversiReferee;
 
         public Referee toObject(GameRules game) {
             switch (this.ordinal()) {
                 case 0: return new TicTacToeReferee((TicTacToe) game);
+                case 1: return new ReversiReferee((Reversi) game);
             }
             return null;
         }
@@ -71,7 +74,7 @@ public class Arcade {
     public static void main(String[] args) {
         Arcade arcade = new Arcade();
 
-        GameRules game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.TicTacToeReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
+        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.ReversiReferee, PlayerFactory.HumanPlayer, PlayerFactory.HumanPlayer);
 
         game.run();
     }
