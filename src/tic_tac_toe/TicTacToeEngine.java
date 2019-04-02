@@ -17,6 +17,5 @@ public class TicTacToeEngine {
 
         game.onNextPlayer.register(printBoard);
         game.onGameOver.register(printBoard);
-        game.playGame(ai1, ai2);
     }
 }
