@@ -14,8 +14,6 @@ public class TicTacToeReferee implements Referee {
 
     @Override
     public void letTheGameStart() {
-        game.board = new GameBoard2D(TicTacToe.BOARD_SIZE);
-        game.board.reset();
         int curPlayer = 0;
         while (game.board.containsCell(TicTacToe.CellState.EMPTY.ordinal()) && game.getGameState() == GameRules.GameState.PLAYING) {
             game.nextPlayer(game.getPlayer(curPlayer % 2));

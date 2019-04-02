@@ -2,6 +2,7 @@ package tic_tac_toe;
 
 import Util.GameBoard2D;
 import Util.GameRules;
+import Util.Player;
 
 import static Util.BoardHelper.areAllEqual;
 
@@ -12,6 +13,11 @@ public class TicTacToe extends GameRules {
     /* Enums are classes and should follow the conventions for classes. Instances of an enum are constants and should follow the conventions for constants.https://stackoverflow.com/a/3069863 */
     public enum CellState {EMPTY, X, O}
     public GameBoard2D board;
+
+    public TicTacToe() {
+        board = new GameBoard2D(TicTacToe.BOARD_SIZE);
+        board.reset();
+    }
 
     public GameState getGameState() {
         if(getPlayer(1).isDisqualified() || MatchOf3(CellState.X))

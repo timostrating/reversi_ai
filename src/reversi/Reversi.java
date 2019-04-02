@@ -42,12 +42,6 @@ public class Reversi extends GameRules {
         board.set(BOARD_SIZE/2   , BOARD_SIZE/2 -1, CellState.O.ordinal());
     }
 
-
-    @Override
-    public void playerPlays(Player p) {
-        while (!playMove(p.getInput(), p.getNr()));
-    }
-
     public GameState getGameState() {
         if (!board.containsCell(CellState.O.ordinal())) // player 2 is outplayed
             return GameState.PLAYER_1_WINS;
