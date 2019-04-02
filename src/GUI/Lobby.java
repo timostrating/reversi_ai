@@ -7,6 +7,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Scene;
@@ -75,9 +76,16 @@ public class Lobby extends Application {
         spel1.setOnAction(event -> {
             primaryStage.setScene(ticTacToeScene);
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe);
-            game.onValidMovePlayed.register((i)-> {panes[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms(1));}); // TODO: hardcoded size  and nr 1 ?
-            arcade.playGame(game, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.TicTacToeAIMiniMax);
+            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.TicTacToeReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.TicTacToeAIMiniMax);
+
+            game.onValidMovePlayed.register((i)-> {
+
+                Platform.runLater(() -> {
+                    panes[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms(1));
+                });
+
+            }); // TODO: hardcoded size  and nr 1 ?
+            new Thread(game).start();
         });
 //        spel2.setOnAction(event -> primaryStage.setScene(reversiScene));
 

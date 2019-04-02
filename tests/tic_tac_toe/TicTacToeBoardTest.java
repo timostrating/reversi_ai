@@ -1,5 +1,6 @@
 package tic_tac_toe;
 
+import Util.Arcade;
 import Util.GameRules;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,10 +8,12 @@ import org.junit.jupiter.api.Test;
 class TicTacToeBoardTest {
 
     TicTacToe board;
+    Arcade arcade = new Arcade();
 
     @BeforeEach
     void BeforeEach() {
-        board = new TicTacToe();
+        board = (TicTacToe) arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.TicTacToeReferee,
+                Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.HumanPlayer);
     }
 
     @Test

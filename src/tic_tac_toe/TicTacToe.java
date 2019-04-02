@@ -1,41 +1,28 @@
 package tic_tac_toe;
 
-import Util.*;
+import Util.GameBoard2D;
+import Util.GameRules;
+import Util.Player;
 
 import static Util.BoardHelper.areAllEqual;
 
 public class TicTacToe extends GameRules {
 
-    private static final int BOARD_SIZE = 3;
+    public static final int BOARD_SIZE = 3;
 
     /* Enums are classes and should follow the conventions for classes. Instances of an enum are constants and should follow the conventions for constants.https://stackoverflow.com/a/3069863 */
     public enum CellState {EMPTY, X, O}
     public GameBoard2D board;
 
-    @Override
-    public void playGame(Player... players) {
-        super.playGame(players);
-        int curPlayer = 0;
-        while (board.containsCell(CellState.EMPTY.ordinal()) && this.getGameState() == GameState.PLAYING) {
-            nextPlayer(players[curPlayer % 2]);
-            curPlayer++;
-        }
-    }
-
-    @Override
-    public void playerPlays(Player p) {
-        while (!playMove(p.getInput(), p.getNr()));
-    }
-
     public TicTacToe() {
-        this.board = new GameBoard2D(BOARD_SIZE);
+        board = new GameBoard2D(TicTacToe.BOARD_SIZE);
         board.reset();
     }
 
     public GameState getGameState() {
-        if(MatchOf3(CellState.X))
+        if(getPlayer(1).isDisqualified() || MatchOf3(CellState.X))
             return GameState.PLAYER_1_WINS;
-        if(MatchOf3(CellState.O))
+        if(getPlayer(0).isDisqualified() || MatchOf3(CellState.O))
             return GameState.PLAYER_2_WINS;
 
         if (board.containsCell(CellState.EMPTY.ordinal()))
@@ -57,8 +44,8 @@ public class TicTacToe extends GameRules {
 
     public boolean playMove(int i, int playerNr) {
         if (isValidMove(i) && getGameState() == GameState.PLAYING) {
-            onValidMovePlayed.notifyObjects(o -> o.callback(i));
             board.set(i, CellState.values()[playerNr].ordinal());
+            onValidMovePlayed.notifyObjects(o -> o.callback(i));
             return true;
         }
 

@@ -2,9 +2,11 @@ package Util;
 
 import GUI.GUIPlayer;
 import netwerk.RemotePlayer;
+import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
 import tic_tac_toe.TicTacToeAIMiniMax;
 import tic_tac_toe.TicTacToeAIScore;
+import tic_tac_toe.TicTacToeReferee;
 
 /**
  * The Arcade class is a Factory for the games and different kind of players
@@ -12,13 +14,13 @@ import tic_tac_toe.TicTacToeAIScore;
 public class Arcade {
 
     public enum GameFactory {
-        TicTacToe;
-//        Reversi(ReversiBoard)
+        TicTacToe,
+        Reversi;
 
         public GameRules toObject(){
             switch (this.ordinal()) {
                 case 0: return new TicTacToe();
-//                case 1: return new ReversiBoard();
+                case 1: return new Reversi();
             }
             return null;
         }
@@ -43,34 +45,37 @@ public class Arcade {
         }
     }
 
+    public enum RefereeFactory {
+        TicTacToeReferee,
+        ReversiReferee;
 
-    public GameRules createGame(GameFactory gameType) {
-        return gameType.toObject();
+        public Referee toObject(GameRules game) {
+            switch (this.ordinal()) {
+                case 0: return new TicTacToeReferee((TicTacToe) game);
+                case 1: return new ReversiReferee((Reversi) game);
+            }
+            return null;
+        }
     }
 
-    public void playGame(GameFactory gameType , PlayerFactory... ps) {
+    public GameRules createGame(GameFactory gameType, RefereeFactory refereeType, PlayerFactory... ps) {
         GameRules game = gameType.toObject();
-        playGame(game, ps);
-    }
-
-    public void playGame(GameRules game , PlayerFactory... ps) {
-        game.onNextPlayer.register(() -> System.out.println(game));
-        game.onGameOver.register(() -> System.err.println(game));
+//        game.onNextPlayer.register(() -> System.out.println(game));
+//        game.onGameEnded.register(() -> System.err.println(game));
 
         Player[] players = new Player[ps.length];
         for(int i=0; i<ps.length; i++)
             players[i] = ps[i].toObject(game);
-        game.playGame(players);
+
+        game.initialize(refereeType.toObject(game), players);
+        return game;
     }
 
     public static void main(String[] args) {
         Arcade arcade = new Arcade();
 
-        GameRules game = arcade.createGame(GameFactory.TicTacToe);
+        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.ReversiReferee, PlayerFactory.HumanPlayer, PlayerFactory.HumanPlayer);
 
-        game.onValidMovePlayed.register((i)->System.out.println(i));
-        game.onValidMovePlayed.register((i)->System.out.println(i));
-
-        arcade.playGame(game, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
+        game.run();
     }
 }

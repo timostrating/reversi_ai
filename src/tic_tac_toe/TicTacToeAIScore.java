@@ -1,5 +1,6 @@
 package tic_tac_toe;
 
+import Util.CallbackWithParam;
 import Util.Player;
 
 // Renamed van TicTacToeAI naar TicTacToeAIScore
