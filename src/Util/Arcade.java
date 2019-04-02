@@ -57,8 +57,8 @@ public class Arcade {
 
     public GameRules createGame(GameFactory gameType, RefereeFactory refereeType, PlayerFactory... ps) {
         GameRules game = gameType.toObject();
-        game.onNextPlayer.register(() -> System.out.println(game));
-        game.onGameEnded.register(() -> System.err.println(game));
+//        game.onNextPlayer.register(() -> System.out.println(game));
+//        game.onGameEnded.register(() -> System.err.println(game));
 
         Player[] players = new Player[ps.length];
         for(int i=0; i<ps.length; i++)
@@ -72,9 +72,6 @@ public class Arcade {
         Arcade arcade = new Arcade();
 
         GameRules game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.TicTacToeReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
-
-        game.onValidMovePlayed.register(System.out::println);
-        game.onValidMovePlayed.register(System.out::println);
 
         game.run();
     }

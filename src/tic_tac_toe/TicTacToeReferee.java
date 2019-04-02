@@ -27,11 +27,12 @@ public class TicTacToeReferee implements Referee {
         AtomicBoolean inputResolved = new AtomicBoolean(false);
 
         p.yourTurn(input -> {
-            inputResolved.set(true);
             if (!p.isDisqualified()) {
-                if (!game.playMove(input, p.getNr()))
+                if (!game.playMove(input, p.getNr())) {
                     disqualify(p);
+                }
             }
+            inputResolved.set(true); // OP DEZE PLEK LATEN
         });
 
         long timeout = System.currentTimeMillis() + 10_000;
