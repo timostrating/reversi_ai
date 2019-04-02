@@ -31,7 +31,7 @@ public class GameBoard2D {
         return false;
     }
 
-    public boolean isInBounds(int i) { return i < cellCount; }
+    public boolean isInBounds(int i) { return i >= 0 && i < cellCount; }
     public boolean isInBounds(int x, int y) { return x >= 0 && x < boardSize && y >= 0 && y < boardSize; }
 
 

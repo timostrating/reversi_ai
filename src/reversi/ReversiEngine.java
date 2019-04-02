@@ -37,7 +37,7 @@ public class ReversiEngine {
                 }
             }
 
-            System.out.println("\n\nPress any key+enter to play another game");
+            System.out.println("\n\nPress any key+enter to letTheGameStart another game");
             scanner.next();
             board.reset();
         }

@@ -16,6 +16,6 @@ public class TicTacToeEngine {
         Callback printBoard = () -> System.out.println(game.toString());
 
         game.onNextPlayer.register(printBoard);
-        game.onGameOver.register(printBoard);
+        game.onGameEnded.register(printBoard);
     }
 }

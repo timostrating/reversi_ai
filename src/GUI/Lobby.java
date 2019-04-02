@@ -76,7 +76,7 @@ public class Lobby extends Application {
         spel1.setOnAction(event -> {
             primaryStage.setScene(ticTacToeScene);
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.TicTacToeAIMiniMax);
+            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.TicTacToeReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.TicTacToeAIMiniMax);
 
             game.onValidMovePlayed.register((i)-> {
 

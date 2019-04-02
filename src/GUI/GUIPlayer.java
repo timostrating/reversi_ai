@@ -1,5 +1,6 @@
 package GUI;
 
+import Util.CallbackWithParam;
 import Util.CompositionRoot;
 import Util.Player;
 

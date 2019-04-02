@@ -5,6 +5,7 @@ import netwerk.RemotePlayer;
 import tic_tac_toe.TicTacToe;
 import tic_tac_toe.TicTacToeAIMiniMax;
 import tic_tac_toe.TicTacToeAIScore;
+import tic_tac_toe.TicTacToeReferee;
 
 /**
  * The Arcade class is a Factory for the games and different kind of players
@@ -43,23 +44,34 @@ public class Arcade {
         }
     }
 
-    public GameRules createGame(GameFactory gameType, PlayerFactory... ps) {
+    public enum RefereeFactory {
+        TicTacToeReferee;
+
+        public Referee toObject(GameRules game) {
+            switch (this.ordinal()) {
+                case 0: return new TicTacToeReferee((TicTacToe) game);
+            }
+            return null;
+        }
+    }
+
+    public GameRules createGame(GameFactory gameType, RefereeFactory refereeType, PlayerFactory... ps) {
         GameRules game = gameType.toObject();
         game.onNextPlayer.register(() -> System.out.println(game));
-        game.onGameOver.register(() -> System.err.println(game));
+        game.onGameEnded.register(() -> System.err.println(game));
 
         Player[] players = new Player[ps.length];
         for(int i=0; i<ps.length; i++)
             players[i] = ps[i].toObject(game);
 
-        game.initialize(players);
+        game.initialize(refereeType.toObject(game), players);
         return game;
     }
 
     public static void main(String[] args) {
         Arcade arcade = new Arcade();
 
-        GameRules game = arcade.createGame(GameFactory.TicTacToe, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
+        GameRules game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.TicTacToeReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
 
         game.onValidMovePlayed.register(System.out::println);
         game.onValidMovePlayed.register(System.out::println);
