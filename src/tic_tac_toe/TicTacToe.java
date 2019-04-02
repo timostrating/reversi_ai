@@ -1,6 +1,7 @@
 package tic_tac_toe;
 
-import Util.*;
+import Util.GameBoard2D;
+import Util.GameRules;
 
 import static Util.BoardHelper.areAllEqual;
 

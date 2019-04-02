@@ -1,12 +1,14 @@
 package reversi;
 
-import reversi.ReversiBoard.GameState;
+
 import java.util.Scanner;
+
+import static Util.GameRules.*;
 
 public class ReversiEngine {
 
     public static void main(String[] args) {
-        ReversiBoard board = new ReversiBoard(8);
+        Reversi board = new Reversi();
         Scanner scanner = new Scanner(System.in);
 
         int playerNr = 1;
