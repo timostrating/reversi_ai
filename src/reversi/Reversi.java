@@ -7,12 +7,6 @@ import Util.Player;
 public class Reversi extends GameRules {
 
     public static final int BOARD_SIZE = 8;
-    public GameBoard2D board;
-
-    @Override
-    public void run() {
-        // TODO: FIXME
-    }
 
     /* Enums are classes and should follow the conventions for classes. Instances of an enum are constants and should follow the conventions for constants.https://stackoverflow.com/a/3069863 */
     public enum CellState {
@@ -34,6 +28,7 @@ public class Reversi extends GameRules {
         }
     }
 
+    public GameBoard2D board;
 
     public Reversi() {
         this.board = new GameBoard2D(BOARD_SIZE);
@@ -65,262 +60,14 @@ public class Reversi extends GameRules {
         int score_X = 0;
         int score_O = 0;
 
-        if (board.get(0, 0) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(0, 0) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(0, 1) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(0, 1) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(0, 2) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(0, 2) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(0, 3) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(0, 3) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(0, 4) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(0, 4) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(0, 5) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(0, 5) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(0, 6) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(0, 6) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(0, 7) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(0, 7) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(1, 0) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(1, 0) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(1, 1) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(1, 1) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(1, 2) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(1, 2) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(1, 3) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(1, 3) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(1, 4) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(1, 4) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(1, 5) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(1, 5) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(1, 6) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(1, 6) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(1, 7) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(1, 7) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(2, 0) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(2, 0) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(2, 1) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(2, 1) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(2, 2) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(2, 2) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(2, 3) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(2, 3) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(2, 4) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(2, 4) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(2, 5) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(2, 5) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(2, 6) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(2, 6) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(2, 7) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(2, 7) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(3, 0) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(3, 0) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(3, 1) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(3, 1) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(3, 2) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(3, 2) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(3, 3) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(3, 3) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(3, 4) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(3, 4) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(3, 5) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(3, 5) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(3, 6) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(3, 6) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(3, 7) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(3, 7) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(4, 0) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(4, 0) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(4, 1) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(4, 1) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(4, 2) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(4, 2) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(4, 3) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(4, 3) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(4, 4) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(4, 4) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(4, 5) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(4, 5) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(4, 6) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(4, 6) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(4, 7) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(4, 7) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(5, 0) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(5, 0) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(5, 1) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(5, 1) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(5, 2) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(5, 2) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(5, 3) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(5, 3) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(5, 4) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(5, 4) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(5, 5) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(5, 5) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(5, 6) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(5, 6) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(5, 7) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(5, 7) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(6, 0) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(6, 0) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(6, 1) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(6, 1) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(6, 2) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(6, 2) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(6, 3) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(6, 3) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(6, 4) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(6, 4) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(6, 5) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(6, 5) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(6, 6) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(6, 6) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(6, 7) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(6, 7) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(7, 0) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(7, 0) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(7, 1) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(7, 1) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(7, 2) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(7, 2) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(7, 3) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(7, 3) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(7, 4) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(7, 4) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(7, 5) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(7, 5) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(7, 6) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(7, 6) == CellState.O.ordinal())
-            score_O++;
-        if (board.get(7, 7) == CellState.X.ordinal())
-            score_X++;
-        if (board.get(7, 7) == CellState.O.ordinal())
-            score_O++;
+        for (int y=0; y<BOARD_SIZE; y++) {
+            for (int x = 0; x < BOARD_SIZE; x++) {
+                if (board.get(y,x) == CellState.X.ordinal())
+                    score_X++;
+                if (board.get(y,x) == CellState.O.ordinal())
+                    score_O++;
+            }
+        }
 
         if (score_X == score_O)
             return GameState.DRAW;
