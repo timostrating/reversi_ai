@@ -25,6 +25,11 @@ public class TicTacToe extends GameRules {
         }
     }
 
+    @Override
+    public void playerPlays(Player p) {
+        while (!playMove(p.getInput(), p.getNr()));
+    }
+
     public GameState getGameState() {
         if(MatchOf3(CellState.X))
             return GameState.PLAYER_1_WINS;

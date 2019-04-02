@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class Connection {
+public class Connection implements Multiplayer{
     final String host = "localhost";
     final int port = 7789;
     BufferedReader fromServer;
@@ -62,20 +62,24 @@ public class Connection {
         return new String[] {};
     }
 
-    public String[] getPlayerList() throws IOException{
+    public String[] getPlayerList(){
         String[] playerList;
         String playerString;
 
         toServer.println("get playerlist");
-        fromServer.readLine();
+        try {
+            fromServer.readLine();
+            playerString = fromServer.readLine();
+            playerString = playerString.substring(playerString.indexOf("["), playerString.indexOf("]"));
+            playerString = playerString.replace("[", "");
+            playerString = playerString.replace("\"", "");
+            playerList = playerString.split(", ");
+            return playerList;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        playerString = fromServer.readLine();
-        playerString = playerString.substring(playerString.indexOf("["), playerString.indexOf("]"));
-        playerString = playerString.replace("[", "");
-        playerString = playerString.replace("\"", "");
-        playerList = playerString.split(", ");
-
-        return playerList;
+        return new String[] {};
     }
 
     public void setForfeit(){

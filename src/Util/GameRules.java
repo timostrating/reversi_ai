@@ -25,10 +25,7 @@ public abstract class GameRules implements Runnable {
             onGameOver.notifyObjects(Callback::callback);
     }
 
-    private void playerPlays(Player p) {
-        playMove(p.getInput(), p.getNr());
-    }
-
+    public abstract void playerPlays(Player p);
     public abstract GameState getGameState();
     public abstract boolean playMove(int input, int playerNr);
 }

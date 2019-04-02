@@ -36,4 +36,11 @@ class TicTacToeBoardTest {
         assert board.getGameState() == GameRules.GameState.PLAYER_1_WINS;
         assert board.playMove(6, 2) == false;
     }
+
+    @Test
+    void invalidMove() {
+        board.playMove(0, 1);
+        board.playMove(1, 2);
+        assert board.playMove(0, 1) == false;
+    }
 }
