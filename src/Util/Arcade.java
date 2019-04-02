@@ -3,6 +3,7 @@ package Util;
 import GUI.GUIPlayer;
 import netwerk.RemotePlayer;
 import reversi.Reversi;
+import reversi.ReversiReferee;
 import tic_tac_toe.TicTacToe;
 import tic_tac_toe.TicTacToeAIMiniMax;
 import tic_tac_toe.TicTacToeAIScore;

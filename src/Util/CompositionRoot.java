@@ -1,10 +1,7 @@
 package Util;
 
 import GUI.Lobby;
-import javafx.application.Application;
 import netwerk.Connection;
-import sun.applet.Main;
-import tic_tac_toe.TicTacToeEngine;
 
 public class CompositionRoot {
 
