@@ -1,8 +1,8 @@
 package tic_tac_toe;
 
-import Util.*;
-
-import java.util.Arrays;
+import Util.GameBoard2D;
+import Util.GameRules;
+import Util.Player;
 
 import static Util.BoardHelper.areAllEqual;
 
