@@ -14,6 +14,10 @@ public class GameBoard2D {
         this.board = new int[cellCount];
     }
 
+    public void reset(Callback onReset) {
+        reset();
+        onReset.callback();
+    }
     public void reset() {
         for (int i=0; i<cellCount; i++)
             board[i] = 0;
@@ -38,6 +42,9 @@ public class GameBoard2D {
     public int get(int x, int y) { return board[y * boardSize + x]; }
     public int get(int i) { return board[i]; }
 
+    public void set(int x, int y, int v) {
+        board[y * boardSize + x] = v;
+    }
     public void set(int i, int v) {
         board[i] = v;
     }

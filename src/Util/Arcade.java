@@ -13,12 +13,12 @@ public class Arcade {
 
     public enum GameFactory {
         TicTacToe;
-//        Reversi(ReversiBoard)
+//        Reversi(Reversi)
 
         public GameRules toObject(){
             switch (this.ordinal()) {
                 case 0: return new TicTacToe();
-//                case 1: return new ReversiBoard();
+//                case 1: return new Reversi();
             }
             return null;
         }

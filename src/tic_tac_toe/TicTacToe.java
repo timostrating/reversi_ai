@@ -6,7 +6,7 @@ import static Util.BoardHelper.areAllEqual;
 
 public class TicTacToe extends GameRules {
 
-    private static final int BOARD_SIZE = 3;
+    public static final int BOARD_SIZE = 3;
 
     /* Enums are classes and should follow the conventions for classes. Instances of an enum are constants and should follow the conventions for constants.https://stackoverflow.com/a/3069863 */
     public enum CellState {EMPTY, X, O}
