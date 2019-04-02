@@ -2,6 +2,8 @@ package tic_tac_toe;
 
 import Util.*;
 
+import java.util.Arrays;
+
 import static Util.BoardHelper.areAllEqual;
 
 public class TicTacToe extends GameRules {
@@ -13,18 +15,14 @@ public class TicTacToe extends GameRules {
     public GameBoard2D board;
 
     @Override
-    public void playGame(Player... players) {
-        super.playGame(players);
+    public void run() {
+        this.board = new GameBoard2D(BOARD_SIZE);
+        board.reset();
         int curPlayer = 0;
         while (board.containsCell(CellState.EMPTY.ordinal()) && this.getGameState() == GameState.PLAYING) {
             nextPlayer(players[curPlayer % 2]);
             curPlayer++;
         }
-    }
-
-    public TicTacToe() {
-        this.board = new GameBoard2D(BOARD_SIZE);
-        board.reset();
     }
 
     public GameState getGameState() {

@@ -43,34 +43,27 @@ public class Arcade {
         }
     }
 
-
-    public GameRules createGame(GameFactory gameType) {
-        return gameType.toObject();
-    }
-
-    public void playGame(GameFactory gameType , PlayerFactory... ps) {
+    public GameRules createGame(GameFactory gameType, PlayerFactory... ps) {
         GameRules game = gameType.toObject();
-        playGame(game, ps);
-    }
-
-    public void playGame(GameRules game , PlayerFactory... ps) {
         game.onNextPlayer.register(() -> System.out.println(game));
         game.onGameOver.register(() -> System.err.println(game));
 
         Player[] players = new Player[ps.length];
         for(int i=0; i<ps.length; i++)
             players[i] = ps[i].toObject(game);
-        game.playGame(players);
+
+        game.initialize(players);
+        return game;
     }
 
     public static void main(String[] args) {
         Arcade arcade = new Arcade();
 
-        GameRules game = arcade.createGame(GameFactory.TicTacToe);
+        GameRules game = arcade.createGame(GameFactory.TicTacToe, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
 
-        game.onValidMovePlayed.register((i)->System.out.println(i));
-        game.onValidMovePlayed.register((i)->System.out.println(i));
+        game.onValidMovePlayed.register(System.out::println);
+        game.onValidMovePlayed.register(System.out::println);
 
-        arcade.playGame(game, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
+        game.run();
     }
 }
