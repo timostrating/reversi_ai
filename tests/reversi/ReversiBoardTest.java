@@ -22,7 +22,9 @@ class ReversiBoardTest {
     }
 
     @Test void playExampleMoves1a() {
+        System.err.println(board);
         assert board.playMove(4, 2, 1);
+        System.err.println(board);
         assert board.playMove(5, 2, 2);
         assert board.playMove(6, 2, 1);
         assert board.playMove(6, 1, 2);

@@ -1,7 +1,5 @@
 package Util;
 
-import tic_tac_toe.TicTacToe;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DefaultReferee implements Referee {

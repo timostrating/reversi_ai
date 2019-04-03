@@ -47,7 +47,7 @@ public class Reversi extends GameRules {
         if (!board.containsCell(CellState.X.ordinal())) // player 1 is outplayed
             return GameState.PLAYER_2_WINS;
 
-        if (!board.containsCell(CellState.EMPTY.ordinal())) // No moves left
+        if (board.containsCell(CellState.EMPTY.ordinal())) // No moves left
             return GameState.PLAYING;
 
         int score_X = 0;
