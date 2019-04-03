@@ -1,50 +1,53 @@
 package GUI;
 
-import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 
-public class PlayField extends Application{
-    @Override
-    public void start(final Stage stage) throws Exception {
-        int rows = 8;
-        int columns = 8;
+public class PlayField {
 
-        stage.setTitle("Reversi");
+   private GridPane grid;
+   private Pane[][] panes;
+   private int paneNr = 0;
+   private Scene scene;
 
-        GridPane grid = new GridPane();
-        grid.getStyleClass().add("game_util-grid");
+    public PlayField(int rows, int columns) {
+
+        grid = new GridPane();
+        panes = new Pane[rows][columns];
+        grid.getStyleClass().add("game-grid");
 
         for(int i = 0; i < columns; i++) {
-            ColumnConstraints column = new ColumnConstraints(40);
+            ColumnConstraints column = new ColumnConstraints();
+            column.setPercentWidth(50);
             grid.getColumnConstraints().add(column);
         }
 
         for(int i = 0; i < rows; i++) {
-            RowConstraints row = new RowConstraints(40);
+            RowConstraints row = new RowConstraints();
+            row.setPercentHeight(50);
             grid.getRowConstraints().add(row);
         }
 
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows; y++) {
                 Pane pane = new Pane();
-
-                final int X = x;
+                panes[x][y] = pane;
+                final int X = x + 1;
                 final int Y = y * rows;
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
-                    pane.getChildren().add(Anims.getAtoms(1));
-
+                    setPaneNR(X, Y);
+                    pane.getChildren().add(Anims.getAtoms());
                 });
-                pane.getStyleClass().add("game_util-grid-cell");
+                pane.getStyleClass().add("game-grid-cell");
                 if (x == 0) {
                     pane.getStyleClass().add("first-column");
                 }
@@ -55,17 +58,16 @@ public class PlayField extends Application{
             }
         }
 
-
-        Scene scene = new Scene(grid, (columns * 40) + 100, (rows * 40) + 100, Color.WHITE);
+        scene = new Scene(grid, (columns * 40) + 100, (rows * 40) + 100, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
-        stage.setScene(scene);
-        stage.show();
+
     }
 
     public static class Anims {
 
-        public static Node getAtoms(final int number) {
-            Circle circle = new Circle(20, 20f, 7);
+        public static Node getAtoms() {
+            Image img = new Image("pictures/kruisje.png");
+            Circle circle = new Circle(20);
             circle.setFill(Color.BLACK);
             Group group = new Group();
             group.getChildren().add(circle);
@@ -75,7 +77,9 @@ public class PlayField extends Application{
         }
     }
 
-    public static void main(final String[] arguments) {
-        Application.launch(arguments);
-    }
+    public void setPaneNR(int x, int y) { paneNr = x + y; }
+    public int getPaneNr() { return paneNr; }
+    public void resetPaneNR() { paneNr = -1; }
+    public Scene getScene() {return scene; }
+    public Pane[][] getPane() {return panes; }
 }

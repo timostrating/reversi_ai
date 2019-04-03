@@ -1,7 +1,7 @@
 package GUI;
 
-import util.CompositionRoot;
 import game_util.Player;
+import util.CompositionRoot;
 
 public class GUIPlayer extends Player {
 
@@ -13,10 +13,10 @@ public class GUIPlayer extends Player {
 
     @Override
     public int getInput() {
-        int paneNr = gui.getPaneNr();
+        int paneNr = 1;//gui.getPaneNr();
         while (true) {
             if (paneNr != -1) {
-                gui.resetPaneNR();
+                //gui.resetPaneNR();
                 return paneNr;
             }
         }
