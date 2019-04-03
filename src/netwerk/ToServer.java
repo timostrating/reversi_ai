@@ -36,7 +36,7 @@ public class ToServer implements Runnable{
     }
 
     public void setChallenge(String username, String gameType){
-        toServer.println("challenge " + username + " " + gameType);
+        toServer.println("challenge " + "\"" + username + "\"" + " " + "\"" + gameType + "\"");
     }
 
     public void setChallengeAccept(int challengeNumber){
@@ -59,7 +59,8 @@ public class ToServer implements Runnable{
     public void run() {
         while(true) {
             try {
-                toServer.println(userInput.readLine());
+                String input = userInput.readLine();
+                toServer.println(input);
             } catch (IOException e) {
                 e.printStackTrace();
             }
