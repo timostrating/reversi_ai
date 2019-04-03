@@ -60,7 +60,9 @@ public class Arcade {
     public static void main(String[] args) {
         Arcade arcade = new Arcade();
 
-        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.HumanPlayer, PlayerFactory.HumanPlayer);
+        GameRules game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
+        game.onNextPlayer.register(() -> System.out.println(game));
+        game.onGameEnded.register(() -> System.err.println(game));
 
         game.run();
     }

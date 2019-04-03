@@ -15,7 +15,7 @@ public class TicTacToeAI {
 
     @Test
     public void playAIvsAI() {
-        game = (TicTacToe) arcade.createGame(GameFactory.TicTacToe, RefereeFactory.TicTacToeReferee,
+        game = (TicTacToe) arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee,
                 PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
         game.onNextPlayer.register(printBoard);
         game.onGameEnded.register(printBoard);
@@ -27,7 +27,7 @@ public class TicTacToeAI {
 
     @Test
     public void playAIvsAIScore() {
-        game = (TicTacToe) arcade.createGame(GameFactory.TicTacToe, RefereeFactory.TicTacToeReferee,
+        game = (TicTacToe) arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee,
                 PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIScore);
         game.onNextPlayer.register(printBoard);
         game.onGameEnded.register(printBoard);
