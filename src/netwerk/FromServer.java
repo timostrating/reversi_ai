@@ -10,15 +10,15 @@ import java.net.Socket;
 import java.util.HashMap;
 
 public class FromServer implements Runnable {
-    private Delegate<CallbackWithParam<HashMap<String, String>>> onChallengeCanceled = new Delegate<>();
-    private Delegate<CallbackWithParam<HashMap<String, String>>> onChallenge = new Delegate<>();
-    private Delegate<CallbackWithParam<HashMap<String, String>>> onMatch = new Delegate<>();
-    private Delegate<CallbackWithParam<HashMap<String, String>>> onTurn = new Delegate<>();
-    private Delegate<CallbackWithParam<HashMap<String, String>>> onMove = new Delegate<>();
-    private Delegate<CallbackWithParam<HashMap<String, String>>> onResult = new Delegate<>();
-    private Delegate<CallbackWithParam<String>> onHelp = new Delegate<>();
-    private Delegate<CallbackWithParam<String>> onError = new Delegate<>();
-    private Delegate<CallbackWithParam<String>> onOk = new Delegate<>();
+    public final Delegate<CallbackWithParam<HashMap<String, String>>> onChallengeCanceled = new Delegate<>();
+    public final Delegate<CallbackWithParam<HashMap<String, String>>> onChallenge = new Delegate<>();
+    public final Delegate<CallbackWithParam<HashMap<String, String>>> onMatch = new Delegate<>();
+    public final Delegate<CallbackWithParam<HashMap<String, String>>> onTurn = new Delegate<>();
+    public final Delegate<CallbackWithParam<HashMap<String, String>>> onMove = new Delegate<>();
+    public final Delegate<CallbackWithParam<HashMap<String, String>>> onResult = new Delegate<>();
+    public final Delegate<CallbackWithParam<String>> onHelp = new Delegate<>();
+    public final Delegate<CallbackWithParam<String>> onError = new Delegate<>();
+    public final Delegate<CallbackWithParam<String>> onOk = new Delegate<>();
 
     BufferedReader fromServer;
 
