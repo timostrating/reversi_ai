@@ -10,12 +10,12 @@ import java.net.Socket;
 import java.util.HashMap;
 
 public class FromServer implements Runnable {
-    private Delegate<CallbackWithParam<String>> onChallengeCanceled = new Delegate<>();
-    private Delegate<CallbackWithParam<String>> onChallenge = new Delegate<>();
-    private Delegate<CallbackWithParam<String>> onMatch = new Delegate<>();
-    private Delegate<CallbackWithParam<String>> onTurn = new Delegate<>();
-    private Delegate<CallbackWithParam<String>> onMove = new Delegate<>();
-    private Delegate<CallbackWithParam<String>> onResult = new Delegate<>();
+    private Delegate<CallbackWithParam<HashMap<String, String>>> onChallengeCanceled = new Delegate<>();
+    private Delegate<CallbackWithParam<HashMap<String, String>>> onChallenge = new Delegate<>();
+    private Delegate<CallbackWithParam<HashMap<String, String>>> onMatch = new Delegate<>();
+    private Delegate<CallbackWithParam<HashMap<String, String>>> onTurn = new Delegate<>();
+    private Delegate<CallbackWithParam<HashMap<String, String>>> onMove = new Delegate<>();
+    private Delegate<CallbackWithParam<HashMap<String, String>>> onResult = new Delegate<>();
     private Delegate<CallbackWithParam<String>> onHelp = new Delegate<>();
     private Delegate<CallbackWithParam<String>> onError = new Delegate<>();
     private Delegate<CallbackWithParam<String>> onOk = new Delegate<>();
@@ -26,14 +26,39 @@ public class FromServer implements Runnable {
         fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
-    public void gameMatch(String match){
-        HashMap<String, String> matchDetails = new HashMap<>();
-        match = match.substring(match.indexOf("{" + 1), match.indexOf("}"));
-        String[] listMatch = match.split(": ");
-        for(String x : listMatch){
-            System.out.println(x);
+    public HashMap toHashMap(String input){
+        HashMap<String, String> map = new HashMap<>();
+        input = input.substring(input.indexOf("{") + 1, input.indexOf("}"));
+        String[] keyValuePairs = input.split(",");
+        for(String pair: keyValuePairs){
+            String[] key = pair.split(": ");
+            map.put(key[0].trim(), key[1].trim());
         }
-        onMatch.notifyObjects(o -> o.callback(""));
+        return map;
+    }
+
+    public void challengeCanceled(String cancel){
+        onChallengeCanceled.notifyObjects(o -> o.callback(toHashMap(cancel)));
+    }
+
+    public void challenge(String invite){
+        onChallenge.notifyObjects(o -> o.callback(toHashMap(invite)));
+    }
+
+    public void yourTurn(String turn){
+        onChallenge.notifyObjects(o -> o.callback(toHashMap(turn)));
+    }
+
+    public void gameMatch(String match){
+        onMatch.notifyObjects(o -> o.callback(toHashMap(match)));
+    }
+
+    public void move(String move){
+        onMove.notifyObjects(o -> o.callback(toHashMap(move)));
+    }
+
+    public void result(String result){
+        onResult.notifyObjects(o -> o.callback(toHashMap(result)));
     }
 
     @Override
@@ -42,17 +67,17 @@ public class FromServer implements Runnable {
             try {
                 String input = fromServer.readLine();
                 if (input.startsWith("SVR GAME CHALLENGE CANCELLED")) {
-                    onChallengeCanceled.notifyObjects(o -> o.callback(input));
+                    challengeCanceled(input);
                 } else if (input.startsWith("SVR GAME CHALLENGE")) {
-                    onChallenge.notifyObjects(o -> o.callback(input));
+                    challenge(input);
                 } else if (input.startsWith("SVR GAME YOURTURN")) {
-                    onTurn.notifyObjects(o -> o.callback(input));
+                    yourTurn(input);
                 } else if (input.startsWith("SVR GAME MATCH")) {
                     gameMatch(input);
                 } else if (input.startsWith("SVR GAME MOVE")) {
-                    onMove.notifyObjects(o -> o.callback(input));
+                    move(input);
                 } else if (input.startsWith("SVR GAME")) {
-                    onResult.notifyObjects(o -> o.callback(input));
+                    result(input);
                 } else if (input.startsWith("SVR HELP")) {
                     onHelp.notifyObjects(o -> o.callback(input));
                 } else if (input.startsWith("ERR")) {
