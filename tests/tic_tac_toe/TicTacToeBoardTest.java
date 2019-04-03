@@ -1,7 +1,7 @@
 package tic_tac_toe;
 
-import Util.Arcade;
-import Util.GameRules;
+import game_util.Arcade;
+import game_util.GameRules;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

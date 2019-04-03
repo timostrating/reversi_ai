@@ -1,4 +1,4 @@
-package Util;
+package game_util;
 
 public interface Referee {
 

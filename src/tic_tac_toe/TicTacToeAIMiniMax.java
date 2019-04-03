@@ -1,7 +1,8 @@
 package tic_tac_toe;
 
-import Util.MiniMaxHelper;
-import Util.Player;
+import game_util.MiniMaxHelper;
+import game_util.Player;
+import util.OpenPositions;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,10 @@ public class TicTacToeAIMiniMax extends Player {
         MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(999, getNr());
         System.out.println(best);
         return best.pos;
+    }
+
+    class openPositionsList extends LinkedList implements OpenPositions {
+        List<Integer> openPositions = new LinkedList<>();
     }
 
 }

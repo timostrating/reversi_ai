@@ -1,10 +1,8 @@
-package Util;
+package game_util;
 
 import java.util.List;
 
-import static Util.GameRules.GameState.DRAW;
-import static Util.GameRules.GameState.PLAYER_1_WINS;
-import static Util.GameRules.GameState.PLAYER_2_WINS;
+import static game_util.GameRules.GameState.*;
 
 /**
  * We assume that you want to use the miniMax algorithm for a game with 2 players

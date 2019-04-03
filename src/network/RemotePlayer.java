@@ -1,8 +1,7 @@
-package netwerk;
+package network;
 
-import Util.CallbackWithParam;
-import Util.CompositionRoot;
-import Util.Player;
+import util.CompositionRoot;
+import game_util.Player;
 
 public class RemotePlayer extends Player {
     Connection connection;

@@ -1,7 +1,7 @@
 package reversi;
 
-import Util.MiniMaxHelper;
-import Util.Player;
+import game_util.MiniMaxHelper;
+import game_util.Player;
 
 import java.util.LinkedList;
 import java.util.List;

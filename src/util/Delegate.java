@@ -1,4 +1,4 @@
-package Util;
+package util;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;

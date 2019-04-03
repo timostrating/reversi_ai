@@ -21,7 +21,7 @@ public class PlayField extends Application{
         stage.setTitle("Reversi");
 
         GridPane grid = new GridPane();
-        grid.getStyleClass().add("game-grid");
+        grid.getStyleClass().add("game_util-grid");
 
         for(int i = 0; i < columns; i++) {
             ColumnConstraints column = new ColumnConstraints(40);
@@ -44,7 +44,7 @@ public class PlayField extends Application{
                     pane.getChildren().add(Anims.getAtoms(1));
 
                 });
-                pane.getStyleClass().add("game-grid-cell");
+                pane.getStyleClass().add("game_util-grid-cell");
                 if (x == 0) {
                     pane.getStyleClass().add("first-column");
                 }

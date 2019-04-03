@@ -1,4 +1,4 @@
-package Util;
+package util;
 
 @FunctionalInterface
 public interface Callback {

@@ -1,7 +1,7 @@
-package Util;
+package game_util;
 
 import GUI.GUIPlayer;
-import netwerk.RemotePlayer;
+import network.RemotePlayer;
 import reversi.Reversi;
 import reversi.ReversiAIMiniMax;
 import tic_tac_toe.TicTacToe;
@@ -38,8 +38,8 @@ public class Arcade {
     }
 
     public enum RefereeFactory {
-        DefaultReferee(Util.DefaultReferee::new),
-        NetworkedReferee(Util.NetworkedReferee::new);
+        DefaultReferee(game_util.DefaultReferee::new),
+        NetworkedReferee(game_util.NetworkedReferee::new);
 
         private China china;
         private RefereeFactory(China china) { this.china = china; }
@@ -48,8 +48,8 @@ public class Arcade {
 
     public GameRules createGame(GameFactory gameType, RefereeFactory refereeType, PlayerFactory... ps) {
         GameRules game = gameType.toObject();
-//        game.onNextPlayer.register(() -> System.out.println(game));
-//        game.onGameEnded.register(() -> System.err.println(game));
+//        game_util.onNextPlayer.register(() -> System.out.println(game_util));
+//        game_util.onGameEnded.register(() -> System.err.println(game_util));
 
         Player[] players = new Player[ps.length];
         for(int i=0; i<ps.length; i++)
@@ -62,7 +62,7 @@ public class Arcade {
     public static void main(String[] args) {
         Arcade arcade = new Arcade();
 
-//        GameRules game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
+//        GameRules game_util = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
         GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMax, PlayerFactory.ReversiAIMiniMax);
         game.onNextPlayer.register(() -> System.out.println(game));
         game.onGameEnded.register(() -> System.err.println(game));

@@ -1,7 +1,8 @@
-package Util;
+package util;
 
 import GUI.Lobby;
-import netwerk.Connection;
+import game_util.Arcade;
+import network.Connection;
 
 public class CompositionRoot {
 

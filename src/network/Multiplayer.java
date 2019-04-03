@@ -1,4 +1,4 @@
-package netwerk;
+package network;
 
 public interface Multiplayer {
     String[] getGameList();

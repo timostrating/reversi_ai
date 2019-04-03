@@ -1,8 +1,8 @@
 package GUI;
 
-import Util.Arcade;
-import Util.CompositionRoot;
-import Util.GameRules;
+import game_util.Arcade;
+import util.CompositionRoot;
+import game_util.GameRules;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -96,7 +96,7 @@ public class Lobby extends Application {
         //stage.setTitle("Reversi");
         grid = new GridPane();
         panes = new Pane[rows][columns];
-        grid.getStyleClass().add("game-grid");
+        grid.getStyleClass().add("game_util-grid");
 
         for(int i = 0; i < columns; i++) {
             ColumnConstraints column = new ColumnConstraints(40);
@@ -119,7 +119,7 @@ public class Lobby extends Application {
                     setPaneNR(X, Y);
                     pane.getChildren().add(PlayField.Anims.getAtoms(1));
                 });
-                pane.getStyleClass().add("game-grid-cell");
+                pane.getStyleClass().add("game_util-grid-cell");
                 if (x == 0) {
                     pane.getStyleClass().add("first-column");
                 }

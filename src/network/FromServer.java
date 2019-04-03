@@ -1,7 +1,7 @@
-package netwerk;
+package network;
 
-import Util.CallbackWithParam;
-import Util.Delegate;
+import util.CallbackWithParam;
+import util.Delegate;
 
 import java.io.BufferedReader;
 import java.io.IOException;

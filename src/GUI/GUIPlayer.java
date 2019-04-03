@@ -1,8 +1,7 @@
 package GUI;
 
-import Util.CallbackWithParam;
-import Util.CompositionRoot;
-import Util.Player;
+import util.CompositionRoot;
+import game_util.Player;
 
 public class GUIPlayer extends Player {
 

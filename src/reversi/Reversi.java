@@ -1,7 +1,7 @@
 package reversi;
 
-import Util.GameBoard2D;
-import Util.GameRules;
+import game_util.GameBoard2D;
+import game_util.GameRules;
 
 public class Reversi extends GameRules {
 

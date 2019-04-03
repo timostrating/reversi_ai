@@ -1,6 +1,7 @@
-package Util;
+package game_util;
 
-import netwerk.Connection;
+import network.Connection;
+import util.CompositionRoot;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
