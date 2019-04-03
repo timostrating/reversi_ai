@@ -3,6 +3,7 @@ package GUI;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -24,12 +25,14 @@ public class PlayField {
         grid.getStyleClass().add("game-grid");
 
         for(int i = 0; i < columns; i++) {
-            ColumnConstraints column = new ColumnConstraints(40);
+            ColumnConstraints column = new ColumnConstraints();
+            column.setPercentWidth(50);
             grid.getColumnConstraints().add(column);
         }
 
         for(int i = 0; i < rows; i++) {
-            RowConstraints row = new RowConstraints(40);
+            RowConstraints row = new RowConstraints();
+            row.setPercentHeight(50);
             grid.getRowConstraints().add(row);
         }
 
@@ -42,7 +45,7 @@ public class PlayField {
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
                     setPaneNR(X, Y);
-                    pane.getChildren().add(Anims.getAtoms(1));
+                    pane.getChildren().add(Anims.getAtoms());
                 });
                 pane.getStyleClass().add("game-grid-cell");
                 if (x == 0) {
@@ -62,8 +65,9 @@ public class PlayField {
 
     public static class Anims {
 
-        public static Node getAtoms(final int number) {
-            Circle circle = new Circle(20, 20f, 7);
+        public static Node getAtoms() {
+            Image img = new Image("pictures/kruisje.png");
+            Circle circle = new Circle(20);
             circle.setFill(Color.BLACK);
             Group group = new Group();
             group.getChildren().add(circle);
