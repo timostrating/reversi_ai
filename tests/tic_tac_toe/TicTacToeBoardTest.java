@@ -12,7 +12,7 @@ class TicTacToeBoardTest {
 
     @BeforeEach
     void BeforeEach() {
-        board = (TicTacToe) arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.TicTacToeReferee,
+        board = (TicTacToe) arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee,
                 Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.HumanPlayer);
     }
 

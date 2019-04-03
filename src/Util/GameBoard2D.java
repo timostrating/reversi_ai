@@ -6,8 +6,6 @@ public class GameBoard2D {
     int boardSize;
     int cellCount;
 
-    Delegate<CallbackWithParam<Integer>> onSetPlayed = new Delegate<>();
-
     public GameBoard2D(int boardSize) {
         this.boardSize = boardSize;
         this.cellCount = boardSize * boardSize;
