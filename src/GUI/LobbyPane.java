@@ -51,7 +51,7 @@ public class LobbyPane extends FlowPane {
         spel2.setOnAction(event -> {
             CompositionRoot.getInstance().lobby.setScene(reversiScene);
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.TicTacToeAIMiniMax);
+            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.ReversiAIMiniMax);
 
             game.onValidMovePlayed.register((i)-> {
 
