@@ -1,6 +1,5 @@
 package GUI;
 
-import Util.CallbackWithParam;
 import Util.CompositionRoot;
 import Util.Player;
 
@@ -14,10 +13,10 @@ public class GUIPlayer extends Player {
 
     @Override
     public int getInput() {
-        int paneNr = gui.getPaneNr();
+        int paneNr = 1;//gui.getPaneNr();
         while (true) {
             if (paneNr != -1) {
-                gui.resetPaneNR();
+                //gui.resetPaneNR();
                 return paneNr;
             }
         }

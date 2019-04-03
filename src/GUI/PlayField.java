@@ -1,6 +1,5 @@
 package GUI;
 
-import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -10,17 +9,18 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 
-public class PlayField extends Application{
-    @Override
-    public void start(final Stage stage) throws Exception {
-        int rows = 8;
-        int columns = 8;
+public class PlayField {
 
-        stage.setTitle("Reversi");
+   private GridPane grid;
+   private Pane[][] panes;
+   private int paneNr = 0;
+   private Scene scene;
 
-        GridPane grid = new GridPane();
+    public PlayField(int rows, int columns) {
+
+        grid = new GridPane();
+        panes = new Pane[rows][columns];
         grid.getStyleClass().add("game-grid");
 
         for(int i = 0; i < columns; i++) {
@@ -36,13 +36,13 @@ public class PlayField extends Application{
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows; y++) {
                 Pane pane = new Pane();
-
-                final int X = x;
+                panes[x][y] = pane;
+                final int X = x + 1;
                 final int Y = y * rows;
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
+                    setPaneNR(X, Y);
                     pane.getChildren().add(Anims.getAtoms(1));
-
                 });
                 pane.getStyleClass().add("game-grid-cell");
                 if (x == 0) {
@@ -55,11 +55,9 @@ public class PlayField extends Application{
             }
         }
 
-
-        Scene scene = new Scene(grid, (columns * 40) + 100, (rows * 40) + 100, Color.WHITE);
+        scene = new Scene(grid, (columns * 40) + 100, (rows * 40) + 100, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
-        stage.setScene(scene);
-        stage.show();
+
     }
 
     public static class Anims {
@@ -75,7 +73,9 @@ public class PlayField extends Application{
         }
     }
 
-    public static void main(final String[] arguments) {
-        Application.launch(arguments);
-    }
+    public void setPaneNR(int x, int y) { paneNr = x + y; }
+    public int getPaneNr() { return paneNr; }
+    public void resetPaneNR() { paneNr = -1; }
+    public Scene getScene() {return scene; }
+    public Pane[][] getPane() {return panes; }
 }
