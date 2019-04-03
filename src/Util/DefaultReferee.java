@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DefaultReferee implements Referee {
 
-    private GameRules game;
+    protected GameRules game;
 
     public DefaultReferee(GameRules game) {
         this.game = game;
@@ -24,16 +24,7 @@ public class DefaultReferee implements Referee {
     @Override
     public void letPlayerPlay(Player p) {
 
-        AtomicBoolean inputResolved = new AtomicBoolean(false);
-
-        p.yourTurn(input -> {
-            if (!p.isDisqualified()) {
-                if (!game.playMove(input, p.getNr())) {
-                    disqualify(p);
-                }
-            }
-            inputResolved.set(true); // OP DEZE PLEK LATEN
-        });
+        AtomicBoolean inputResolved = resolveInput(p);
 
         long timeout = System.currentTimeMillis() + 10_000;
 
@@ -44,6 +35,20 @@ public class DefaultReferee implements Referee {
                 break;
             }
         }
+    }
+
+    protected AtomicBoolean resolveInput(Player p) {
+        AtomicBoolean inputResolved = new AtomicBoolean(false);
+
+        p.yourTurn(input -> {
+            if (!p.isDisqualified() && !inputResolved.get()) {
+                if (!game.playMove(input, p.getNr())) {
+                    disqualify(p);
+                }
+            }
+            inputResolved.set(true); // OP DEZE PLEK LATEN
+        });
+        return inputResolved;
     }
 
 

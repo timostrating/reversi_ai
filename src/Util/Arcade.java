@@ -36,7 +36,8 @@ public class Arcade {
     }
 
     public enum RefereeFactory {
-        DefaultReferee(g -> new DefaultReferee(g));
+        DefaultReferee(Util.DefaultReferee::new),
+        NetworkedReferee(Util.NetworkedReferee::new);
 
         private China china;
         private RefereeFactory(China china) { this.china = china; }
