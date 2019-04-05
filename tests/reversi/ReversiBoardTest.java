@@ -1,6 +1,8 @@
 package reversi;
 
+import game_util.DefaultReferee;
 import game_util.GameBoard2D;
+import game_util.HumanPlayer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ class ReversiBoardTest {
     @BeforeEach
     void BeforeEach() {
         reversi = new Reversi();
+        reversi.initialize(new DefaultReferee(reversi), new HumanPlayer(), new HumanPlayer());
     }
 
     @AfterEach
