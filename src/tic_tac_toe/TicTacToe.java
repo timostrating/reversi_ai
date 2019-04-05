@@ -19,9 +19,9 @@ public class TicTacToe extends GameRules {
     }
 
     public GameState getGameSpecificState() {
-        if(getPlayer(1).isDisqualified() || MatchOf3(CellState.X))
+        if(matchOf3(CellState.X))
             return GameState.PLAYER_1_WINS;
-        if(getPlayer(0).isDisqualified() || MatchOf3(CellState.O))
+        if(matchOf3(CellState.O))
             return GameState.PLAYER_2_WINS;
 
         if (board.containsCell(CellState.EMPTY.ordinal()))
@@ -30,7 +30,7 @@ public class TicTacToe extends GameRules {
         return GameState.DRAW;
     }
 
-    private boolean MatchOf3(CellState player) {
+    private boolean matchOf3(CellState player) {
         return  areAllEqual(player.ordinal(), board.get(0,0), board.get(1,0), board.get(2,0)) ||
                 areAllEqual(player.ordinal(), board.get(0,1), board.get(1,1), board.get(2,1)) ||
                 areAllEqual(player.ordinal(), board.get(0,2), board.get(1,2), board.get(2,2)) ||

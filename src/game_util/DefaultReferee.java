@@ -4,6 +4,9 @@ import util.Callback;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static game_util.GameRules.GameState.PLAYER_1_WINS;
+import static game_util.GameRules.GameState.PLAYER_2_WINS;
+
 public class DefaultReferee implements Referee {
 
     protected GameRules game;
@@ -47,4 +50,11 @@ public class DefaultReferee implements Referee {
         }
     }
 
+    @Override
+    public GameRules.GameState getGameState() {
+        return game.getPlayer(0).isDisqualified() ?
+                PLAYER_2_WINS
+                :
+                (game.getPlayer(1).isDisqualified() ? PLAYER_1_WINS : null);
+    }
 }
