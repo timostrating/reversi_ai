@@ -28,15 +28,16 @@ public class MiniMaxHelper {
                 maxWins = (max == 1 && p1Wins) || (max == 2 && p2Wins),
                 minWins = (min == 1 && p1Wins) || (min == 2 && p2Wins);
         if (maxWins)
-            return +1f / board.amount(max);
+            return +100f / board.amount(max);
         if (minWins)
-            return -1f / board.amount(min);
+            return -100f / board.amount(min);
         if (state == DRAW)
-            return 0.00001f / board.amount(max);
+            return 1f / board.amount(max);
         return 0;
     }
 
     public PosAndScore minimax(int depth, int player) {
+        System.out.println(openPositions);
         this.max = player;
         this.min = (player % 2) + 1;
         return minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);

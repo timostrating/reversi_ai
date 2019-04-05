@@ -11,8 +11,7 @@ import util.CompositionRoot;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static game_util.GameRules.GameState.PLAYER_1_WINS;
-import static game_util.GameRules.GameState.PLAYER_2_WINS;
+import static game_util.GameRules.GameState.*;
 
 /**
  * A referee that uses the online protocol to play games.
@@ -29,9 +28,7 @@ public class NetworkedReferee extends DefaultReferee {
         super(game);
         Connection connection = CompositionRoot.getInstance().connection;
         fromServer = connection.getFromServer();
-        Player p0 = game.getPlayer(0), p1 = game.getPlayer(1);
-        remotePlayer = p0 instanceof RemotePlayer ? p0 : p1;
-        localPlayer = p0 == remotePlayer ? p1 : p0;
+        toServer = connection.getToServer();
     }
 
     private CallbackWithParam<HashMap<String, String>> onResult = message -> {
@@ -54,17 +51,22 @@ public class NetworkedReferee extends DefaultReferee {
     };
 
     private CallbackWithParam<HashMap<String, String>> onLocalTurn = message -> {
-        letPlayerPlay(localPlayer);
+        game.nextPlayer(localPlayer);
     };
 
     private CallbackWithParam<HashMap<String, String>> onMove = message -> {
         Player p = game.getPlayerByName(message.get("PLAYER"));
-        if (p == remotePlayer)
-            game.playMove(Integer.valueOf(message.get("MOVE")), p.getNr());
+        game.playMove(Integer.valueOf(message.get("MOVE")), p.getNr());
+        if (p == localPlayer) // the server confirmed the move of localPlayer, now assume that remotePlayer is next:
+            game.nextPlayer(remotePlayer);
     };
 
     @Override
     public void letTheGameStart(Callback onEnded) {
+        Player p0 = game.getPlayer(0), p1 = game.getPlayer(1);
+        remotePlayer = p0 instanceof RemotePlayer ? p0 : p1;
+        localPlayer = p0 == remotePlayer ? p1 : p0;
+
         // register network events
         this.onEnded = onEnded;
         fromServer.onTurn.register(onLocalTurn);
@@ -87,9 +89,8 @@ public class NetworkedReferee extends DefaultReferee {
 
         AtomicBoolean inputResolved = new AtomicBoolean(false);
         p.yourTurn(input -> {
-            if (!p.isDisqualified() && !inputResolved.get())
-                game.playMove(input, p.getNr());
-
+            if (!p.isDisqualified() && !inputResolved.get() && game.getGameState() == PLAYING)
+                toServer.setMove(input);
             inputResolved.set(true);
         });
     }
