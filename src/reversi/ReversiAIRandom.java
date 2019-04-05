@@ -15,19 +15,16 @@ public class ReversiAIRandom extends Player {
 
     @Override
     protected int getInput() {
-        int randomInt = 0;
+        if (getNr() == 2) {
+            int randomInt = 0;
+            while (!reversi.isValidMove(randomInt, getNr()))
+                randomInt = r.nextInt(Reversi.CELL_COUNT);
 
-        while (!reversi.isValidMove(randomInt, getNr())) {
-            randomInt = r.nextInt(Reversi.CELL_COUNT);
+            return randomInt;
         }
 
-        System.err.println(reversi.getOpenPositions(getNr()));
-
-
-        return randomInt;
-
-
-//        Reversi.OpenPositionsReversi openPositions = reversi.getOpenPositions(getNr());
-//        return openPositions.get(r.nextInt(openPositions.size()));
+        Reversi.OpenPositionsReversi openPositions = reversi.getOpenPositions(getNr());
+        System.out.println(openPositions);
+        return openPositions.get(r.nextInt(openPositions.size()));
     }
 }

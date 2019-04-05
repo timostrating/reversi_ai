@@ -11,10 +11,12 @@ public class Reversi extends GameRules {
     public static final int BOARD_SIZE = 8;
     public static final int CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
 
-    private OpenPositionsReversi[] openPositions = new OpenPositionsReversi[]{
-        new OpenPositionsReversi(),
-        new OpenPositionsReversi()
-    };
+//    private OpenPositionsReversi[] openPositions = new OpenPositionsReversi[]{ TODO: support it for 2 players
+//        new OpenPositionsReversi(),
+//        new OpenPositionsReversi()
+//    };
+    private OpenPositionsReversi openPositions = new OpenPositionsReversi();
+
 
     public GameBoard2D board;
 
@@ -24,14 +26,49 @@ public class Reversi extends GameRules {
     }
 
     public void reset() {
-        board.set(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2 - 1, CellState.X.ordinal());
-        board.set(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2,     CellState.O.ordinal());
-        board.set(BOARD_SIZE / 2    , BOARD_SIZE / 2,     CellState.X.ordinal());
-        board.set(BOARD_SIZE / 2    , BOARD_SIZE / 2 - 1, CellState.O.ordinal());
+        openPositions.reset();
+        setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2 - 1, CellState.X.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2,     CellState.O.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2    , BOARD_SIZE / 2,     CellState.X.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2    , BOARD_SIZE / 2 - 1, CellState.O.ordinal());
     }
 
     public OpenPositionsReversi getOpenPositions(int playerNr) {
-        return openPositions[playerNr -1];
+        return openPositions; // [playerNr -1] TODO support it for 2 players
+    }
+
+    private void setOnBoardAndNotify(int x, int y, int playerNr) {
+        board.set(x,y,playerNr);
+        openPositions.remove(new Integer(board.xyToI(x, y)));
+        for (BoardDirection dir : BoardDirection.values()) {
+            int n = 0;
+            int newX = x + n * dir.changeX;
+            int newY = y + n * dir.changeY;
+            while (board.isInBounds(newX, newY) && board.get(newY, newX) != CellState.X.ordinal()) {  // TODO support it for 2 players
+                if (board.get(newY, newX) == CellState.EMPTY.ordinal()) {
+                    int i = board.xyToI(newX, newY);
+                    if (isValidMove(i, CellState.X.ordinal())) // TODO Possibly already in the openPositions
+                        openPositions.add(i);
+                    break;
+                } else {
+                    n++;
+                    newX = x + n * dir.changeX;
+                    newY = y + n * dir.changeY;
+                }
+            }
+        }
+    }
+
+    private void flipOnBoardAndNotify(int x, int y, int playerNr) {
+        board.set(x,y,playerNr);
+
+        if (playerNr == CellState.O.ordinal()) { // TODO support it for 2 players
+            for (BoardDirection dir : BoardDirection.values()) {
+                int i = board.xyToI(x + dir.changeX, y + dir.changeY);
+                if (isValidMove(i, CellState.X.ordinal())) // TODO Possibly already in the openPositions
+                    openPositions.add(i);
+            }
+        }
     }
 
     public GameState getGameSpecificState() {
@@ -94,7 +131,7 @@ public class Reversi extends GameRules {
                         flippedOpponent = true;
 //                            System.out.printf("%s: (%d,%d) -> (%d,%d)\n", "BACKTRACK",newX, newY, x, y);
                         while (n-- > 1)
-                            board.set(y + n * dir.changeY, x + n * dir.changeX, CellState.fromNr(playerNr).ordinal());
+                            flipOnBoardAndNotify(y + n * dir.changeY, x + n * dir.changeX, CellState.fromNr(playerNr).ordinal());
 
                     }
                     break;
@@ -108,7 +145,7 @@ public class Reversi extends GameRules {
         }
 
         if (flippedOpponent && !testForValidMove) { // set move only if we are not testing
-            board.set(y, x, CellState.fromNr(playerNr).ordinal());
+            setOnBoardAndNotify(y, x, CellState.fromNr(playerNr).ordinal());
             return true;
         }
 
@@ -170,15 +207,15 @@ public class Reversi extends GameRules {
         }
     }
 
-    protected class OpenPositionsReversi extends LinkedList<Integer> implements OpenPositions {
+    protected class OpenPositionsReversi implements OpenPositions { // TODO we should implement this using a different data structure
 
+        LinkedList<Integer> list = new LinkedList<>();
 
-
-        public OpenPositionsReversi() {
-//            add(board.xyToI(2, 4));
-//            add(board.xyToI(5, 3));
-//            add(board.xyToI(4, 2));
-//            add(board.xyToI(3, 5));
+        void reset() {
+            list.add(board.xyToI(2, 4));
+            list.add(board.xyToI(5, 3));
+            list.add(board.xyToI(4, 2));
+            list.add(board.xyToI(3, 5));
 
             //    0 1 2 3 4 5 6 7
             //  0 - - - - - - - -
@@ -189,6 +226,40 @@ public class Reversi extends GameRules {
             //  5 - - - _ - - - -
             //  6 - - - - - - - -
             //  7 - - - - - - - -
+        }
+
+        public int size() { return list.size(); }
+        public Integer get(int posIndex) { return list.get(posIndex); }
+
+        public Integer remove(int posIndex) {
+            return list.remove(posIndex);
+        }
+
+        public boolean remove(Object pos) {
+            return list.remove(pos);
+        }
+
+        @Override
+        public boolean add(Integer pos) {
+            if (!list.contains(pos)) // TODO really slow
+                list.add(pos);
+
+            return true;
+        }
+
+        @Override
+        public void add(int posIndex, Integer pos) {
+            if (!list.get(posIndex - 1).equals(pos) && !list.get(posIndex).equals(pos) && !list.get(posIndex + 1).equals(pos)) // TODO really slow
+                list.add(posIndex, pos);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for (int i : list) {
+                sb.append("("+board.iToX(i) +" "+ board.iToY(i) + "), ");
+            }
+            return sb.toString();
         }
     }
 }
