@@ -51,8 +51,8 @@ public class MiniMaxHelper {
         else
             best.score = Integer.MAX_VALUE;
 
-        if (depth == 0 || game.getGameState() != GameRules.GameState.PLAYING) { // TODO
-            float score = eval(game.getGameState());
+        if (depth == 0 || game.getGameSpecificState() != GameRules.GameState.PLAYING) { // TODO
+            float score = eval(game.getGameSpecificState());
             best.score = score;
         }
 

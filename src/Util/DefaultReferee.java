@@ -11,18 +11,28 @@ public class DefaultReferee implements Referee {
     }
 
     @Override
-    public void letTheGameStart() {
+    public void letTheGameStart(Callback onEnded) {
         int curPlayer = 0;
-        while (game.getGameState() == GameRules.GameState.PLAYING) {
+        while (game.getGameSpecificState() == GameRules.GameState.PLAYING) {
             game.nextPlayer(game.getPlayer(curPlayer % 2));
             curPlayer++;
         }
+        onEnded.callback();
     }
 
     @Override
     public void letPlayerPlay(Player p) {
 
-        AtomicBoolean inputResolved = resolveInput(p);
+        AtomicBoolean inputResolved = new AtomicBoolean(false);
+
+        p.yourTurn(input -> {
+            if (!p.isDisqualified() && !inputResolved.get()) {
+                if (!game.playMove(input, p.getNr())) {
+                    disqualify(p);
+                }
+            }
+            inputResolved.set(true); // OP DEZE PLEK LATEN
+        });
 
         long timeout = System.currentTimeMillis() + 10_000;
 
@@ -34,20 +44,5 @@ public class DefaultReferee implements Referee {
             }
         }
     }
-
-    protected AtomicBoolean resolveInput(Player p) {
-        AtomicBoolean inputResolved = new AtomicBoolean(false);
-
-        p.yourTurn(input -> {
-            if (!p.isDisqualified() && !inputResolved.get()) {
-                if (!game.playMove(input, p.getNr())) {
-                    disqualify(p);
-                }
-            }
-            inputResolved.set(true); // OP DEZE PLEK LATEN
-        });
-        return inputResolved;
-    }
-
 
 }

@@ -2,7 +2,6 @@ package tic_tac_toe;
 
 import Util.GameBoard2D;
 import Util.GameRules;
-import Util.Player;
 
 import static Util.BoardHelper.areAllEqual;
 
@@ -19,7 +18,7 @@ public class TicTacToe extends GameRules {
         board.reset();
     }
 
-    public GameState getGameState() {
+    public GameState getGameSpecificState() {
         if(getPlayer(1).isDisqualified() || MatchOf3(CellState.X))
             return GameState.PLAYER_1_WINS;
         if(getPlayer(0).isDisqualified() || MatchOf3(CellState.O))
@@ -43,7 +42,7 @@ public class TicTacToe extends GameRules {
     }
 
     public boolean playMove(int i, int playerNr) {
-        if (isValidMove(i) && getGameState() == GameState.PLAYING) {
+        if (isValidMove(i) && getGameSpecificState() == GameState.PLAYING) {
             board.set(i, CellState.values()[playerNr].ordinal());
             onValidMovePlayed.notifyObjects(o -> o.callback(i));
             return true;
