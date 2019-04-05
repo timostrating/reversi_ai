@@ -35,7 +35,7 @@ public class FromServer implements Runnable {
         String[] keyValuePairs = input.split(",");
         for(String pair: keyValuePairs){
             String[] key = pair.split(": ");
-            map.put(key[0], key[1]);
+            map.put(key[0].trim(), key[1].trim());
         }
         return map;
     }
