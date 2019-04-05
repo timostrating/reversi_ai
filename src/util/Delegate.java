@@ -71,7 +71,7 @@ public class Delegate<T> {
      */
     public void notifyObjects(Notifier<T> notifier) {
         timesNotified ++;
-        for (T object : list)
-            notifier.notify(object);
+        for (int i = list.size() - 1; i >= 0; i--)
+            notifier.notify(list.get(i));
     }
 }

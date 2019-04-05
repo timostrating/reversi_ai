@@ -31,6 +31,10 @@ public class ToServer implements Runnable{
         toServer.println("move " + move);
     }
 
+    public void subscribeGame(String game) {
+        toServer.println("subscribe " + game);
+    }
+
     public void setForfeit(){
         toServer.println("forfeit");
     }
@@ -57,13 +61,13 @@ public class ToServer implements Runnable{
 
     @Override
     public void run() {
-        while(true) {
-            try {
-                String input = userInput.readLine();
-                toServer.println(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        while(true) {
+//            try {
+//                String input = userInput.readLine();
+//                toServer.println(input);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 }

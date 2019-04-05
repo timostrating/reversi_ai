@@ -10,6 +10,7 @@ public abstract class Player {
 
     private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
+    private String name;
     private int nr;
     private boolean disqualified;
 
@@ -19,6 +20,14 @@ public abstract class Player {
 
     final void setNr(int nr) {
         this.nr = nr;
+    }
+
+    public final String getName() {
+        return name;
+    }
+
+    final void setName(String name) {
+        this.name = name;
     }
 
     public final boolean isDisqualified() {

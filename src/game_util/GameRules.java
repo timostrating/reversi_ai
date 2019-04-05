@@ -23,8 +23,7 @@ public abstract class GameRules implements Runnable {
 
     @Override
     public void run() {
-        referee.letTheGameStart();
-        gameEnded();
+        referee.letTheGameStart(this::gameEnded);
     }
 
     public void nextPlayer(Player p) {
@@ -32,7 +31,7 @@ public abstract class GameRules implements Runnable {
         referee.letPlayerPlay(p);
     }
 
-    public void gameEnded() {
+    private void gameEnded() {
         onGameEnded.notifyObjects(Callback::callback);
     }
 
@@ -40,6 +39,18 @@ public abstract class GameRules implements Runnable {
         return players[i];
     }
 
-    public abstract GameState getGameState();
+    public Player getPlayerByName(String name) {
+        for (Player p : players) if (p.getName().equals(name)) return p;
+        return null;
+    }
+
+    public final GameState getGameState() {
+        GameState refState = referee.getGameState();
+        if (refState != null) // the referee can override the game state if he wants.
+            return refState;
+        return getGameSpecificState();
+    }
+
+    public abstract GameState getGameSpecificState();
     public abstract boolean playMove(int input, int playerNr);
 }

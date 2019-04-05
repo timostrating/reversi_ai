@@ -1,5 +1,8 @@
 package network;
 
+import util.CallbackWithParam;
+import util.Delegate;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -10,12 +13,14 @@ public class Connection {
     private FromServer fromServer;
     private ToServer toServer;
 
+    public final Delegate<CallbackWithParam<Boolean>> onConnection = new Delegate<>();
+
     public Connection() {
         connect(host, port);
     }
 
     public void connect(String host, int port) {
-        try {
+        try (Socket testConnection = new Socket(host, port)){
             Socket socket = new Socket(host, port);
             fromServer = new FromServer(socket);
             toServer = new ToServer(socket);
@@ -25,10 +30,11 @@ public class Connection {
 
             t1.start();
             t2.start();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
 
+            onConnection.notifyObjects(o -> o.callback(true));
+        } catch (IOException e) {
+            onConnection.notifyObjects(o -> o.callback(false));
+        }
     }
 
     public FromServer getFromServer() {
