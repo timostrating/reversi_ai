@@ -35,6 +35,10 @@ public class GameBoard2D {
         return false;
     }
 
+    public int xyToI(int x, int y) { return y * boardSize + x; }
+    public int iToX(int i) { return i % boardSize; }
+    public int iToY(int i) { return i / boardSize; }
+
     public boolean isInBounds(int i) { return i >= 0 && i < cellCount; }
     public boolean isInBounds(int x, int y) { return x >= 0 && x < boardSize && y >= 0 && y < boardSize; }
 

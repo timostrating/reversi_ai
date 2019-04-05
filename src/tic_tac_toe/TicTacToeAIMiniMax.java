@@ -19,12 +19,12 @@ public class TicTacToeAIMiniMax extends Player {
             openPositions.add(i);
         game.onValidMovePlayed.register((x)->openPositions.remove(x));
 
-        miniMaxHelper = new MiniMaxHelper(game, game.board, openPositions);
+        miniMaxHelper = new MiniMaxHelper(game, game.board);
     }
 
     @Override
     public int getInput() {
-        MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(999, getNr());
+        MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(999, getNr(), openPositions);
         System.out.println(best);
         return best.pos;
     }

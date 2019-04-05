@@ -4,6 +4,7 @@ import GUI.GUIPlayer;
 import network.RemotePlayer;
 import reversi.Reversi;
 import reversi.ReversiAIMiniMax;
+import reversi.ReversiAIRandom;
 import tic_tac_toe.TicTacToe;
 import tic_tac_toe.TicTacToeAIMiniMax;
 import tic_tac_toe.TicTacToeAIScore;
@@ -30,6 +31,7 @@ public class Arcade {
         RemotePlayer(g -> new RemotePlayer()),
         TicTacToeAIScore(g -> new TicTacToeAIScore((TicTacToe) g)),
         TicTacToeAIMiniMax(g -> new TicTacToeAIMiniMax((TicTacToe) g)),
+        ReversiAIRandom(g -> new ReversiAIRandom((Reversi) g)),
         ReversiAIMiniMax(g -> new ReversiAIMiniMax((Reversi) g));
 
         private China china;
@@ -63,8 +65,9 @@ public class Arcade {
         Arcade arcade = new Arcade();
 
 //        GameRules game_util = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
-        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMax, PlayerFactory.ReversiAIMiniMax);
-        game.onNextPlayer.register(() -> System.out.println(game));
+        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIRandom, PlayerFactory.ReversiAIRandom);
+//        game.onNextPlayer.register(() -> System.out.println(game));
+        game.onValidMovePlayed.register((i) -> System.out.println(game));
         game.onGameEnded.register(() -> System.err.println(game));
 
         game.run();

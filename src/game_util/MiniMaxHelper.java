@@ -15,10 +15,9 @@ public class MiniMaxHelper {
     int max;
     int min;
 
-    public MiniMaxHelper(GameRules game, GameBoard2D board, OpenPositions openPositions) {
+    public MiniMaxHelper(GameRules game, GameBoard2D board) {
         this.game = game;
         this.board = board;
-        this.openPositions = openPositions;
     }
 
     private float eval(GameRules.GameState state) {
@@ -36,9 +35,10 @@ public class MiniMaxHelper {
         return 0;
     }
 
-    public PosAndScore minimax(int depth, int player) {
+    public PosAndScore minimax(int depth, int player, OpenPositions openPositions) {
         this.max = player;
         this.min = (player % 2) + 1;
+        this.openPositions = openPositions;
         return minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
     }
     private PosAndScore minimax(int depth, float alpha, float beta, int player) {

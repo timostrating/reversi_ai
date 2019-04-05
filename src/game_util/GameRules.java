@@ -28,8 +28,14 @@ public abstract class GameRules implements Runnable {
     }
 
     public void nextPlayer(Player p) {
-        onNextPlayer.notifyObjects(Callback::callback);
-        referee.letPlayerPlay(p);
+        if (canPlay(p)) {
+            onNextPlayer.notifyObjects(Callback::callback);
+            referee.letPlayerPlay(p);
+        }
+    }
+
+    protected boolean canPlay(Player p) {
+        return true;
     }
 
     public void gameEnded() {
