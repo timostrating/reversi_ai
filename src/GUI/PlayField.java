@@ -66,7 +66,7 @@ public class PlayField {
     public static class Anims {
 
         public static Node getAtoms() {
-            Image img = new Image("pictures/kruisje.png");
+            Image img = new Image("GUI/pictures/kruisje.png");
             Circle circle = new Circle(20);
             circle.setFill(Color.BLACK);
             Group group = new Group();
