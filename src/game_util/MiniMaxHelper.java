@@ -1,6 +1,6 @@
 package game_util;
 
-import java.util.List;
+import util.OpenPositions;
 
 import static game_util.GameRules.GameState.*;
 
@@ -11,11 +11,11 @@ public class MiniMaxHelper {
 
     GameRules game;
     GameBoard2D board;
-    List<Integer> openPositions;
+    OpenPositions openPositions;
     int max;
     int min;
 
-    public MiniMaxHelper(GameRules game, GameBoard2D board, List<Integer> openPositions) {
+    public MiniMaxHelper(GameRules game, GameBoard2D board, OpenPositions openPositions) {
         this.game = game;
         this.board = board;
         this.openPositions = openPositions;

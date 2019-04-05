@@ -2,9 +2,9 @@ package reversi;
 
 import game_util.MiniMaxHelper;
 import game_util.Player;
+import util.OpenPositions;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import static reversi.Reversi.BOARD_SIZE;
 
@@ -12,7 +12,7 @@ public class ReversiAIMiniMax extends Player {
 
     private Reversi reversi;
 
-    List<Integer> openPositions = new LinkedList<>();
+    LinkedListOpenPositionsWrapper openPositions = new LinkedListOpenPositionsWrapper();
     MiniMaxHelper miniMaxHelper;
 
     public ReversiAIMiniMax(Reversi reversi) {
@@ -36,4 +36,6 @@ public class ReversiAIMiniMax extends Player {
         System.out.println(best);
         return best.pos;
     }
+
+    private class LinkedListOpenPositionsWrapper extends LinkedList<Integer> implements OpenPositions { }
 }
