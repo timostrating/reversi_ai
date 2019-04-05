@@ -11,6 +11,7 @@ public class GUIPlayer extends Player {
         gui = CompositionRoot.getInstance().lobby;
     }
 
+    //TODO get en set fixen
     @Override
     public int getInput() {
         int paneNr = 1;//gui.getPaneNr();

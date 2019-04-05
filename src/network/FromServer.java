@@ -30,18 +30,13 @@ public class FromServer implements Runnable {
 
     public HashMap toHashMap(String input){
         HashMap<String, String> map = new HashMap<>();
-        if(input.startsWith("SVR GAME WIN")){
-            map.put("GAME", "WIN");
-        } else if(input.startsWith("SVR GAME DRAW")){
-            map.put("GAME", "DRAW");
-        } else if(input.startsWith("SVR GAME LOSS")){
-            map.put("GAME", "LOSS");
-        }
         input = input.substring(input.indexOf("{") + 1, input.indexOf("}"));
         input = input.replace("\"", "");
         String[] keyValuePairs = input.split(",");
         for(String pair: keyValuePairs){
             String[] key = pair.split(": ");
+            if (key.length < 2)
+                continue;
             map.put(key[0].trim(), key[1].trim());
         }
         return map;
@@ -85,7 +80,15 @@ public class FromServer implements Runnable {
     }
 
     public void result(String result){
-        onResult.notifyObjects(o -> o.callback(toHashMap(result)));
+        HashMap<String, String> map = toHashMap(result);
+        if(result.startsWith("SVR GAME WIN")){
+            map.put("result", "WIN");
+        } else if(result.startsWith("SVR GAME DRAW")){
+            map.put("result", "DRAW");
+        } else if(result.startsWith("SVR GAME LOSS")){
+            map.put("result", "LOSS");
+        }
+        onResult.notifyObjects(o -> o.callback(map));
     }
 
     @Override

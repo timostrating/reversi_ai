@@ -1,6 +1,7 @@
 package game_util;
 
 import GUI.GUIPlayer;
+import network.Connection;
 import network.RemotePlayer;
 import reversi.Reversi;
 import reversi.ReversiAIMiniMax;
@@ -8,6 +9,7 @@ import reversi.ReversiAIRandom;
 import tic_tac_toe.TicTacToe;
 import tic_tac_toe.TicTacToeAIMiniMax;
 import tic_tac_toe.TicTacToeAIScore;
+import util.CompositionRoot;
 
 /**
  * The Arcade class is a Factory for the games and different kind of players
@@ -65,11 +67,27 @@ public class Arcade {
         Arcade arcade = new Arcade();
 
 //        GameRules game_util = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
-        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIRandom, PlayerFactory.ReversiAIRandom);
+//        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIRandom, PlayerFactory.ReversiAIRandom);
 //        game.onNextPlayer.register(() -> System.out.println(game));
-        game.onValidMovePlayed.register((i) -> System.out.println(game));
-        game.onGameEnded.register(() -> System.err.println(game));
+//        game.onValidMovePlayed.register((i) -> System.out.println(game));
+//        game.onGameEnded.register(() -> System.err.println(game));
 
-        game.run();
+
+        Connection c = CompositionRoot.getInstance().connection;
+        c.connect("145.33.225.170", 7789);
+        String localName = "PizzaLover321";
+        c.getToServer().setLogin(localName);
+        c.getToServer().subscribeGame("Tic-tac-toe");
+
+        c.getFromServer().onMatch.register(match -> {
+
+            GameRules game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.NetworkedReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.RemotePlayer);
+            game.getPlayer(0).setName(localName);
+            game.getPlayer(1).setName(match.get("OPPONENT"));
+            game.onNextPlayer.register(() -> System.out.println(game));
+            game.onGameEnded.register(() -> System.err.println(game));
+
+            game.run();
+        });
     }
 }

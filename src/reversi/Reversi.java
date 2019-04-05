@@ -34,7 +34,7 @@ public class Reversi extends GameRules {
         return openPositions[playerNr -1];
     }
 
-    public GameState getGameState() {
+    public GameState getGameSpecificState() {
         if (!board.containsCell(CellState.O.ordinal())) // player 2 is outplayed
             return GameState.PLAYER_1_WINS;
         if (!board.containsCell(CellState.X.ordinal())) // player 1 is outplayed
