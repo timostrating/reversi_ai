@@ -1,13 +1,13 @@
 package GUI;
 
-import Util.Arcade;
-import Util.CompositionRoot;
-import Util.GameRules;
+import game_util.Arcade;
+import game_util.GameRules;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import util.CompositionRoot;
 
 public class LobbyPane extends FlowPane {
 
@@ -41,7 +41,7 @@ public class LobbyPane extends FlowPane {
             game.onValidMovePlayed.register((i)-> {
 
                 Platform.runLater(() -> {
-                    ticTacToePane[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms(1));
+                    ticTacToePane[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms());
                 });
 
             }); // TODO: hardcoded size  and nr 1 ?
@@ -56,7 +56,7 @@ public class LobbyPane extends FlowPane {
             game.onValidMovePlayed.register((i)-> {
 
                 Platform.runLater(() -> {
-                    reversiPane[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms(1));
+                    reversiPane[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms());
                 });
 
             }); // TODO: hardcoded size  and nr 1 ?

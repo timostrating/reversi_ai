@@ -1,7 +1,7 @@
 package GUI;
 
-import Util.CompositionRoot;
-import Util.Player;
+import game_util.Player;
+import util.CompositionRoot;
 
 public class GUIPlayer extends Player {
 

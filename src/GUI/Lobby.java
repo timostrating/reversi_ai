@@ -5,15 +5,14 @@ import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
-
 public class Lobby extends Application {
 
-    private Stage primaryStage;
+    private static Stage myPrimaryStage;
 
     @Override
     public void start(Stage primaryStage){
 
-        this.primaryStage = primaryStage;
+        myPrimaryStage = primaryStage;
 
         //Pane
         FlowPane lobby = new LobbyPane();
@@ -28,7 +27,7 @@ public class Lobby extends Application {
     }
 
     public void setScene(Scene scene) {
-        primaryStage.setScene(scene);
+        myPrimaryStage.setScene(scene);
     }
 
     public static void main(String[] args) { // TODO This is only for testing

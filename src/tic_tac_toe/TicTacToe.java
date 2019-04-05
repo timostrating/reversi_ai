@@ -1,9 +1,9 @@
 package tic_tac_toe;
 
-import Util.GameBoard2D;
-import Util.GameRules;
+import game_util.GameBoard2D;
+import game_util.GameRules;
 
-import static Util.BoardHelper.areAllEqual;
+import static game_util.BoardHelper.areAllEqual;
 
 public class TicTacToe extends GameRules {
 

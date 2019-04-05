@@ -1,6 +1,8 @@
-package Util;
+package game_util;
 
-import static Util.GameRules.GameState.PLAYING;
+import util.Callback;
+import util.CallbackWithParam;
+import util.Delegate;
 
 public abstract class GameRules implements Runnable {
     public enum GameState {PLAYING, DRAW, PLAYER_1_WINS, PLAYER_2_WINS  /* PLAYER_3.4.5..N_WINS*/ }

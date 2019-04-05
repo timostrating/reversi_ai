@@ -1,15 +1,18 @@
-package Util;
+package game_util;
 
-import netwerk.Connection;
-import netwerk.FromServer;
-import netwerk.RemotePlayer;
-import netwerk.ToServer;
+import network.Connection;
+import network.FromServer;
+import network.RemotePlayer;
+import network.ToServer;
+import util.Callback;
+import util.CallbackWithParam;
+import util.CompositionRoot;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static Util.GameRules.GameState.PLAYER_1_WINS;
-import static Util.GameRules.GameState.PLAYER_2_WINS;
+import static game_util.GameRules.GameState.PLAYER_1_WINS;
+import static game_util.GameRules.GameState.PLAYER_2_WINS;
 
 /**
  * A referee that uses the online protocol to play games.
@@ -95,4 +98,5 @@ public class NetworkedReferee extends DefaultReferee {
     public GameRules.GameState getGameState() {
         return gameState;
     }
+
 }

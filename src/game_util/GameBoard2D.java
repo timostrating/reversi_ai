@@ -1,4 +1,6 @@
-package Util;
+package game_util;
+
+import util.Callback;
 
 public class GameBoard2D {
 

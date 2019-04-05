@@ -1,4 +1,6 @@
-package Util;
+package game_util;
+
+import util.CallbackWithParam;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

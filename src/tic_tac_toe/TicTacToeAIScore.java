@@ -1,7 +1,6 @@
 package tic_tac_toe;
 
-import Util.CallbackWithParam;
-import Util.Player;
+import game_util.Player;
 
 // Renamed van TicTacToeAI naar TicTacToeAIScore
 public class TicTacToeAIScore extends Player {

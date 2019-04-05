@@ -1,10 +1,8 @@
-package Util;
+package game_util;
 
-import java.util.List;
+import util.OpenPositions;
 
-import static Util.GameRules.GameState.DRAW;
-import static Util.GameRules.GameState.PLAYER_1_WINS;
-import static Util.GameRules.GameState.PLAYER_2_WINS;
+import static game_util.GameRules.GameState.*;
 
 /**
  * We assume that you want to use the miniMax algorithm for a game with 2 players
@@ -13,11 +11,11 @@ public class MiniMaxHelper {
 
     GameRules game;
     GameBoard2D board;
-    List<Integer> openPositions;
+    OpenPositions openPositions;
     int max;
     int min;
 
-    public MiniMaxHelper(GameRules game, GameBoard2D board, List<Integer> openPositions) {
+    public MiniMaxHelper(GameRules game, GameBoard2D board, OpenPositions openPositions) {
         this.game = game;
         this.board = board;
         this.openPositions = openPositions;

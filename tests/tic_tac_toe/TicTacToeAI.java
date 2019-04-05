@@ -1,11 +1,11 @@
 package tic_tac_toe;
 
-import Util.Arcade;
-import Util.Callback;
-import Util.GameRules;
+import game_util.Arcade;
+import util.Callback;
+import game_util.GameRules;
 import org.junit.jupiter.api.Test;
 
-import static Util.Arcade.*;
+import static game_util.Arcade.*;
 
 public class TicTacToeAI {
 
