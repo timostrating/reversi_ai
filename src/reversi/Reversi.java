@@ -44,8 +44,8 @@ public class Reversi extends GameRules {
             int n = 0;
             int newX = x + n * dir.changeX;
             int newY = y + n * dir.changeY;
-            while (board.isInBounds(newX, newY) && board.get(newY, newX) != CellState.X.ordinal()) {  // TODO support it for 2 players
-                if (board.get(newY, newX) == CellState.EMPTY.ordinal()) {
+            while (board.isInBounds(newX, newY) && board.get(newX, newY) != CellState.X.ordinal()) {  // TODO support it for 2 players
+                if (board.get(newX, newY) == CellState.EMPTY.ordinal()) {
                     int i = board.xyToI(newX, newY);
                     if (isValidMove(i, CellState.X.ordinal())) // TODO Possibly already in the openPositions
                         openPositions.add(i);
@@ -85,9 +85,9 @@ public class Reversi extends GameRules {
 
         for (int y = 0; y < BOARD_SIZE; y++) {
             for (int x = 0; x < BOARD_SIZE; x++) {
-                if (board.get(y, x) == CellState.X.ordinal())
+                if (board.get(x, y) == CellState.X.ordinal())
                     score_X++;
-                if (board.get(y, x) == CellState.O.ordinal())
+                if (board.get(x, y) == CellState.O.ordinal())
                     score_O++;
             }
         }
@@ -122,8 +122,8 @@ public class Reversi extends GameRules {
             boolean hasVisitedOpponent = false;
             int newX = x + n * dir.changeX;
             int newY = y + n * dir.changeY;
-            while (board.isInBounds(newX, newY) && board.get(newY, newX) != CellState.EMPTY.ordinal()) {
-                if (board.get(newY, newX) == CellState.fromNr(playerNr).ordinal()) {
+            while (board.isInBounds(newX, newY) && board.get(newX, newY) != CellState.EMPTY.ordinal()) {
+                if (board.get(newX, newY) == CellState.fromNr(playerNr).ordinal()) {
                     if (hasVisitedOpponent) {
                         if (testForValidMove) // isValidMove()
                             return true;
@@ -131,11 +131,11 @@ public class Reversi extends GameRules {
                         flippedOpponent = true;
 //                            System.out.printf("%s: (%d,%d) -> (%d,%d)\n", "BACKTRACK",newX, newY, x, y);
                         while (n-- > 1)
-                            flipOnBoardAndNotify(y + n * dir.changeY, x + n * dir.changeX, CellState.fromNr(playerNr).ordinal());
+                            flipOnBoardAndNotify(x + n * dir.changeX, y + n * dir.changeY, CellState.fromNr(playerNr).ordinal());
 
                     }
                     break;
-                } else if (board.get(newY, newX) == CellState.opponentFromNr(playerNr).ordinal()) {
+                } else if (board.get(newX, newY) == CellState.opponentFromNr(playerNr).ordinal()) {
                     hasVisitedOpponent = true;
                     n++;
                     newX = x + n * dir.changeX;
@@ -145,7 +145,7 @@ public class Reversi extends GameRules {
         }
 
         if (flippedOpponent && !testForValidMove) { // set move only if we are not testing
-            setOnBoardAndNotify(y, x, CellState.fromNr(playerNr).ordinal());
+            setOnBoardAndNotify(x, y, CellState.fromNr(playerNr).ordinal());
             return true;
         }
 
@@ -154,12 +154,12 @@ public class Reversi extends GameRules {
 
 
     private boolean touchesOpponentAndIsEmpty(int x, int y, int playerNr) {
-        if (!board.isInBounds(x, y) || board.get(y, x) != CellState.EMPTY.ordinal())
+        if (!board.isInBounds(x, y) || board.get(x, y) != CellState.EMPTY.ordinal())
             return false;
 
         for (BoardDirection dir : BoardDirection.values())
             if (board.isInBounds(x + dir.changeX, y + dir.changeY))
-                if (board.get(y + dir.changeY, x + dir.changeX) == CellState.opponentFromNr(playerNr).ordinal())
+                if (board.get(x + dir.changeX, y + dir.changeY) == CellState.opponentFromNr(playerNr).ordinal())
                     return true;
 
         return false;
@@ -173,7 +173,7 @@ public class Reversi extends GameRules {
         for (int y = 0; y < BOARD_SIZE; y++) {
             sb.append("\n" + y + " ");
             for (int x = 0; x < BOARD_SIZE; x++)
-                sb.append((board.get(y, x) == CellState.EMPTY.ordinal()) ? "- " : CellState.values()[board.get(y, x)] + " ");
+                sb.append((board.get(x, y) == CellState.EMPTY.ordinal()) ? "- " : CellState.values()[board.get(x, y)] + " ");
         }
 
         return new String(sb);
@@ -210,6 +210,7 @@ public class Reversi extends GameRules {
     protected class OpenPositionsReversi implements OpenPositions { // TODO we should implement this using a different data structure
 
         LinkedList<Integer> list = new LinkedList<>();
+//        BoardDirection[][][] validPositionsMemory = new BoardDirection[BOARD_SIZE][BOARD_SIZE][BoardDirection.values().length];
 
         void reset() {
             list.add(board.xyToI(2, 4));
@@ -241,16 +242,16 @@ public class Reversi extends GameRules {
 
         @Override
         public boolean add(Integer pos) {
-            if (!list.contains(pos)) // TODO really slow
-                list.add(pos);
+//            if (!list.contains(pos)) // TODO really slow
+            list.add(pos);
 
             return true;
         }
 
         @Override
         public void add(int posIndex, Integer pos) {
-            if (!list.get(posIndex - 1).equals(pos) && !list.get(posIndex).equals(pos) && !list.get(posIndex + 1).equals(pos)) // TODO really slow
-                list.add(posIndex, pos);
+//            if (!list.get(posIndex - 1).equals(pos) && !list.get(posIndex).equals(pos) && !list.get(posIndex + 1).equals(pos)) // TODO really slow
+            list.add(posIndex, pos);
         }
 
         @Override

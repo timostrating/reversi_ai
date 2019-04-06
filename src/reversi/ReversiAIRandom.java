@@ -25,6 +25,19 @@ public class ReversiAIRandom extends Player {
 
         Reversi.OpenPositionsReversi openPositions = reversi.getOpenPositions(getNr());
         System.out.println(openPositions);
+
+        String str = "";
+        for (int y = 0; y < Reversi.BOARD_SIZE; y++) {
+            for (int x = 0; x < Reversi.BOARD_SIZE; x++) {
+                str = (reversi.board.get(x, y) + " ").replace('0', '-');
+                if (openPositions.list.contains(reversi.board.xyToI(x, y)))
+                    str = str.replace('-', 'v');
+
+                System.out.print(str);
+            }
+            System.out.println("");
+        }
+
         return openPositions.get(r.nextInt(openPositions.size()));
     }
 }
