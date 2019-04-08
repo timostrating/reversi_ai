@@ -8,7 +8,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 public class PlayField {
 
@@ -16,6 +15,13 @@ public class PlayField {
    private VBox[][] panes;
    private int paneNr = 0;
    private Scene scene;
+
+    // Images
+    private static Image o = new Image("GUI/pictures/o.png", 40, 40, false ,true);
+    private static Image x = new Image("GUI/pictures/x.png",40,40,false,true);
+    private static Image black = new Image("GUI/pictures/blackPiece.png", 40, 40, false, true);
+    private static Image white = new Image("GUI/pictures/whitePiece.png",40 , 40, false, true);
+
 
     public PlayField(int rows, int columns) {
 
@@ -45,7 +51,8 @@ public class PlayField {
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
                     setPaneNR(X, Y);
-                    pane.getChildren().add(Anims.getAtoms());
+                    //TODO player meegeven
+                    pane.getChildren().add(Anims.getPicture("white"));
 
                 });
                 pane.getStyleClass().add("game-grid-cell");
@@ -66,16 +73,25 @@ public class PlayField {
 
     public static class Anims {
 
-        public static Node getAtoms() {
-            Image img = new Image("GUI/pictures/x.png",40,40,false,true);
-            ImageView imageView = new ImageView(img);
-            imageView.autosize();
-            Circle circle = new Circle(20);
-            circle.setFill(Color.BLACK);
+        public static Node getPicture(String player) {
+
+            ImageView imageView = null;
+            if (player == "x") {
+                imageView = new ImageView(x);
+            }
+            if (player == "o") {
+                imageView = new ImageView(o);
+            }
+            if (player == "black") {
+                imageView = new ImageView(black);
+            }
+            if (player == "white") {
+                imageView = new ImageView(white);
+            }
+
             Group group = new Group();
             group.getChildren().add(imageView);
-//            SubScene scene = new SubScene(group, 40, 40);
-//            scene.setFill(Color.TRANSPARENT);
+//
             return group;
         }
     }

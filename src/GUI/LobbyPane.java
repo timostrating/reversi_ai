@@ -2,7 +2,6 @@ package GUI;
 
 import game_util.Arcade;
 import game_util.GameRules;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
@@ -38,13 +37,14 @@ public class LobbyPane extends FlowPane {
             Arcade arcade = CompositionRoot.getInstance().arcade;
             GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.TicTacToeAIMiniMax);
 
-            game.onValidMovePlayed.register((i)-> {
-
-                Platform.runLater(() -> {
-                    ticTacToePane[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms());
-                });
-
-            }); // TODO: hardcoded size  and nr 1 ?
+//            game.onValidMovePlayed.register((i)-> {
+//
+//                // TODO: speler meegeven
+//                Platform.runLater(() -> {
+//                    ticTacToePane[i % 3][i / 3].getChildren().add(PlayField.Anims.getPicture("x"));
+//                });
+//
+//            }); // TODO: hardcoded size  and nr 1 ?
             new Thread(game).start();
         });
 
@@ -53,13 +53,14 @@ public class LobbyPane extends FlowPane {
             Arcade arcade = CompositionRoot.getInstance().arcade;
             GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.ReversiAIMiniMax);
 
-            game.onValidMovePlayed.register((i)-> {
-
-                Platform.runLater(() -> {
-                    reversiPane[i % 3][i / 3].getChildren().add(PlayField.Anims.getAtoms());
-                });
-
-            }); // TODO: hardcoded size  and nr 1 ?
+//            game.onValidMovePlayed.register((i)-> {
+//
+//                // TODO: speler meegeven
+//                Platform.runLater(() -> {
+//                    reversiPane[i % 3][i / 3].getChildren().add(PlayField.Anims.getPicture("black"));
+//                });
+//
+//            }); // TODO: hardcoded size  and nr 1 ?
             new Thread(game).start();
         });
     }
