@@ -1,9 +1,8 @@
 package GUI;
 
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -11,10 +10,16 @@ import javafx.scene.paint.Color;
 
 public class PlayField {
 
-   private GridPane grid;
+   private GridPane game;
+   private HBox playerPane;
+   private HBox timerPane;
+   private VBox scorePane;
+   private BorderPane totalPane;
    private VBox[][] panes;
    private int paneNr = 0;
    private Scene scene;
+
+   private int player = 0;
 
     // Images
     private static Image o = new Image("GUI/pictures/o.png", 40, 40, false ,true);
@@ -23,22 +28,38 @@ public class PlayField {
     private static Image white = new Image("GUI/pictures/whitePiece.png",40 , 40, false, true);
 
 
+
+
+
+
     public PlayField(int rows, int columns) {
 
-        grid = new GridPane();
+        Label currentPlayer = new Label("Kees");
+        playerPane = new HBox();
+        playerPane.setPrefSize(400, 30);
+        playerPane.getChildren().add(currentPlayer);
+
+        Label player1 = new Label("Player 1 has 10 points");
+        Label player2 = new Label("Player 2 has 13 points");
+        scorePane = new VBox();
+        scorePane.getChildren().addAll(player1, player2);
+
+
+        game = new GridPane();
+
         panes = new VBox[rows][columns];
-        grid.getStyleClass().add("game-grid");
+        game.getStyleClass().add("game-grid");
 
         for(int i = 0; i < columns; i++) {
             ColumnConstraints column = new ColumnConstraints();
-            column.setPercentWidth(50);
-            grid.getColumnConstraints().add(column);
+            column.setPrefWidth(50);
+            game.getColumnConstraints().add(column);
         }
 
         for(int i = 0; i < rows; i++) {
             RowConstraints row = new RowConstraints();
-            row.setPercentHeight(50);
-            grid.getRowConstraints().add(row);
+            row.setPrefHeight(50);
+            game.getRowConstraints().add(row);
         }
 
         for (int x = 0; x < columns; x++) {
@@ -51,8 +72,27 @@ public class PlayField {
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
                     setPaneNR(X, Y);
-                    //TODO player meegeven
-                    pane.getChildren().add(Anims.getPicture("white"));
+
+                    //TicTacToe
+                    if (player == 0 && rows == 3){
+                        pane.getChildren().add(getPicture("x"));
+                        player = 1;
+                    }
+                    else if (player == 1 && rows == 3) {
+                        pane.getChildren().add(getPicture("o"));
+                        player = 0;
+                    }
+
+                    //Reversi
+                    if (player == 0 && rows == 8){
+                        pane.getChildren().add(getPicture("black"));
+                        player = 1;
+                    }
+                    else if (player == 1 && rows == 8) {
+                        pane.getChildren().add(getPicture("white"));
+                        player = 0;
+                    }
+
 
                 });
                 pane.getStyleClass().add("game-grid-cell");
@@ -62,18 +102,22 @@ public class PlayField {
                 if (y == 0) {
                     pane.getStyleClass().add("first-row");
                 }
-                grid.add(pane, x, y);
+                game.add(pane, x, y);
             }
         }
 
-        scene = new Scene(grid, (columns * 40) + 100, (rows * 40) + 100, Color.WHITE);
+        totalPane = new BorderPane();
+        totalPane.setTop(playerPane);
+        totalPane.setCenter(game);
+        totalPane.setRight(scorePane);
+
+
+        scene = new Scene(totalPane, (columns * 40) + 150, (rows * 40) + 150, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
 
     }
 
-    public static class Anims {
-
-        public static Node getPicture(String player) {
+        public static ImageView getPicture(String player) {
 
             ImageView imageView = null;
             if (player == "x") {
@@ -89,12 +133,9 @@ public class PlayField {
                 imageView = new ImageView(white);
             }
 
-            Group group = new Group();
-            group.getChildren().add(imageView);
-//
-            return group;
+            return imageView;
         }
-    }
+
 
     public void setPaneNR(int x, int y) { paneNr = x + y; }
     public int getPaneNr() { return paneNr; }

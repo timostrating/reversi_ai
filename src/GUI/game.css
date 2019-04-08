@@ -1,6 +1,10 @@
 .game-grid {
     -fx-background-color: white ;
     -fx-padding: 10 ;
+  /*  -fx-pref-width: (columns * 40) + 100 ;
+    -fx-pref-height: (columns * 40) + 100 ;
+  */
+
 }
 .game-grid-cell {
     -fx-background-color: black, white ;
