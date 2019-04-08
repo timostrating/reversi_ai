@@ -2,7 +2,10 @@ package reversi;
 
 import game_util.GameBoard2D;
 import game_util.GameRules;
+import game_util.Player;
+import util.OpenPosition;
 import util.OpenPositions;
+import util.Utils;
 
 import java.util.LinkedList;
 
@@ -11,12 +14,7 @@ public class Reversi extends GameRules {
     public static final int BOARD_SIZE = 8;
     public static final int CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
 
-//    private OpenPositionsReversi[] openPositions = new OpenPositionsReversi[]{ TODO: support it for 2 players
-//        new OpenPositionsReversi(),
-//        new OpenPositionsReversi()
-//    };
     private OpenPositionsReversi openPositions = new OpenPositionsReversi();
-
 
     public GameBoard2D board;
 
@@ -26,49 +24,29 @@ public class Reversi extends GameRules {
     }
 
     public void reset() {
-        openPositions.reset();
         setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2 - 1, CellState.X.ordinal());
-        setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2,     CellState.O.ordinal());
-        setOnBoardAndNotify(BOARD_SIZE / 2    , BOARD_SIZE / 2,     CellState.X.ordinal());
-        setOnBoardAndNotify(BOARD_SIZE / 2    , BOARD_SIZE / 2 - 1, CellState.O.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2, CellState.O.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2, BOARD_SIZE / 2, CellState.X.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2, BOARD_SIZE / 2 - 1, CellState.O.ordinal());
     }
 
-    public OpenPositionsReversi getOpenPositions(int playerNr) {
-        return openPositions; // [playerNr -1] TODO support it for 2 players
+    public OpenPositionsReversi getOpenPositions() {
+        return openPositions;
     }
 
     private void setOnBoardAndNotify(int x, int y, int playerNr) {
-        board.set(x,y,playerNr);
-        openPositions.remove(new Integer(board.xyToI(x, y)));
-        for (BoardDirection dir : BoardDirection.values()) {
-            int n = 0;
-            int newX = x + n * dir.changeX;
-            int newY = y + n * dir.changeY;
-            while (board.isInBounds(newX, newY) && board.get(newX, newY) != CellState.X.ordinal()) {  // TODO support it for 2 players
-                if (board.get(newX, newY) == CellState.EMPTY.ordinal()) {
-                    int i = board.xyToI(newX, newY);
-                    if (isValidMove(i, CellState.X.ordinal())) // TODO Possibly already in the openPositions
-                        openPositions.add(i);
-                    break;
-                } else {
-                    n++;
-                    newX = x + n * dir.changeX;
-                    newY = y + n * dir.changeY;
-                }
-            }
-        }
+        board.set(x, y, playerNr);
+        openPositions.onChange(x, y);
     }
 
     private void flipOnBoardAndNotify(int x, int y, int playerNr) {
-        board.set(x,y,playerNr);
+        board.set(x, y, playerNr);
+        openPositions.onChange(x, y);
+    }
 
-        if (playerNr == CellState.O.ordinal()) { // TODO support it for 2 players
-            for (BoardDirection dir : BoardDirection.values()) {
-                int i = board.xyToI(x + dir.changeX, y + dir.changeY);
-                if (isValidMove(i, CellState.X.ordinal())) // TODO Possibly already in the openPositions
-                    openPositions.add(i);
-            }
-        }
+    @Override
+    protected boolean canPlay(Player p) {
+        return openPositions.getOpenPositions(p.getNr()).size() > 0;
     }
 
     public GameState getGameSpecificState() {
@@ -77,7 +55,9 @@ public class Reversi extends GameRules {
         if (!board.containsCell(CellState.X.ordinal())) // player 1 is outplayed
             return GameState.PLAYER_2_WINS;
 
-        if (board.containsCell(CellState.EMPTY.ordinal())) // No moves left
+        boolean canMove = openPositions.openOPositions.size() > 0 || openPositions.openXPositions.size() > 0;
+
+        if (canMove && board.containsCell(CellState.EMPTY.ordinal()))
             return GameState.PLAYING;
 
         int score_X = 0;
@@ -194,9 +174,9 @@ public class Reversi extends GameRules {
     }
 
     public enum BoardDirection {
-        LEFT_UP(-1, 1),     UP(0, 1),     RIGHT_UP(1, 1),
-        LEFT(-1, 0),                      RIGHT(1, 0),
-        LEFT_DOWN(-1, -1),  DOWN(0, -1),  RIGHT_DOWN(1, -1);
+        LEFT_UP(-1, -1),     UP(0, -1),    RIGHT_UP(1, -1),
+        LEFT(-1, 0),                     RIGHT(1, 0),
+        LEFT_DOWN(-1, 1),  DOWN(0, 1), RIGHT_DOWN(1, 1);
 
         public final int changeX;
         public final int changeY;
@@ -205,61 +185,161 @@ public class Reversi extends GameRules {
             this.changeX = changeX;
             this.changeY = changeY;
         }
+
+        public int stepsToBorder(int x, int y) {
+            switch (this){
+                case UP: return y;
+                case RIGHT: return Reversi.BOARD_SIZE - x -1;
+                case DOWN: return Reversi.BOARD_SIZE - y -1;
+                case LEFT: return x;
+
+                case RIGHT_UP: return Math.min(UP.stepsToBorder(x, y), RIGHT.stepsToBorder(x, y));
+                case RIGHT_DOWN: return Math.min(DOWN.stepsToBorder(x, y), RIGHT.stepsToBorder(x, y));
+                case LEFT_UP: return Math.min(UP.stepsToBorder(x, y), LEFT.stepsToBorder(x, y));
+                case LEFT_DOWN: return Math.min(DOWN.stepsToBorder(x, y), LEFT.stepsToBorder(x, y));
+            }
+            throw new RuntimeException("Nice");
+        }
+
+        public int xStepsToBorder(int x, int y) {
+            int steps = stepsToBorder(x, y);
+            switch (this){
+                case UP:
+                case DOWN: return 0;
+
+                case RIGHT_UP:
+                case RIGHT_DOWN:
+                case RIGHT: return steps;
+
+                case LEFT_UP:
+                case LEFT_DOWN:
+                case LEFT: return -steps;
+            }
+            throw new RuntimeException("New to AliExpress?\n" +
+                    "Join us today and we'll give you up to $3 in coupons");
+        }
+
+        public int yStepsToBorder(int x, int y) {
+            int steps = stepsToBorder(x, y);
+            switch (this){
+                case LEFT_UP:
+                case RIGHT_UP:
+                case UP: return -steps;
+
+                case RIGHT_DOWN:
+                case LEFT_DOWN:
+                case DOWN: return steps;
+
+                case LEFT:
+                case RIGHT: return 0;
+            }
+            throw new RuntimeException("New to AliExpress?\n" +
+                    "Join us today and we'll give you up to $3 in coupons");
+        }
     }
 
-    protected class OpenPositionsReversi implements OpenPositions { // TODO we should implement this using a different data structure
+    protected class OpenPositionsReversi implements OpenPositions<OpenPosition> { // TODO we should implement this using a different data structure }
 
-        LinkedList<Integer> list = new LinkedList<>();
-//        BoardDirection[][][] validPositionsMemory = new BoardDirection[BOARD_SIZE][BOARD_SIZE][BoardDirection.values().length];
+        LinkedList<OpenPosition>
+                openXPositions = new LinkedList<>(),
+                openOPositions = new LinkedList<>();
 
-        void reset() {
-            list.add(board.xyToI(2, 4));
-            list.add(board.xyToI(5, 3));
-            list.add(board.xyToI(4, 2));
-            list.add(board.xyToI(3, 5));
+        boolean[][][]
+                validationArrowsX = new boolean[BOARD_SIZE][BOARD_SIZE][BoardDirection.values().length],
+                validationArrowsO = new boolean[BOARD_SIZE][BOARD_SIZE][BoardDirection.values().length];
 
-            //    0 1 2 3 4 5 6 7
-            //  0 - - - - - - - -
-            //  1 - - - - - - - -
-            //  2 - - - - _ - - -
-            //  3 - - - X O _ - -
-            //  4 - - _ O X - - -
-            //  5 - - - _ - - - -
-            //  6 - - - - - - - -
-            //  7 - - - - - - - -
+
+        public void onChange(int x, int y) {
+            for (BoardDirection dir : BoardDirection.values()) {
+                checkOpenPositionsInLine(x + dir.xStepsToBorder(x, y), y + dir.yStepsToBorder(x, y), dir);
+            }
         }
 
-        public int size() { return list.size(); }
-        public Integer get(int posIndex) { return list.get(posIndex); }
+        private void addArrow(int x, int y, int playerNr, BoardDirection dir) {
+            boolean[][][] arrows = playerNr == 1 ? validationArrowsX : validationArrowsO;
 
-        public Integer remove(int posIndex) {
-            return list.remove(posIndex);
+            if (!Utils.any(arrows[x][y]))
+                getOpenPositions(playerNr).add(new OpenPosition(board.xyToI(x, y)));
+
+            arrows[x][y][dir.ordinal()] = true;
         }
 
-        public boolean remove(Object pos) {
-            return list.remove(pos);
+        private void removeArrow(int x, int y, int playerNr, BoardDirection dir) {
+            boolean[][][] arrows = playerNr == 1 ? validationArrowsX : validationArrowsO;
+
+            if (!arrows[x][y][dir.ordinal()]) return;
+
+            arrows[x][y][dir.ordinal()] = false;
+            if (!Utils.any(arrows[x][y])) {
+                // remove openPosition
+                filter(board.xyToI(x, y), playerNr);
+            }
+        }
+
+        private void checkOpenPositionsInLine(int x, int y, BoardDirection dir) {
+
+            int hasSeenX = -1, hasSeenO = -1;
+            int i = 0;
+            while (board.isInBounds(x, y)) {
+
+                if (board.get(x, y) ==  CellState.X.ordinal())
+                    hasSeenX = i;
+                if (board.get(x, y) ==  CellState.O.ordinal())
+                    hasSeenO = i;
+                if (board.get(x, y) ==  CellState.EMPTY.ordinal()) {
+
+                    boolean addArrow =hasSeenX >= 0 && hasSeenO >= 0;
+
+                    if (hasSeenX < hasSeenO && addArrow) {
+                        addArrow(x,y, CellState.X.ordinal(), dir);
+                    } else {
+                        removeArrow(x,y, CellState.X.ordinal(), dir);
+                    }
+
+                    if (hasSeenX > hasSeenO && addArrow) {
+                        addArrow(x,y, CellState.O.ordinal(), dir);
+                    } else {
+                        removeArrow(x,y, CellState.O.ordinal(), dir);
+                    }
+
+                    hasSeenX = -1;
+                    hasSeenO = -1;
+                }
+
+                x -= dir.changeX;
+                y -= dir.changeY;
+                i++;
+            }
+
+        }
+
+
+        LinkedList<OpenPosition> getOpenPositions(int playerNr) {
+            return playerNr == 1 ? openXPositions : openOPositions;
         }
 
         @Override
-        public boolean add(Integer pos) {
-//            if (!list.contains(pos)) // TODO really slow
-            list.add(pos);
-
-            return true;
-        }
+        public int size(int playerNr) { return getOpenPositions(playerNr).size(); }
 
         @Override
-        public void add(int posIndex, Integer pos) {
-//            if (!list.get(posIndex - 1).equals(pos) && !list.get(posIndex).equals(pos) && !list.get(posIndex + 1).equals(pos)) // TODO really slow
-            list.add(posIndex, pos);
-        }
+        public OpenPosition get(int posIndex, int playerNr) { return getOpenPositions(playerNr).get(posIndex); }
+
+        @Override
+        public OpenPosition remove(int posIndex, int playerNr) { return getOpenPositions(playerNr).remove(posIndex); }
+
+        @Override
+        public void add(int posIndex, OpenPosition pos, int playerNr) { getOpenPositions(playerNr).add(posIndex, pos); }
 
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            for (int i : list) {
-                sb.append("("+board.iToX(i) +" "+ board.iToY(i) + "), ");
-            }
+            sb.append( "__X__\n");
+            for (OpenPosition op : openXPositions)
+                sb.append("(").append(board.iToX(op.i)).append(" ").append(board.iToY(op.i)).append("), ");
+            sb.append( "\n__O__\n");
+            for (OpenPosition op : openOPositions)
+                sb.append("(").append(board.iToX(op.i)).append(" ").append(board.iToY(op.i)).append("), ");
+
             return sb.toString();
         }
     }

@@ -18,7 +18,7 @@ public class DefaultReferee implements Referee {
     @Override
     public void letTheGameStart(Callback onEnded) {
         int curPlayer = 0;
-        while (game.getGameSpecificState() == GameRules.GameState.PLAYING) {
+        while (game.getGameState() == GameRules.GameState.PLAYING) {
             game.nextPlayer(game.getPlayer(curPlayer % 2));
             curPlayer++;
         }
@@ -39,7 +39,7 @@ public class DefaultReferee implements Referee {
             inputResolved.set(true); // OP DEZE PLEK LATEN
         });
 
-        long timeout = System.currentTimeMillis() + 10_000;
+        long timeout = System.currentTimeMillis() + 1000_000;
 
         while (!inputResolved.get()) {
             if (System.currentTimeMillis() >= timeout) {

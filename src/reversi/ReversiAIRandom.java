@@ -1,6 +1,7 @@
 package reversi;
 
 import game_util.Player;
+import util.OpenPosition;
 
 import java.util.Random;
 
@@ -23,14 +24,14 @@ public class ReversiAIRandom extends Player {
             return randomInt;
         }
 
-        Reversi.OpenPositionsReversi openPositions = reversi.getOpenPositions(getNr());
+        Reversi.OpenPositionsReversi openPositions = reversi.getOpenPositions();
         System.out.println(openPositions);
 
         String str = "";
         for (int y = 0; y < Reversi.BOARD_SIZE; y++) {
             for (int x = 0; x < Reversi.BOARD_SIZE; x++) {
                 str = (reversi.board.get(x, y) + " ").replace('0', '-');
-                if (openPositions.list.contains(reversi.board.xyToI(x, y)))
+                if (openPositions.getOpenPositions(getNr()).contains(new OpenPosition(reversi.board.xyToI(x, y))))
                     str = str.replace('-', 'v');
 
                 System.out.print(str);
@@ -38,6 +39,6 @@ public class ReversiAIRandom extends Player {
             System.out.println("");
         }
 
-        return openPositions.get(r.nextInt(openPositions.size()));
+        return openPositions.get(r.nextInt(openPositions.size(getNr())), getNr()).i;
     }
 }
