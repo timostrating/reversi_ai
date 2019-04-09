@@ -1,5 +1,6 @@
 package GUI;
 
+import game_util.GameRules;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -14,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
+import reversi.Reversi;
+import tic_tac_toe.TicTacToe;
 
 public class PlayField {
 
@@ -22,7 +25,7 @@ public class PlayField {
    private Label currentPlayer;
    private VBox scorePane;
    private BorderPane totalPane;
-   private VBox[][] panes;
+   private VBox[] panes;
    private int paneNr = 0;
    private Scene scene;
    private static final Integer STARTTIME = 10;
@@ -79,7 +82,13 @@ public class PlayField {
         game = new GridPane();
         game.setAlignment(Pos.CENTER);
 
-        panes = new VBox[rows][columns];
+        int a = rows;
+        int b = columns;
+        a += 1;
+        b = b * b;
+        int position = a + b;
+
+        panes = new VBox[position];
         game.getStyleClass().add("game-grid");
 
         for(int i = 0; i < columns; i++) {
@@ -98,9 +107,10 @@ public class PlayField {
             for (int y = 0; y < rows; y++) {
                 VBox pane = new VBox();
                 pane.setAlignment(Pos.CENTER);
-                panes[x][y] = pane;
                 final int X = x + 1;
                 final int Y = y * rows;
+                final int total = X + Y;
+                panes[total] = pane;
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
                     setPaneNR(X, Y);
@@ -168,10 +178,21 @@ public class PlayField {
             return imageView;
         }
 
+        //TODO speler meegeven
+        public void setPicture(GameRules games, int i, int player) {
+            if (games instanceof TicTacToe) {
+                panes[i].getChildren().add(getPicture("x"));
+            } else if (games instanceof Reversi) {
+                panes[i].getChildren().add(getPicture("black"));
+            }
+            System.out.println("zet " + i + " voor player " + player);
+
+        }
+
 
     public void setPaneNR(int x, int y) { paneNr = x + y; }
     public int getPaneNr() { return paneNr; }
     public void resetPaneNR() { paneNr = -1; }
     public Scene getScene() {return scene; }
-    public Pane[][] getPane() {return panes; }
+    public VBox[] getPane() {return panes; }
 }
