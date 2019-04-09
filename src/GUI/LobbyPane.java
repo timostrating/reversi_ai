@@ -4,55 +4,96 @@ import game_util.Arcade;
 import game_util.GameRules;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import network.Connection;
 import util.ArrayUtils;
 import util.CallbackWithParam;
 import util.CompositionRoot;
 
-public class LobbyPane extends FlowPane {
+import java.util.HashMap;
+import java.util.Optional;
+
+public class LobbyPane extends GridPane {
     Connection connection;
     ChoiceBox gameList;
     ListView<String> playerList;
+    GridPane listGrid;
+    GridPane buttonGrid;
 
     public LobbyPane() {
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true){
-                    try {
-                        connection.getFromServer().onPlayerList.register(onPlayerList);
-                        connection.getToServer().getPlayerList();
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        thread.start();
+        this.setHgap(5);
+        this.setVgap(5);
+        this.setPadding(new Insets(15,15,15,15));
+
+        listGrid = new GridPane();
+        buttonGrid = new GridPane();
+
+        listGrid.setVgap(10);
+
+        buttonGrid.setVgap(10);
+        buttonGrid.setHgap(5);
+        buttonGrid.setPadding(new Insets(0,15,15,15));
 
         connection = CompositionRoot.getInstance().connection;
 
+        new Thread(() -> {
+            while(true){
+                try {
+                    connection.getFromServer().onPlayerList.register(onPlayerList);
+                    connection.getToServer().getPlayerList();
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        connection.getFromServer().onChallenge.register(onChallenge);
+
         //Buttons
+        Label onlinePlayers = new Label("Online spelers");
+        Label withAi = new Label("Met de Ai spelen");
+        Label gameType = new Label("Spel selecteren");
         Button spel1 = new Button("Tic Tac Toe");
         Button spel2 = new Button("Reversi");
-        Button queue = new Button("Queue");
-        Button challenge = new Button("Challenge player");
+        Button queue = new Button("Zoeken naar spel");
+        Button challenge = new Button("Speler uitdagen");
         CheckBox humanOrAi = new CheckBox();
+
+        humanOrAi.setText("Menselijke speler");
+
+        humanOrAi.setOnAction(event -> {
+            if(humanOrAi.selectedProperty().getValue())
+                humanOrAi.setText("Ai speler");
+            else
+                humanOrAi.setText("Menselijke speler");
+        });
+
+        listGrid.setHalignment(onlinePlayers, HPos.CENTER);
 
         connection.getFromServer().onGameList.register(onGameList);
         connection.getToServer().getGameList();
 
+        listGrid.add(onlinePlayers, 0,0);
 
-        this.getChildren().addAll(spel1, spel2, queue, challenge, humanOrAi);
+        buttonGrid.add(gameType, 0,0);
+        buttonGrid.add(withAi, 0,2);
+        buttonGrid.add(humanOrAi, 0,3);
+        buttonGrid.add(queue, 0,4);
+        buttonGrid.add(challenge, 0,5);
+        buttonGrid.add(spel1, 0, 6);
+        buttonGrid.add(spel2, 0,7);
+
+        this.add(listGrid, 0, 0);
+        this.add(buttonGrid, 1, 0);
+//                spel2, queue, challenge, humanOrAi);
 
         // Games
         PlayField ticTacToe = new PlayField(3,3);
@@ -65,6 +106,20 @@ public class LobbyPane extends FlowPane {
         //Scenes
         Scene ticTacToeScene = ticTacToe.getScene();
         Scene reversiScene = reversi.getScene();
+
+        //challenge button
+        challenge.setOnAction(event -> {
+            connection.getToServer().setChallenge(playerList.getSelectionModel().getSelectedItem(), (String) gameList.getSelectionModel().getSelectedItem());
+        });
+
+        //queue button
+        queue.setOnAction(event -> {
+            connection.getToServer().subscribeGame((String) gameList.getSelectionModel().getSelectedItem());
+            System.out.println(humanOrAi.selectedProperty().getValue());
+            BorderPane QueuePane = new QueuePane();
+            Scene scene = new Scene(QueuePane, 500, 400);
+            CompositionRoot.getInstance().lobby.setScene(scene);
+        });
 
         //Register Buttons
         spel1.setOnAction(event -> {
@@ -117,10 +172,6 @@ public class LobbyPane extends FlowPane {
             new Thread(game).start();
         });
 
-
-        queue.setOnAction(event -> {
-            connection.getToServer().subscribeGame((String) gameList.getSelectionModel().getSelectedItem());
-        });
     }
 
     private void gameTypesToBox(String[] message) {
@@ -130,14 +181,16 @@ public class LobbyPane extends FlowPane {
         }
         gameList.setValue(message[0]);
         connection.getFromServer().onGameList.unregister(onGameList);
-        Platform.runLater(() -> this.getChildren().add(gameList));
+        Platform.runLater(() -> buttonGrid.add(gameList, 0,1));
     }
 
     private void playerListToList(String[] message){
         Platform.runLater(() -> {
             if(playerList == null) {
                 playerList = new ListView<String>();
-                this.getChildren().add(playerList);
+                playerList.setPrefWidth(200);
+                playerList.setPrefHeight(200);
+                listGrid.add(playerList, 0,1);
             }
 
             for(String name : message) {
@@ -156,6 +209,29 @@ public class LobbyPane extends FlowPane {
         });
     }
 
+    private void getChallenge(HashMap<String, String> message){
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Inkomende uitdaging");
+            alert.setHeaderText(null);
+            alert.setContentText("Wil je een potje " + message.get("GAMETYPE") + " spelen met " + message.get("CHALLENGER"));
+
+            ButtonType buttonYes = new ButtonType("Ja");
+            ButtonType buttonNo = new ButtonType("Nee");
+
+            alert.getButtonTypes().setAll(buttonYes, buttonNo);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonYes){
+                connection.getToServer().setChallengeAccept(Integer.parseInt(message.get("CHALLENGENUMBER")));
+                connection.getFromServer().onChallenge.unregister(onChallenge);
+            } else {
+                alert.close();
+            }
+        });
+    }
+
     CallbackWithParam<String[]> onGameList = this::gameTypesToBox;
     CallbackWithParam<String[]> onPlayerList = this::playerListToList;
+    CallbackWithParam<HashMap<String, String>> onChallenge = this::getChallenge;
 }
