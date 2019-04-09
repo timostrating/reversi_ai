@@ -26,8 +26,10 @@ public class Lobby extends Application {
         primaryStage.setTitle("Super Kermit Bro's"); // Set the stage title
         primaryStage.setScene(scene); // Place the scene in the stage
         myPrimaryStage.show(); // Display the stage
-
-
+        primaryStage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
     }
 
     public void setScene(Scene scene) {

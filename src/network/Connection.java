@@ -7,19 +7,13 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class Connection {
-    final String host = "localhost";
-    final int port = 7789;
 
     private FromServer fromServer;
     private ToServer toServer;
 
     public final Delegate<CallbackWithParam<Boolean>> onConnection = new Delegate<>();
 
-    public Connection() {
-        connect(host, port);
-    }
-
-    public void connect(String host, int port) {
+    public boolean connect(String host, int port) {
         try (Socket testConnection = new Socket(host, port)){
             Socket socket = new Socket(host, port);
             fromServer = new FromServer(socket);
@@ -32,8 +26,10 @@ public class Connection {
             t2.start();
 
             onConnection.notifyObjects(o -> o.callback(true));
+            return true;
         } catch (IOException e) {
             onConnection.notifyObjects(o -> o.callback(false));
+            return false;
         }
     }
 
