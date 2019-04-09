@@ -36,11 +36,12 @@ public class LobbyPane extends FlowPane {
         spel1.setOnAction(event -> {
             CompositionRoot.getInstance().lobby.setScene(ticTacToeScene);
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.TicTacToeAIMiniMax);
+            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.TicTacToeAIMiniMax);
 
             game.onValidMovePlayed.register(i -> {
+                System.out.println(game);
                 Platform.runLater(() -> {
-                    ticTacToe.setPicture(game, i, 1);
+                    ticTacToe.setPicture(game, i.getKey(), i.getValue());
                 });
             });
 
@@ -63,8 +64,9 @@ public class LobbyPane extends FlowPane {
             GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.ReversiAIMiniMax);
 
             game.onValidMovePlayed.register(i -> {
+                System.out.println(game);
                 Platform.runLater(() -> {
-                    ticTacToe.setPicture(game, i, 1);
+                    ticTacToe.setPicture(game, i.getKey(), i.getValue());
                 });
             });
 

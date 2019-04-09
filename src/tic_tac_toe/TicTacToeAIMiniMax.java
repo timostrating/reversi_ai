@@ -17,7 +17,7 @@ public class TicTacToeAIMiniMax extends Player {
         this.game = game;
         for (int i=0; i <= 8; i++)
             openPositions.add(i);
-        game.onValidMovePlayed.register((x)->openPositions.remove(x));
+        game.onValidMovePlayed.register((x)->openPositions.remove(x.getKey()));
 
         miniMaxHelper = new MiniMaxHelper(game, game.board);
     }

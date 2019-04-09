@@ -2,6 +2,7 @@ package tic_tac_toe;
 
 import game_util.GameBoard2D;
 import game_util.GameRules;
+import javafx.util.Pair;
 
 import static game_util.BoardHelper.areAllEqual;
 
@@ -44,7 +45,7 @@ public class TicTacToe extends GameRules {
     public boolean playMove(int i, int playerNr) {
         if (isValidMove(i) && getGameSpecificState() == GameState.PLAYING) {
             board.set(i, CellState.values()[playerNr].ordinal());
-            onValidMovePlayed.notifyObjects(o -> o.callback(i));
+            onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(i, playerNr)));
             return true;
         }
 

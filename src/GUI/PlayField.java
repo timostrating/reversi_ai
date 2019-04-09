@@ -20,20 +20,12 @@ import tic_tac_toe.TicTacToe;
 
 public class PlayField {
 
-   private GridPane game;
-   private HBox playerPane;
-   private Label currentPlayer;
-   private VBox scorePane;
-   private BorderPane totalPane;
-   private VBox[] panes;
+    private VBox[] panes;
    private int paneNr = 0;
    private Scene scene;
    private static final Integer STARTTIME = 10;
-   private Timeline timeline;
-   private Label timerLabel = new Label();
-   private IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
 
-   private int player = 0;
+    private int player = 0;
 
     // Images
     private static Image o = new Image("GUI/pictures/o.png", 150, 150, false ,true);
@@ -46,11 +38,11 @@ public class PlayField {
 
 
 
-    public PlayField(int rows, int columns) {
+    PlayField(int rows, int columns) {
 
-        currentPlayer = new Label("Kees");
+        Label currentPlayer = new Label("Kees");
         currentPlayer.setStyle("-fx-font-size: 3em;");
-        playerPane = new HBox();
+        HBox playerPane = new HBox();
         playerPane.setSpacing(200);
         playerPane.setAlignment(Pos.CENTER);
         playerPane.getChildren().add(currentPlayer);
@@ -60,17 +52,19 @@ public class PlayField {
         player1.setPadding(new Insets(50,0,0,0));
         player1.setStyle("-fx-font-size: 2em;");
         player2.setStyle("-fx-font-size: 2em;");
-        scorePane = new VBox();
+        VBox scorePane = new VBox();
         scorePane.getChildren().addAll(player1, player2);
 
 
         // Bind the timerLabel text property to the timeSeconds property
+        Label timerLabel = new Label();
+        IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
         timerLabel.textProperty().bind(timeSeconds.asString());
         timerLabel.setTextFill(Color.BLACK);
         timerLabel.setStyle("-fx-font-size: 3em;");
 
         timeSeconds.set(STARTTIME);
-        timeline = new Timeline();
+        Timeline timeline = new Timeline();
         timeline.getKeyFrames().add(
                 new KeyFrame(Duration.seconds(STARTTIME+1),
                         new KeyValue(timeSeconds, 0)));
@@ -79,7 +73,7 @@ public class PlayField {
         playerPane.getChildren().add(timerLabel);
 
 
-        game = new GridPane();
+        GridPane game = new GridPane();
         game.setAlignment(Pos.CENTER);
 
         int a = rows;
@@ -113,25 +107,30 @@ public class PlayField {
                 panes[total] = pane;
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
-                    setPaneNR(X, Y);
+                    setPaneNR(total);
+
 
                     //TicTacToe
                     if (player == 0 && rows == 3){
                         pane.getChildren().add(getPicture("x"));
+                        pane.setDisable(true);
                         player = 1;
                     }
                     else if (player == 1 && rows == 3) {
                         pane.getChildren().add(getPicture("o"));
+                        pane.setDisable(true);
                         player = 0;
                     }
 
                     //Reversi
                     if (player == 0 && rows == 8){
                         pane.getChildren().add(getPicture("black"));
+                        pane.setDisable(true);
                         player = 1;
                     }
                     else if (player == 1 && rows == 8) {
                         pane.getChildren().add(getPicture("white"));
+                        pane.setDisable(true);
                         player = 0;
                     }
 
@@ -148,7 +147,7 @@ public class PlayField {
             }
         }
 
-        totalPane = new BorderPane();
+        BorderPane totalPane = new BorderPane();
         totalPane.setTop(playerPane);
         totalPane.setCenter(game);
         totalPane.setRight(scorePane);
@@ -159,7 +158,7 @@ public class PlayField {
 
     }
 
-        public static ImageView getPicture(String player) {
+        private static ImageView getPicture(String player) {
 
             ImageView imageView = null;
             if (player == "x") {
@@ -179,18 +178,31 @@ public class PlayField {
         }
 
         //TODO speler meegeven
-        public void setPicture(GameRules games, int i, int player) {
-            if (games instanceof TicTacToe) {
-                panes[i].getChildren().add(getPicture("x"));
-            } else if (games instanceof Reversi) {
-                panes[i].getChildren().add(getPicture("black"));
+        void setPicture(GameRules games, int i, int player) {
+        i +=1;
+
+        if (games instanceof TicTacToe) {
+                if (player == 1) {
+                    panes[i].getChildren().add(getPicture("x"));
+                }
+                else if (player == 2) {
+                    panes[i].getChildren().add(getPicture("o"));
+                }
+            }
+            else if (games instanceof Reversi) {
+                if (player == 1) {
+                    panes[i].getChildren().add(getPicture("black"));
+                }
+                else if (player == 2) {
+                    panes[i].getChildren().add(getPicture("white"));
+                }
             }
             System.out.println("zet " + i + " voor player " + player);
 
         }
 
 
-    public void setPaneNR(int x, int y) { paneNr = x + y; }
+    public void setPaneNR(int position) { paneNr = position; }
     public int getPaneNr() { return paneNr; }
     public void resetPaneNR() { paneNr = -1; }
     public Scene getScene() {return scene; }

@@ -1,5 +1,6 @@
 package game_util;
 
+import javafx.util.Pair;
 import util.Callback;
 import util.CallbackWithParam;
 import util.Delegate;
@@ -9,7 +10,7 @@ public abstract class GameRules implements Runnable {
 
     public Delegate<Callback> onNextPlayer = new Delegate<>();
     public Delegate<Callback> onGameEnded = new Delegate<>();
-    public Delegate<CallbackWithParam<Integer>> onValidMovePlayed = new Delegate<>();
+    public Delegate<CallbackWithParam<Pair<Integer, Integer>>> onValidMovePlayed = new Delegate<>();
 
     private Player[] players;
     private Referee referee;
