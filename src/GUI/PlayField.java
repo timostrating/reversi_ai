@@ -3,6 +3,7 @@ package GUI;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -18,6 +19,7 @@ public class PlayField {
 
    private GridPane game;
    private HBox playerPane;
+   private Label currentPlayer;
    private VBox scorePane;
    private BorderPane totalPane;
    private VBox[][] panes;
@@ -31,10 +33,10 @@ public class PlayField {
    private int player = 0;
 
     // Images
-    private static Image o = new Image("GUI/pictures/o.png", 40, 40, false ,true);
-    private static Image x = new Image("GUI/pictures/x.png",40,40,false,true);
-    private static Image black = new Image("GUI/pictures/blackPiece.png", 40, 40, false, true);
-    private static Image white = new Image("GUI/pictures/whitePiece.png",40 , 40, false, true);
+    private static Image o = new Image("GUI/pictures/o.png", 150, 150, false ,true);
+    private static Image x = new Image("GUI/pictures/x.png",150,150,false,true);
+    private static Image black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true);
+    private static Image white = new Image("GUI/pictures/whitePiece.png",60, 60, false, true);
 
 
 
@@ -43,13 +45,18 @@ public class PlayField {
 
     public PlayField(int rows, int columns) {
 
-        Label currentPlayer = new Label("Kees");
-        playerPane = new HBox(200);
-        playerPane.setPrefSize(400, 30);
+        currentPlayer = new Label("Kees");
+        currentPlayer.setStyle("-fx-font-size: 3em;");
+        playerPane = new HBox();
+        playerPane.setSpacing(200);
+        playerPane.setAlignment(Pos.CENTER);
         playerPane.getChildren().add(currentPlayer);
 
         Label player1 = new Label("Player 1 has 10 points");
         Label player2 = new Label("Player 2 has 13 points");
+        player1.setPadding(new Insets(50,0,0,0));
+        player1.setStyle("-fx-font-size: 2em;");
+        player2.setStyle("-fx-font-size: 2em;");
         scorePane = new VBox();
         scorePane.getChildren().addAll(player1, player2);
 
@@ -57,7 +64,7 @@ public class PlayField {
         // Bind the timerLabel text property to the timeSeconds property
         timerLabel.textProperty().bind(timeSeconds.asString());
         timerLabel.setTextFill(Color.BLACK);
-        //timerLabel.setStyle("-fx-font-size: 4em;");
+        timerLabel.setStyle("-fx-font-size: 3em;");
 
         timeSeconds.set(STARTTIME);
         timeline = new Timeline();
@@ -70,19 +77,20 @@ public class PlayField {
 
 
         game = new GridPane();
+        game.setAlignment(Pos.CENTER);
 
         panes = new VBox[rows][columns];
         game.getStyleClass().add("game-grid");
 
         for(int i = 0; i < columns; i++) {
             ColumnConstraints column = new ColumnConstraints();
-            column.setPrefWidth(50);
+            column.setPrefWidth(200);
             game.getColumnConstraints().add(column);
         }
 
         for(int i = 0; i < rows; i++) {
             RowConstraints row = new RowConstraints();
-            row.setPrefHeight(50);
+            row.setPrefHeight(200);
             game.getRowConstraints().add(row);
         }
 
@@ -136,7 +144,7 @@ public class PlayField {
         totalPane.setRight(scorePane);
 
 
-        scene = new Scene(totalPane, (columns * 40) + 150, (rows * 40) + 150, Color.WHITE);
+        scene = new Scene(totalPane, 1000,700, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
 
     }
