@@ -1,5 +1,6 @@
 package GUI;
 
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -27,11 +28,10 @@ public class LoginView extends BorderPane{
         primaryStage.getIcons().add(new Image("/GUI/pictures/kermitIcon.jpg"));
         primaryStage.setTitle("Super Kermit Bro's");
 
-//        primaryStage.setOnCloseRequest(event -> {
-//            Platform.exit();
-//            System.exit(0);
-//        });
-
+        primaryStage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
 
         this.setPadding(new Insets(60, 0, 0, 60));
 
@@ -49,9 +49,9 @@ public class LoginView extends BorderPane{
         loginButton.setText("Login");
 
         this.setStyle("-fx-background-image: url(\"GUI/pictures/kermit.jpg\");");
-//        loginLabel.setStyle("-fx-font-size: 20; -fx-padding: 5 20 0 20");
-//        loginTextField.setStyle("-fx-background-color: rgb(255,255,255,0.7); -fx-text-fill: black; -fx-border-color: rgb(0,0,0,0.3); -fx-border-width: 3; -fx-border-radius: 3;");
-//        loginButton.setStyle("-fx-font-size: 15; -fx-padding: 6 50 6 50;");
+        loginLabel.setStyle("-fx-font-size: 20; -fx-padding: 5 20 0 20");
+        loginTextField.setStyle("-fx-background-color: rgb(255,255,255,0.7); -fx-text-fill: black; -fx-border-color: rgb(0,0,0,0.3); -fx-border-width: 3; -fx-border-radius: 3;");
+        loginButton.setStyle("-fx-font-size: 15; -fx-padding: 6 50 6 50;");
 
         gridPane.add(loginLabel, 0,0);
         gridPane.add(loginTextField, 0,1);
@@ -74,12 +74,7 @@ public class LoginView extends BorderPane{
         this.setTop(hBox);
         this.setCenter(gridPane);
 
-//        this.getChildren().add(gridPane);
-//        Scene scene = new Scene(borderPane, 576, 316);
-
-//        primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-//        primaryStage.show();
     }
 
     private CallbackWithParam<String[]> onPlayerList = this::validatePlayer;
