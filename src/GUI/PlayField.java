@@ -1,5 +1,8 @@
 package GUI;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -7,17 +10,23 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.util.Duration;
 
 public class PlayField {
 
    private GridPane game;
    private HBox playerPane;
-   private HBox timerPane;
    private VBox scorePane;
    private BorderPane totalPane;
    private VBox[][] panes;
    private int paneNr = 0;
    private Scene scene;
+   private static final Integer STARTTIME = 10;
+   private Timeline timeline;
+   private Label timerLabel = new Label();
+   private IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
 
    private int player = 0;
 
@@ -35,7 +44,7 @@ public class PlayField {
     public PlayField(int rows, int columns) {
 
         Label currentPlayer = new Label("Kees");
-        playerPane = new HBox();
+        playerPane = new HBox(200);
         playerPane.setPrefSize(400, 30);
         playerPane.getChildren().add(currentPlayer);
 
@@ -43,6 +52,21 @@ public class PlayField {
         Label player2 = new Label("Player 2 has 13 points");
         scorePane = new VBox();
         scorePane.getChildren().addAll(player1, player2);
+
+
+        // Bind the timerLabel text property to the timeSeconds property
+        timerLabel.textProperty().bind(timeSeconds.asString());
+        timerLabel.setTextFill(Color.BLACK);
+        //timerLabel.setStyle("-fx-font-size: 4em;");
+
+        timeSeconds.set(STARTTIME);
+        timeline = new Timeline();
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.seconds(STARTTIME+1),
+                        new KeyValue(timeSeconds, 0)));
+        timeline.playFromStart();
+
+        playerPane.getChildren().add(timerLabel);
 
 
         game = new GridPane();
