@@ -26,8 +26,8 @@ public class Arcade {
     }
 
     public enum PlayerFactory {
-        HumanPlayer(g -> new HumanPlayer()),
-        GUIPlayer(g -> new GUIPlayer()),
+        HumanPlayer(g -> new HumanPlayer(g)),
+        GUIPlayer(g -> new GUIPlayer(g)),
         RemotePlayer(g -> new RemotePlayer()),
         TicTacToeAIScore(g -> new TicTacToeAIScore((TicTacToe) g)),
         TicTacToeAIMiniMax(g -> new TicTacToeAIMiniMax((TicTacToe) g)),

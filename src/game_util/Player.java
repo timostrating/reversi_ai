@@ -38,9 +38,9 @@ public abstract class Player {
         this.disqualified = disqualified;
     }
 
-    protected abstract int getInput();
+    protected abstract Move getInput();
 
-    public final void yourTurn(CallbackWithParam<Integer> inputCallback) {
+    public final void yourTurn(CallbackWithParam<Move> inputCallback) {
         EXECUTOR.execute(() -> inputCallback.callback(getInput()));
     }
 

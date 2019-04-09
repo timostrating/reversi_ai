@@ -1,5 +1,6 @@
 package game_util;
 
+import reversi.Reversi;
 import util.OpenPosition;
 import util.OpenPositions;
 
@@ -42,9 +43,9 @@ public class MiniMaxHelper<T extends OpenPosition> {
         this.openPositions = openPositions;
         return minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
     }
-    private PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
-        PosAndScore best = new PosAndScore(null, -1); // (position, score)
 
+    private PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
+        PosAndScore best = new PosAndScore(null, -1, null); // (position, score, move)
         if (playerNr == max)
             best.score = Integer.MIN_VALUE;
         else
@@ -58,13 +59,34 @@ public class MiniMaxHelper<T extends OpenPosition> {
 
         for (int posIndex = 0; posIndex < openPositions.size(playerNr); posIndex++) {
             T pos = openPositions.get(posIndex, playerNr);
-            board.set(pos.i, playerNr);
-            openPositions.remove(posIndex, playerNr);
+
+//            System.out.println(openPositions);
+//            String str = "";
+//            for (int y = 0; y < Reversi.BOARD_SIZE; y++) {
+//                for (int x = 0; x < Reversi.BOARD_SIZE; x++) {
+//                    str = (board.get(x, y) + " ").replace('0', '-');
+//                    if (openPositions.contains(board.xyToI(x, y), playerNr))
+//                        str = str.replace('-', 'v');
+//
+//                    System.out.print(str);
+//                }
+//                System.out.println("");
+//            }
+//            System.out.println();
+//            System.out.println();
+            Move m = game.getMove(pos.i, playerNr);
+            if (m == null)
+                continue;
+            m.doMove(false);
+//            openPositions.remove(posIndex, playerNr);
+//            board.set(pos.i, playerNr);
 
 
             PosAndScore posAndScore = minimax(depth-1, alpha, beta, (playerNr%2) +1);
-            board.set(pos.i, 0);
-            openPositions.add(posIndex, pos, playerNr);
+
+            m.undoMove();
+//            board.set(pos.i, 0);
+//            openPositions.add(posIndex, pos, playerNr);
             posAndScore.pos = pos;
 
             if (playerNr == max) {
@@ -91,10 +113,12 @@ public class MiniMaxHelper<T extends OpenPosition> {
     public class PosAndScore {
         public OpenPosition pos;
         public float score;
+        public Move move;
 
-        PosAndScore(OpenPosition pos, float score) {
+        PosAndScore(OpenPosition pos, float score, Move move) {
             this.pos = pos;
             this.score = score;
+            this.move = move;
         }
 
         @Override

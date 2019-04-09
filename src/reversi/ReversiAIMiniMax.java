@@ -1,6 +1,7 @@
 package reversi;
 
 import game_util.MiniMaxHelper;
+import game_util.Move;
 import game_util.Player;
 import util.OpenPosition;
 
@@ -17,11 +18,11 @@ public class ReversiAIMiniMax extends Player {
     }
 
     @Override
-    public int getInput() {
+    public Move getInput() {
         openPositions = reversi.getOpenPositions();
         MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(999, getNr(), openPositions);
         System.out.println(best);
-        return best.pos.i;
+        return best.move;
     }
 
 }

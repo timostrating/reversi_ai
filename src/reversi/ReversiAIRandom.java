@@ -1,5 +1,6 @@
 package reversi;
 
+import game_util.Move;
 import game_util.Player;
 import util.OpenPosition;
 
@@ -15,13 +16,16 @@ public class ReversiAIRandom extends Player {
     }
 
     @Override
-    protected int getInput() {
+    protected Move getInput() {
         if (getNr() == 2) {
             int randomInt = 0;
-            while (!reversi.isValidMove(randomInt, getNr()))
-                randomInt = r.nextInt(Reversi.CELL_COUNT);
+            while (true) {
+                Move m = reversi.getMove(randomInt, getNr());
+                if (m != null)
+                    return m;
 
-            return randomInt;
+                randomInt = r.nextInt(Reversi.CELL_COUNT);
+            }
         }
 
         Reversi.OpenPositionsReversi openPositions = reversi.getOpenPositions();
@@ -39,6 +43,6 @@ public class ReversiAIRandom extends Player {
             System.out.println("");
         }
 
-        return openPositions.get(r.nextInt(openPositions.size(getNr())), getNr()).i;
+        return reversi.getMove(openPositions.get(r.nextInt(openPositions.size(getNr())), getNr()).i, getNr());
     }
 }

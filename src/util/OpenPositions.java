@@ -16,4 +16,10 @@ public interface OpenPositions<T extends OpenPosition> {
             return;
         }
     }
+
+    default boolean contains(int i, int playerNr) {
+        for (int j = 0; j < size(playerNr); j++) if (get(j, playerNr ).i == i) return true;
+        return false;
+    }
+
 }

@@ -58,5 +58,5 @@ public abstract class GameRules implements Runnable {
     }
 
     public abstract GameState getGameSpecificState();
-    public abstract boolean playMove(int input, int playerNr);
+    public abstract Move getMove(int input, int playerNr);
 }
