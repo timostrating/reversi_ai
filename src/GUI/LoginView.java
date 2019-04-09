@@ -1,8 +1,5 @@
 package GUI;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -11,36 +8,32 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import network.Connection;
 import util.CallbackWithParam;
+import util.CompositionRoot;
 
-public class LoginView extends Application{
+public class LoginView extends BorderPane{
     private TextField loginTextField;
     private String username;
     private Connection connection;
 
-    @Override
-    public void start(Stage primaryStage){
+    public LoginView(Stage primaryStage){
+        connection = CompositionRoot.getInstance().connection;
         //Adding icon and title to the title bar
         primaryStage.getIcons().add(new Image("/GUI/pictures/kermitIcon.jpg"));
         primaryStage.setTitle("Super Kermit Bro's");
 
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                Platform.exit();
-                System.exit(0);
-            }
-        });
+//        primaryStage.setOnCloseRequest(event -> {
+//            Platform.exit();
+//            System.exit(0);
+//        });
 
-        connection = new Connection();
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setPadding(new Insets(60, 0, 0, 60));
+        this.setPadding(new Insets(60, 0, 0, 60));
 
         HBox hBox = new HBox();
 
@@ -55,19 +48,19 @@ public class LoginView extends Application{
 
         loginButton.setText("Login");
 
+        this.setStyle("-fx-background-image: url(\"GUI/pictures/kermit.jpg\");");
+//        loginLabel.setStyle("-fx-font-size: 20; -fx-padding: 5 20 0 20");
+//        loginTextField.setStyle("-fx-background-color: rgb(255,255,255,0.7); -fx-text-fill: black; -fx-border-color: rgb(0,0,0,0.3); -fx-border-width: 3; -fx-border-radius: 3;");
+//        loginButton.setStyle("-fx-font-size: 15; -fx-padding: 6 50 6 50;");
+
         gridPane.add(loginLabel, 0,0);
         gridPane.add(loginTextField, 0,1);
         gridPane.add(loginButton, 0,2);
 
-        borderPane.setId("borderPane");
+        this.setId("borderPane");
         gridPane.setId("gridPane");
         loginButton.setId("loginButton");
         loginTextField.setId("text-field");
-
-        borderPane.setStyle("-fx-background-image: url(\"GUI/pictures/kermit.jpg\");");
-        loginLabel.setStyle("-fx-font-size: 20; -fx-padding: 5 20 0 20");
-        loginTextField.setStyle("-fx-background-color: rgb(255,255,255,0.7); -fx-text-fill: black; -fx-border-color: rgb(0,0,0,0.3); -fx-border-width: 3; -fx-border-radius: 3;");
-        loginButton.setStyle("-fx-font-size: 15; -fx-padding: 6 50 6 50;");
 
         gridPane.setHalignment(loginButton, HPos.CENTER);
         gridPane.setHalignment(loginLabel, HPos.CENTER);
@@ -78,14 +71,15 @@ public class LoginView extends Application{
             connection.getToServer().getPlayerList();
         });
 
-        borderPane.setTop(hBox);
-        borderPane.setCenter(gridPane);
+        this.setTop(hBox);
+        this.setCenter(gridPane);
 
-        Scene scene = new Scene(borderPane, 576, 316);
-        primaryStage.setScene(scene);
+//        this.getChildren().add(gridPane);
+//        Scene scene = new Scene(borderPane, 576, 316);
+
+//        primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-
-        primaryStage.show();
+//        primaryStage.show();
     }
 
     private CallbackWithParam<String[]> onPlayerList = this::validatePlayer;
@@ -100,8 +94,16 @@ public class LoginView extends Application{
         if(validatePlayer) {
             System.out.println("Succes!");
             connection.getToServer().setLogin(username);
+            FlowPane lobby = new LobbyPane();
+            Scene scene1 = new Scene(lobby, 200, 250);
+            CompositionRoot.getInstance().lobby.setScene(scene1);
         } else {
-            System.out.println("Username already used!");
+            if (username.equals("")) {
+                System.out.println("vul een geldige naam in");
+            } else {
+                System.out.println("Gebruikersnaam al in gebruik!");
+
+            }
         }
         connection.getFromServer().onPlayerList.unregister(onPlayerList);
     }
