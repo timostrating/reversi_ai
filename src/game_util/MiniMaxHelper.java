@@ -78,25 +78,22 @@ public class MiniMaxHelper<T extends OpenPosition> {
             if (m == null)
                 continue;
             m.doMove(false);
-//            openPositions.remove(posIndex, playerNr);
-//            board.set(pos.i, playerNr);
 
 
             PosAndScore posAndScore = minimax(depth-1, alpha, beta, (playerNr%2) +1);
 
             m.undoMove();
-//            board.set(pos.i, 0);
-//            openPositions.add(posIndex, pos, playerNr);
             posAndScore.pos = pos;
+            posAndScore.move = m;
 
             if (playerNr == max) {
-                if (best.score < posAndScore.score)
+                if (best.score < posAndScore.score || best.pos == null)
                     best = posAndScore;
 
                 alpha = Math.max(alpha, posAndScore.score);
             }
             else {
-                if (best.score > posAndScore.score)
+                if (best.score > posAndScore.score || best.pos == null)
                     best = posAndScore;
 
                 beta = Math.min(beta, posAndScore.score);
