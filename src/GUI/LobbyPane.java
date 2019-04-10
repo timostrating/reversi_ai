@@ -138,11 +138,11 @@ public class LobbyPane extends GridPane {
         spel2.setOnAction(event -> {
             CompositionRoot.getInstance().lobby.setScene(reversiScene);
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.ReversiAIMiniMax);
+            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.ReversiAIMiniMax, Arcade.PlayerFactory.ReversiAIMiniMax);
 
             game.onValidMovePlayed.register(i -> {
                 System.out.println(game);
-                Platform.runLater(() -> ticTacToe.setPicture(game, i.getKey(), i.getValue()));
+                Platform.runLater(() -> reversi.setPicture(game, i.getKey(), i.getValue()));
             });
 
             new Thread(game).start();
