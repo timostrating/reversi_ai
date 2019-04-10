@@ -49,6 +49,7 @@ public class TicTacToe extends GameRules {
                 areAllEqual(player.ordinal(), board.get(2,0), board.get(1,1), board.get(0,2));
     }
 
+
     public Move getMove(int i, int playerNr) {
         if (isValidMove(i) && getGameSpecificState() == GameState.PLAYING) {
             return new Move() {

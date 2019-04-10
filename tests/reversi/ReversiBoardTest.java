@@ -17,7 +17,7 @@ class ReversiBoardTest {
     @BeforeEach
     void BeforeEach() {
         reversi = new Reversi();
-        reversi.initialize(new DefaultReferee(reversi), new HumanPlayer(), new HumanPlayer());
+        reversi.initialize(new DefaultReferee(reversi), new HumanPlayer(reversi), new HumanPlayer(reversi));
     }
 
     @AfterEach
