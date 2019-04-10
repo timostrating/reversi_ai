@@ -17,7 +17,7 @@ public class GUIPlayer extends Player {
         int paneNr = 1;//gui.getPaneNr();
         while (true) {
             if (paneNr != -1) {
-                //gui.resetPaneNR();
+                // gui.resetPaneNR();
                 return paneNr;
             }
         }
