@@ -2,6 +2,7 @@ package reversi;
 
 import game_util.GameBoard2D;
 import game_util.GameRules;
+import game_util.Move;
 import game_util.Player;
 import util.OpenPosition;
 import javafx.util.Pair;
@@ -80,24 +81,19 @@ public class Reversi extends GameRules {
         return GameState.PLAYER_2_WINS;
     }
 
-    public boolean playMove(int i, int playerNr) {
-        boolean validPlayMove = playOrTestMove(board.iToX(i), board.iToY(i), playerNr, false);
-
-        if (validPlayMove)
-            onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(i, playerNr)));
-
-        return validPlayMove;
-    }
-
     public boolean isValidMove(int i, int playerNr) {
-        return playOrTestMove(board.iToX(i), board.iToY(i), playerNr, true);
+        return getMove(i, playerNr) != null;
     }
 
-    private boolean playOrTestMove(int x, int y, int playerNr, boolean testForValidMove) {
-        if (!touchesOpponentAndIsEmpty(x, y, playerNr))
-            return false;
+    @Override
+    public Move getMove(int input, int playerNr) {
+        int x = board.iToX(input), y = board.iToY(input);
 
-        boolean flippedOpponent = false;
+        if (!touchesOpponentAndIsEmpty(x, y, playerNr))
+            return null;
+
+        LinkedList<int[]> flips = new LinkedList<>();
+
         for (BoardDirection dir : BoardDirection.values()) {
             int n = 1;
             boolean hasVisitedOpponent = false;
@@ -106,13 +102,9 @@ public class Reversi extends GameRules {
             while (board.isInBounds(newX, newY) && board.get(newX, newY) != CellState.EMPTY.ordinal()) {
                 if (board.get(newX, newY) == CellState.fromNr(playerNr).ordinal()) {
                     if (hasVisitedOpponent) {
-                        if (testForValidMove) // isValidMove()
-                            return true;
 
-                        flippedOpponent = true;
-//                            System.out.printf("%s: (%d,%d) -> (%d,%d)\n", "BACKTRACK",newX, newY, x, y);
                         while (n-- > 1)
-                            flipOnBoardAndNotify(x + n * dir.changeX, y + n * dir.changeY, CellState.fromNr(playerNr).ordinal());
+                            flips.add(new int[] {x + n * dir.changeX, y + n * dir.changeY});
 
                     }
                     break;
@@ -124,15 +116,31 @@ public class Reversi extends GameRules {
                 }
             }
         }
+        if (flips.size() > 0) {
+            return new Move() {
+                @Override
+                public int toI() { return input; }
 
-        if (flippedOpponent && !testForValidMove) { // set move only if we are not testing
-            setOnBoardAndNotify(x, y, CellState.fromNr(playerNr).ordinal());
-            return true;
+                @Override
+                public void doMove(boolean permanent) {
+                    setOnBoardAndNotify(x, y, playerNr);
+                    for (int[] pos : flips)
+                        flipOnBoardAndNotify(pos[0], pos[1], playerNr);
+
+                    if (permanent)
+                        onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(input, playerNr)));
+                }
+
+                @Override
+                public void undoMove() {
+                    setOnBoardAndNotify(x, y, 0);
+                    for (int[] pos : flips)
+                        flipOnBoardAndNotify(pos[0], pos[1], (playerNr % 2) + 1);
+                }
+            };
         }
-
-        return false;
+        return null;
     }
-
 
     private boolean touchesOpponentAndIsEmpty(int x, int y, int playerNr) {
         if (!board.isInBounds(x, y) || board.get(x, y) != CellState.EMPTY.ordinal())
@@ -186,6 +194,8 @@ public class Reversi extends GameRules {
 
 
         public void onChange(int x, int y) {
+            if (board.get(x, y) != 0)
+                filter(board.xyToI(x, y), board.get(x, y));
             for (BoardDirection dir : BoardDirection.values()) {
                 checkOpenPositionsInLine(x + dir.xStepsToBorder(x, y), y + dir.yStepsToBorder(x, y), dir);
             }

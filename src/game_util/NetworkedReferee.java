@@ -56,7 +56,10 @@ public class NetworkedReferee extends DefaultReferee {
 
     private CallbackWithParam<HashMap<String, String>> onMove = message -> {
         Player p = game.getPlayerByName(message.get("PLAYER"));
-        game.playMove(Integer.valueOf(message.get("MOVE")), p.getNr());
+        Move m = game.getMove(Integer.valueOf(message.get("MOVE")), p.getNr());
+        if (m != null) m.doMove(true);
+        else System.err.println("WARNING: Invalid Move received from server");
+
         if (p == localPlayer) // the server confirmed the move of localPlayer, now assume that remotePlayer is next:
             game.nextPlayer(remotePlayer);
     };
@@ -90,7 +93,7 @@ public class NetworkedReferee extends DefaultReferee {
         AtomicBoolean inputResolved = new AtomicBoolean(false);
         p.yourTurn(input -> {
             if (!p.isDisqualified() && !inputResolved.get() && game.getGameState() == PLAYING)
-                toServer.setMove(input);
+                toServer.setMove(input.toI());
             inputResolved.set(true);
         });
     }

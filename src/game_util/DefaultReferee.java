@@ -32,14 +32,15 @@ public class DefaultReferee implements Referee {
 
         p.yourTurn(input -> {
             if (!p.isDisqualified() && !inputResolved.get()) {
-                if (!game.playMove(input, p.getNr())) {
+                if (input == null) {
+                    System.err.println("Player " + p.getNr() + " did not give valid input.");
                     disqualify(p);
-                }
+                } else input.doMove(true);
             }
             inputResolved.set(true); // OP DEZE PLEK LATEN
         });
 
-        long timeout = System.currentTimeMillis() + 1000_000;
+        long timeout = System.currentTimeMillis() + 100000_000;
 
         while (!inputResolved.get()) {
             if (System.currentTimeMillis() >= timeout) {
@@ -47,6 +48,9 @@ public class DefaultReferee implements Referee {
                 disqualify(p);
                 break;
             }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) { }
         }
     }
 

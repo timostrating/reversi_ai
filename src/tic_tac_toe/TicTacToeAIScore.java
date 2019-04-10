@@ -1,5 +1,6 @@
 package tic_tac_toe;
 
+import game_util.Move;
 import game_util.Player;
 
 // Renamed van TicTacToeAI naar TicTacToeAIScore
@@ -18,7 +19,7 @@ public class TicTacToeAIScore extends Player {
     }
 
     @Override
-    public int getInput() {
+    public Move getInput() {
         int[] board = game.board.getBoard();
 
         int highScore = 0;
@@ -32,6 +33,6 @@ public class TicTacToeAIScore extends Player {
             }
         }
 
-        return highScoreIndex;
+        return game.getMove(highScoreIndex, getNr());
     }
 }
