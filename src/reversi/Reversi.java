@@ -4,7 +4,6 @@ import game_util.GameBoard2D;
 import game_util.GameRules;
 import game_util.Move;
 import game_util.Player;
-import util.OpenPosition;
 import javafx.util.Pair;
 import util.OpenPositions;
 import util.Utils;
@@ -16,7 +15,7 @@ public class Reversi extends GameRules {
     public static final int BOARD_SIZE = 8;
     public static final int CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
 
-    private OpenPositionsReversi openPositions = new OpenPositionsReversi();
+    public OpenPositionsReversi openPositions = new OpenPositionsReversi();
 
     public GameBoard2D board;
     public float[] playerScores = {
@@ -196,9 +195,9 @@ public class Reversi extends GameRules {
         }
     }
 
-    protected class OpenPositionsReversi implements OpenPositions<OpenPosition> { // TODO we should implement this using a different data structure }
+    protected class OpenPositionsReversi implements OpenPositions { // TODO we should implement this using a different data structure }
 
-        LinkedList<OpenPosition>
+        LinkedList<Integer>
                 openXPositions = new LinkedList<>(),
                 openOPositions = new LinkedList<>();
 
@@ -222,7 +221,7 @@ public class Reversi extends GameRules {
             boolean[][][] arrows = playerNr == 1 ? validationArrowsX : validationArrowsO;
 
             if (!Utils.any(arrows[x][y]))
-                getOpenPositions(playerNr).add(new OpenPosition(board.xyToI(x, y)));
+                getOpenPositions(playerNr).add(board.xyToI(x, y));
 
             arrows[x][y][dir.ordinal()] = true;
         }
@@ -277,7 +276,7 @@ public class Reversi extends GameRules {
         }
 
 
-        LinkedList<OpenPosition> getOpenPositions(int playerNr) {
+        LinkedList<Integer> getOpenPositions(int playerNr) {
             return playerNr == 1 ? openXPositions : openOPositions;
         }
 
@@ -285,23 +284,23 @@ public class Reversi extends GameRules {
         public int size(int playerNr) { return getOpenPositions(playerNr).size(); }
 
         @Override
-        public OpenPosition get(int posIndex, int playerNr) { return getOpenPositions(playerNr).get(posIndex); }
+        public int get(int posIndex, int playerNr) { return getOpenPositions(playerNr).get(posIndex); }
 
         @Override
-        public OpenPosition remove(int posIndex, int playerNr) { return getOpenPositions(playerNr).remove(posIndex); }
+        public int remove(int posIndex, int playerNr) { return getOpenPositions(playerNr).remove(posIndex); }
 
         @Override
-        public void add(int posIndex, OpenPosition pos, int playerNr) { getOpenPositions(playerNr).add(posIndex, pos); }
+        public void add(int posIndex, int pos, int playerNr) { getOpenPositions(playerNr).add(posIndex, pos); }
 
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append( "__X__\n");
-            for (OpenPosition op : openXPositions)
-                sb.append("(").append(board.iToX(op.i)).append(" ").append(board.iToY(op.i)).append("), ");
+            for (int op : openXPositions)
+                sb.append("(").append(board.iToX(op)).append(" ").append(board.iToY(op)).append("), ");
             sb.append( "\n__O__\n");
-            for (OpenPosition op : openOPositions)
-                sb.append("(").append(board.iToX(op.i)).append(" ").append(board.iToY(op.i)).append("), ");
+            for (int op : openOPositions)
+                sb.append("(").append(board.iToX(op)).append(" ").append(board.iToY(op)).append("), ");
 
             return sb.toString();
         }

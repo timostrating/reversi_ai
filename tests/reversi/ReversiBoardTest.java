@@ -6,7 +6,6 @@ import game_util.HumanPlayer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import util.OpenPosition;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -180,11 +179,11 @@ class ReversiBoardTest {
         assert reversi.playMove(board.xyToI(3, 0), 2);
         assert reversi.playMove(board.xyToI(2, 6), 1);
 
-        LinkedList<OpenPosition>
+        LinkedList<Integer>
                 openO = reversi.getOpenPositions().openOPositions,
                 openX = reversi.getOpenPositions().openXPositions;
-        assert openO.contains(new OpenPosition(board.xyToI(1, 0)));
-        assert openX.contains(new OpenPosition(board.xyToI(4, 0)));
+        assert openO.contains(board.xyToI(1, 0));
+        assert openX.contains(board.xyToI(4, 0));
     }
 
 }

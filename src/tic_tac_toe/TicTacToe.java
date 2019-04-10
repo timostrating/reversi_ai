@@ -4,7 +4,6 @@ import game_util.GameBoard2D;
 import game_util.GameRules;
 import javafx.util.Pair;
 import game_util.Move;
-import util.OpenPosition;
 import util.OpenPositions;
 
 import java.util.LinkedList;
@@ -24,7 +23,7 @@ public class TicTacToe extends GameRules {
         board = new GameBoard2D(TicTacToe.BOARD_SIZE);
         board.reset();
         for (int i=0; i <= 8; i++)
-            openPositions.add(new OpenPosition(i));
+            openPositions.add(i);
     }
 
     public GameState getGameSpecificState() {
@@ -69,7 +68,7 @@ public class TicTacToe extends GameRules {
                 @Override
                 public void undoMove() {
                     board.set(i, 0);
-                    openPositions.add(new OpenPosition(i));
+                    openPositions.add(i);
                 }
             };
         }
@@ -85,14 +84,14 @@ public class TicTacToe extends GameRules {
         return board.toString().replace("0", "-").replace("1", "X").replace("2","O");
     }
 
-    private class LinkedListOpenPositionsWrapper extends LinkedList<OpenPosition> implements OpenPositions {
+    private class LinkedListOpenPositionsWrapper extends LinkedList<Integer> implements OpenPositions {
         @Override public int size(int playerNr) { return size(); }
 
-        @Override public OpenPosition get(int posIndex, int playerNr) { return get(posIndex); }
+        @Override public int get(int posIndex, int playerNr) { return get(posIndex); }
 
-        @Override public OpenPosition remove(int posIndex, int playerNr) { return remove(posIndex); }
+        @Override public int remove(int posIndex, int playerNr) { return remove(posIndex); }
 
-        @Override public void add(int posIndex, OpenPosition pos, int playerNr) {  add(posIndex, pos); }
+        @Override public void add(int posIndex, int pos, int playerNr) {  add(posIndex, pos); }
 
     }
 
