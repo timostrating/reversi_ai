@@ -10,6 +10,7 @@ import util.CompositionRoot;
 public class Lobby extends Application {
 
     private static Stage myPrimaryStage;
+    public PlayField playField;
 
     @Override
     public void start(Stage primaryStage){

@@ -22,20 +22,16 @@ import util.CompositionRoot;
 
 public class PlayField {
 
-   private static final Integer STARTTIME = 10;
+    private static final Integer STARTTIME = 10; // TODO not hardcode
     // Images
-    private static Image o = new Image("GUI/pictures/o.png", 150, 150, false ,true);
-    private static Image x = new Image("GUI/pictures/x.png",150,150,false,true);
+    private static Image o = new Image("GUI/pictures/o.png", 150, 150, false, true);
+    private static Image x = new Image("GUI/pictures/x.png", 150, 150, false, true);
     private static Image black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true);
-    private static Image white = new Image("GUI/pictures/whitePiece.png",60, 60, false, true);
+    private static Image white = new Image("GUI/pictures/whitePiece.png", 60, 60, false, true);
     private VBox[] panes;
-    private int paneNr = 0;
+    private int guiPlayerInput = 0;
     private Scene scene;
     private int player = 0;
-
-
-
-
 
 
     PlayField(int rows, int columns) {
@@ -51,7 +47,7 @@ public class PlayField {
         // Player List
         Label player1 = new Label("Player 1 has 10 points");
         Label player2 = new Label("Player 2 has 13 points");
-        player1.setPadding(new Insets(50,0,0,0));
+        player1.setPadding(new Insets(50, 0, 0, 0));
         player1.setStyle("-fx-font-size: 2em;");
         player2.setStyle("-fx-font-size: 2em;");
         VBox scorePane = new VBox();
@@ -69,7 +65,7 @@ public class PlayField {
         timeSeconds.set(STARTTIME);
         Timeline timeline = new Timeline();
         timeline.getKeyFrames().add(
-                new KeyFrame(Duration.seconds(STARTTIME+1),
+                new KeyFrame(Duration.seconds(STARTTIME + 1),
                         new KeyValue(timeSeconds, 0)));
         timeline.playFromStart();
 
@@ -88,13 +84,13 @@ public class PlayField {
         panes = new VBox[position];
         game.getStyleClass().add("game-grid");
 
-        for(int i = 0; i < columns; i++) {
+        for (int i = 0; i < columns; i++) {
             ColumnConstraints column = new ColumnConstraints();
             column.setPrefWidth(200);
             game.getColumnConstraints().add(column);
         }
 
-        for(int i = 0; i < rows; i++) {
+        for (int i = 0; i < rows; i++) {
             RowConstraints row = new RowConstraints();
             row.setPrefHeight(200);
             game.getRowConstraints().add(row);
@@ -111,34 +107,31 @@ public class PlayField {
                 pane.setStyle("-fx-background-color: Chartreuse;");
                 pane.setStyle("-fx-background-size: 20px 20px;");
                 pane.setOnMouseReleased(e -> {
-                    System.out.println(X + Y );
-                    setPaneNR(total);
+                    System.out.println(X + Y);
+                    setGuiPlayerInput(total);
 
 
                     //TicTacToe
-                    if (player == 0 && rows == 3){
+                    if (player == 0 && rows == 3) {
                         pane.getChildren().add(getPicture("x"));
                         pane.setDisable(true);
                         player = 1;
-                    }
-                    else if (player == 1 && rows == 3) {
+                    } else if (player == 1 && rows == 3) {
                         pane.getChildren().add(getPicture("o"));
                         pane.setDisable(true);
                         player = 0;
                     }
 
                     //Reversi
-                    if (player == 0 && rows == 8){
+                    if (player == 0 && rows == 8) {
                         pane.getChildren().add(getPicture("black"));
                         pane.setDisable(true);
                         player = 1;
-                    }
-                    else if (player == 1 && rows == 8) {
+                    } else if (player == 1 && rows == 8) {
                         pane.getChildren().add(getPicture("white"));
                         pane.setDisable(true);
                         player = 0;
                     }
-
 
                 });
                 pane.getStyleClass().add("game-grid-cell");
@@ -157,8 +150,7 @@ public class PlayField {
         totalPane.setCenter(game);
         totalPane.setRight(scorePane);
 
-
-        scene = new Scene(totalPane, 1000,700, Color.WHITE);
+        scene = new Scene(totalPane, 1000, 700, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
 
     }
@@ -166,41 +158,23 @@ public class PlayField {
     private static ImageView getPicture(String player) {
 
         ImageView imageView = null;
-        if (player.equals("x")) {
-            imageView = new ImageView(x);
-        }
-        if (player.equals("o")) {
-            imageView = new ImageView(o);
-        }
-        if (player.equals("black")) {
-            imageView = new ImageView(black);
-        }
-        if (player.equals("white")) {
-            imageView = new ImageView(white);
-        }
+        if (player.equals("x")) { imageView = new ImageView(x); }
+        if (player.equals("o")) { imageView = new ImageView(o); }
+        if (player.equals("black")) { imageView = new ImageView(black); }
+        if (player.equals("white")) { imageView = new ImageView(white); }
 
         return imageView;
     }
 
 
     void setPicture(GameRules games, int i, int player) {
-    i +=1;
+        i += 1;
 
-    if (games instanceof TicTacToe) {
-            if (player == 1) {
-                panes[i].getChildren().add(getPicture("x"));
-            }
-            else if (player == 2) {
-                panes[i].getChildren().add(getPicture("o"));
-            }
+        if (games instanceof TicTacToe) {
+            panes[i].getChildren().add(getPicture((player == 1) ? "x" : "o"));
         }
         else if (games instanceof Reversi) {
-            if (player == 1) {
-                panes[i].getChildren().add(getPicture("black"));
-            }
-            else if (player == 2) {
-                panes[i].getChildren().add(getPicture("white"));
-            }
+            panes[i].getChildren().add(getPicture((player == 1) ? "black" : "white"));
         }
         System.out.println("zet " + i + " voor player " + player);
 
@@ -213,28 +187,33 @@ public class PlayField {
         Label winningPlayer;
         if (gamestate == GameState.PLAYER_1_WINS) {
             winningPlayer = new Label("Player 1 has won!");
-            winningPlayer.setStyle("-fx-font-size: 10em;");
-            winPane.getChildren().add(winningPlayer);
         }
         else if (gamestate == GameState.PLAYER_2_WINS) {
             winningPlayer = new Label("Player 2 has won!");
-            winningPlayer.setStyle("-fx-font-size: 10em;");
-            winPane.getChildren().add(winningPlayer);
         }
-        else if (gamestate == GameState.DRAW) {
+        else { // else if (gamestate == GameState.DRAW)
             winningPlayer = new Label("It's a draw!");
-            winningPlayer.setStyle("-fx-font-size: 10em;");
-            winPane.getChildren().add(winningPlayer);
         }
-        Scene winScene = new Scene(winPane,1000,700);
+        winningPlayer.setStyle("-fx-font-size: 10em;");
+        winPane.getChildren().add(winningPlayer);
+
+        Scene winScene = new Scene(winPane, 1000, 700);
         CompositionRoot.getInstance().lobby.setScene(winScene);
 
     }
 
 
-    public void setPaneNR(int position) { paneNr = position; }
-    public int getPaneNr() { return paneNr; }
-    public void resetPaneNR() { paneNr = -1; }
-    public Scene getScene() {return scene; }
-    public VBox[] getPane() {return panes; }
+    public void setGuiPlayerInput(int position) { guiPlayerInput = position; }
+    public Scene getScene() { return scene; }
+    public VBox[] getPane() { return panes; }
+
+    public void currentTurnIsGuiPlayersTurn() {
+        // TODO vanaf nu is het de GUI Player aan zet.
+    }
+
+    public int getGuiPlayerInputAndReset() {
+        int oldGuiPlayerInput = guiPlayerInput;
+        guiPlayerInput = -1;
+        return oldGuiPlayerInput;
+    }
 }
