@@ -205,17 +205,22 @@ public class PlayField {
     }
 
     void displayWinScreen(GameState gamestate) {
-        VBox winPane = new VBox(200);
+        VBox winPane = new VBox();
+        winPane.setAlignment(Pos.CENTER);
+        Label winningPlayer;
         if (gamestate == GameState.PLAYER_1_WINS) {
-            Label winningPlayer = new Label("Player 2 heeft gewonnen!!!!!!!!!");
+            winningPlayer = new Label("Player 1 has won!");
+            winningPlayer.setStyle("-fx-font-size: 10em;");
             winPane.getChildren().add(winningPlayer);
         }
         else if (gamestate == GameState.PLAYER_2_WINS) {
-            Label winningPlayer = new Label("Player 2 heeft gewonnen!!!!!!!!!");
+            winningPlayer = new Label("Player 2 has won!");
+            winningPlayer.setStyle("-fx-font-size: 10em;");
             winPane.getChildren().add(winningPlayer);
         }
         else if (gamestate == GameState.DRAW) {
-            Label winningPlayer = new Label("Het is gelijkspel!!!!!!!!!");
+            winningPlayer = new Label("It's a draw!");
+            winningPlayer.setStyle("-fx-font-size: 10em;");
             winPane.getChildren().add(winningPlayer);
         }
         Scene winScene = new Scene(winPane,1000,700);

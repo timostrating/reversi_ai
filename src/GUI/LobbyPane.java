@@ -10,12 +10,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import network.Connection;
 import util.ArrayUtils;
 import util.CallbackWithParam;
-import javafx.scene.control.Button;
-import javafx.scene.layout.FlowPane;
 import util.CompositionRoot;
 
 import java.util.HashMap;
@@ -123,7 +120,7 @@ public class LobbyPane extends GridPane {
         spel1.setOnAction(event -> {
             CompositionRoot.getInstance().lobby.setScene(ticTacToeScene);
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.HumanPlayer);
+            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.TicTacToeAIMiniMax);
 
             game.onValidMovePlayed.register((pair0 -> {
                 System.out.println(game);
