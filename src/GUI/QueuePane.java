@@ -1,12 +1,9 @@
 package GUI;
 
+import GUI.PlayField.StandardGameType;
 import game_util.Arcade;
-import game_util.Arcade.GameFactory;
-import game_util.Arcade.PlayerFactory;
-import game_util.Arcade.RefereeFactory;
 import game_util.GameRules;
 import javafx.animation.FadeTransition;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,18 +14,19 @@ import javafx.util.Duration;
 import util.CallbackWithParam;
 import util.CompositionRoot;
 
-
 import java.util.HashMap;
+
+import static GUI.PlayField.StandardGameType.*;
 
 public class QueuePane extends BorderPane{
     private LoginPane loginPane;
-    private boolean humanOrAi;
+    private boolean isAiOrHuman;
     private AudioClip pokemon;
     private FadeTransition ft;
 
 
     public QueuePane(Boolean aI){
-        humanOrAi = aI;
+        isAiOrHuman = aI;
         CompositionRoot.getInstance().connection.getFromServer().onMatch.register(onMatch);
 
         GridPane gridPane = new GridPane();
@@ -62,64 +60,38 @@ public class QueuePane extends BorderPane{
             pokemon.stop();
         });
     }
-    private CallbackWithParam<HashMap<String,String>> onMatch = message -> { // TODO FIX dit is het zelfde als in de lobby
-        PlayField playField;
-        Scene playScene;
-        Arcade arcade = CompositionRoot.getInstance().arcade;
-        GameRules game;
-        System.out.println(humanOrAi);
 
-        int local = 0, remote = 1;
+    private boolean weAreFirst = false;
+    private CallbackWithParam<HashMap<String,String>> onMatch = message -> {
+        StandardGameType gameType;
 
-        if(message.get("GAMETYPE").equals("Tic-tac-toe")) {
-            if (humanOrAi) {
-                game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.NetworkedReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.RemotePlayer);
-            } else {
-                game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.NetworkedReferee, PlayerFactory.HumanPlayer, PlayerFactory.RemotePlayer);
-            }
-            playField = new PlayField(3,3, game);
-            playScene = playField.getScene();
-
+        if (message.get("OPPONENT").equals(message.get("PLAYERTOMOVE"))) {
+            System.out.println("Remote begins");
+            weAreFirst = false;
+            gameType = (isAiOrHuman) ? ONLINE_REMOTE_VS_AI : ONLINE_REMOTE_VS_HUMAN;
         } else {
-
-            PlayerFactory
-                    // NIET WEER KAPOT MAKEN TIMO anders weet kermit je wel te vinden
-                    first = humanOrAi ? PlayerFactory.ReversiAIMiniMax : PlayerFactory.HumanPlayer,
-                    second = PlayerFactory.RemotePlayer;
-
-
-            if(message.get("OPPONENT").equals(message.get("PLAYERTOMOVE"))) {
-                System.out.println("Remote begins");
-                local = 1;
-                remote = 0;
-                second = first;
-                first = PlayerFactory.RemotePlayer;
-            }
-
-            game = arcade.createGame(GameFactory.Reversi, RefereeFactory.NetworkedReferee, first, second);
-            playField = new PlayField(8, 8, game);
-            playScene = playField.getScene();
+            weAreFirst = true;
+            gameType = (isAiOrHuman) ? ONLINE_AI_VS_REMOTE : ONLINE_HUMAN_VS_REMOTE;
         }
 
-        game.getPlayer(local).setName(loginPane.username);
-        game.getPlayer(remote).setName(message.get("OPPONENT"));
-        CompositionRoot.getInstance().lobby.setScene(playScene);
-        game.onValidMovePlayed.register((pair0 -> {
-            System.out.println(game);
-            Platform.runLater(() -> playField.setPicture(game, pair0.getKey(), pair0.getValue()));
-        }));
+        if (message.get("GAMETYPE").equals("Tic-tac-toe")) {
+            PlayField playField = PlayField.createGameAndPlayField(Arcade.GameFactory.TicTacToe, gameType, (game) -> setPlayerNames(game, message.get("OPPONENT")));
+            CompositionRoot.getInstance().lobby.setScene(playField.getScene());
+        } else { // Reversi
+            PlayField playField = PlayField.createGameAndPlayField(Arcade.GameFactory.Reversi, gameType, (game) -> setPlayerNames(game, message.get("OPPONENT")));
+            CompositionRoot.getInstance().lobby.setScene(playField.getScene());
+        }
 
-        game.onGameEnded.register(() -> {
-            Platform.runLater(() -> playField.displayWinScreen(game.getGameState()));
-        });
-
-        game.start(true); // Start the game in a new thread
-        System.out.println("Continue");
         ft.stop();
         pokemon.stop();
 
         unregister();
     };
+
+    private void setPlayerNames(GameRules game, String aiName) {
+        game.getPlayer((weAreFirst)? 0 : 1).setName(LoginPane.username);
+        game.getPlayer((weAreFirst)? 1 : 0).setName(aiName);
+    }
 
 
 
