@@ -4,7 +4,6 @@ import javafx.util.Pair;
 import util.Callback;
 import util.CallbackWithParam;
 import util.Delegate;
-import util.OpenPositions;
 
 public abstract class GameRules implements Runnable {
     public enum GameState {PLAYING, DRAW, PLAYER_1_WINS, PLAYER_2_WINS  /* PLAYER_3.4.5..N_WINS*/ }
@@ -26,6 +25,15 @@ public abstract class GameRules implements Runnable {
     @Override
     public void run() {
         referee.letTheGameStart(this::gameEnded);
+    }
+
+    public void start(boolean newThread) {
+        if (newThread) {
+            new Thread(this).start();
+            try {
+                Thread.sleep(1000); // wait for the Referee to have registered to all events.
+            } catch (InterruptedException ignored) {}
+        } else run();
     }
 
     public void nextPlayer(Player p) {

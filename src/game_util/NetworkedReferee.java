@@ -71,10 +71,12 @@ public class NetworkedReferee extends DefaultReferee {
         localPlayer = p0 == remotePlayer ? p1 : p0;
 
         // register network events
+        System.out.println("Register network events");
         this.onEnded = onEnded;
         fromServer.onTurn.register(onLocalTurn);
         fromServer.onMove.register(onMove);
         fromServer.onResult.register(onResult);
+        System.out.println("Register network events done");
     }
 
     private void endGame() {

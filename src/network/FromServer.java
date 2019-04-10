@@ -96,6 +96,7 @@ public class FromServer implements Runnable {
         while (true) {
             try {
                 String input = fromServer.readLine();
+                System.out.println(input);
                 if (input.startsWith("SVR GAME CHALLENGE CANCELLED")) {
                     challengeCanceled(input);
                 } else if (input.startsWith("SVR GAME CHALLENGE")) {

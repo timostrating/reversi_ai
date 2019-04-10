@@ -83,6 +83,7 @@ public class QueuePane extends BorderPane{
                 game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.RemotePlayer);
             }
         }
+//        if(message.get("OPPENENT").equals(message.get("PL")))
         game.getPlayer(0).setName(loginPane.username);
         game.getPlayer(1).setName(message.get("OPPONENT"));
         CompositionRoot.getInstance().lobby.setScene(playScene);
@@ -95,7 +96,9 @@ public class QueuePane extends BorderPane{
             Platform.runLater(() -> playField.displayWinScreen(game.getGameState()));
         });
 
-        new Thread(game).start();
+        game.start(true);
+        System.out.println("Continue");
+
         unregister();
     };
 
