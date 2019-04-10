@@ -9,18 +9,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.media.AudioClip;
 import javafx.util.Duration;
 import util.CallbackWithParam;
 import util.CompositionRoot;
 
+
 import java.util.HashMap;
 
 public class QueuePane extends BorderPane{
+    LoginPane loginPane;
+    boolean humanOrAi;
 
-    public QueuePane(){
-
+    public QueuePane(Boolean aI){
+        humanOrAi = aI;
         CompositionRoot.getInstance().connection.getFromServer().onMatch.register(onMatch);
 
         GridPane gridPane = new GridPane();
@@ -57,45 +59,49 @@ public class QueuePane extends BorderPane{
         });
     }
     private CallbackWithParam<HashMap<String,String>> onMatch = message -> {
-
-        // Games
-        PlayField ticTacToe = new PlayField(3,3);
-        PlayField reversi = new PlayField(8,8);
-
-        //Panes
-        Pane[] ticTacToePane = ticTacToe.getPane();
-        Pane[] reversiPane = reversi.getPane();
-
-        //Scenes
-        Scene ticTacToeScene = ticTacToe.getScene();
-        Scene reversiScene = reversi.getScene();
-
+        PlayField playField;
+        Scene playScene;
+        Arcade arcade = CompositionRoot.getInstance().arcade;
+        GameRules game;
+        System.out.println(humanOrAi);
         if(message.get("GAMETYPE").equals("Tic-tac-toe")) {
-            CompositionRoot.getInstance().lobby.setScene(ticTacToeScene);
-            Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.ReversiAIMiniMax);
+            playField = new PlayField(3,3);
+            playScene = playField.getScene();
+            if (humanOrAi) {
+                game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.RemotePlayer);
+            } else {
+                game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.RemotePlayer);
+            }
 
-            game.onValidMovePlayed.register(i -> {
-                System.out.println(game);
-                Platform.runLater(() -> {
-                    ticTacToe.setPicture(game, i.getKey(), i.getValue());
-                });
-            });
-            new Thread(game).start();
-        } else if(message.get("GAMETYPE").equals("Reversi")){
-            CompositionRoot.getInstance().lobby.setScene(reversiScene);
-            Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.ReversiAIMiniMax);
+        } else {
 
-            game.onValidMovePlayed.register(i -> {
-                System.out.println(game);
-                Platform.runLater(() -> {
-                    ticTacToe.setPicture(game, i.getKey(), i.getValue());
-                });
-            });
-            new Thread(game).start();
+            playField = new PlayField(8, 8);
+            playScene = playField.getScene();
+            if (humanOrAi){
+                game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.ReversiAIMiniMax, Arcade.PlayerFactory.RemotePlayer);
+            } else {
+                game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.RemotePlayer);
+            }
         }
+        game.getPlayer(0).setName(loginPane.username);
+        game.getPlayer(1).setName(message.get("OPPONENT"));
+        CompositionRoot.getInstance().lobby.setScene(playScene);
+        game.onValidMovePlayed.register((pair0 -> {
+            System.out.println(game);
+            Platform.runLater(() -> playField.setPicture(game, pair0.getKey(), pair0.getValue()));
+        }));
 
+        game.onGameEnded.register(() -> {
+            Platform.runLater(() -> playField.displayWinScreen(game.getGameState()));
+        });
+
+        new Thread(game).start();
+        unregister();
     };
 
+
+
+    public void unregister(){
+        CompositionRoot.getInstance().connection.getFromServer().onMatch.unregister(onMatch);
+    }
 }

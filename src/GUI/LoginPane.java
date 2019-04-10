@@ -22,7 +22,7 @@ import util.CallbackWithParam;
 import util.CompositionRoot;
 
 public class LoginPane extends BorderPane{
-    public String username;
+    public static String username;
     private Connection connection;
     Alert alertInfo;
 
