@@ -86,6 +86,7 @@ public class QueuePane extends BorderPane{
                     first = PlayerFactory.RemotePlayer,
                     second = humanOrAi ? PlayerFactory.ReversiAIMiniMax : PlayerFactory.HumanPlayer;
 
+
             if(message.get("OPPONENT").equals(message.get("PLAYERTOMOVE"))) {
                 System.out.println("Remote begins");
                 local = 1;

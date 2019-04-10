@@ -89,7 +89,7 @@ public class LoginPane extends BorderPane {
                 connection.getToServer().getPlayerList();
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("De server is niet berijkbaar");
+                alert.setTitle("De server is niet bereikbaar");
                 alert.setHeaderText(null);
                 alert.setContentText("Verbind met een andere server");
                 alert.showAndWait();

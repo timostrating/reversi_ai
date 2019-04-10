@@ -4,6 +4,8 @@ import util.Callback;
 
 public interface Referee {
 
+    default void initialize() {};
+
     void letTheGameStart(Callback onEnded);
 
     void letPlayerPlay(Player p);

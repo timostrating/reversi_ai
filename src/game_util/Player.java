@@ -44,4 +44,8 @@ public abstract class Player {
         EXECUTOR.execute(() -> inputCallback.callback(getInput()));
     }
 
+    @Override
+    public String toString() {
+        return "Player nr " + nr + (name == null ? "" : " (" + name + ")") + " " + this.getClass().getName();
+    }
 }
