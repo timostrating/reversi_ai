@@ -108,8 +108,7 @@ public class PlayField {
                 final int Y = y * rows;
                 final int total = X + Y;
                 panes[total] = pane;
-                pane.setStyle("-fx-background-color: Chartreuse;");
-                pane.setStyle("-fx-background-size: 20px 20px;");
+
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
                     setPaneNR(total);
@@ -128,6 +127,7 @@ public class PlayField {
                     }
 
                     //Reversi
+
                     if (player == 0 && rows == 8){
                         pane.getChildren().add(getPicture("black"));
                         pane.setDisable(true);
@@ -151,6 +151,19 @@ public class PlayField {
                 game.add(pane, x, y);
             }
         }
+
+        //Setting Start board reversi
+        if (rows ==8) {
+            panes[28].getChildren().add(getPicture("black"));
+            panes[28].setDisable(true);
+            panes[29].getChildren().add(getPicture("white"));
+            panes[29].setDisable(true);
+            panes[36].getChildren().add(getPicture("white"));
+            panes[36].setDisable(true);
+            panes[37].getChildren().add(getPicture("black"));
+            panes[37].setDisable(true);
+        }
+
 
         BorderPane totalPane = new BorderPane();
         totalPane.setTop(playerPane);
