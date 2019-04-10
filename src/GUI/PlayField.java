@@ -108,6 +108,8 @@ public class PlayField {
                 final int Y = y * rows;
                 final int total = X + Y;
                 panes[total] = pane;
+                pane.setStyle("-fx-background-color: Chartreuse;");
+                pane.setStyle("-fx-background-size: 20px 20px;");
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
                     setPaneNR(total);
@@ -207,6 +209,7 @@ public class PlayField {
     void displayWinScreen(GameState gamestate) {
         VBox winPane = new VBox();
         winPane.setAlignment(Pos.CENTER);
+        winPane.setStyle("-fx-background-color: Chartreuse;");
         Label winningPlayer;
         if (gamestate == GameState.PLAYER_1_WINS) {
             winningPlayer = new Label("Player 1 has won!");

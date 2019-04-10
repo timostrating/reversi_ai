@@ -1,5 +1,6 @@
 package game_util;
 
+import GUI.GUIPlayer;
 import network.RemotePlayer;
 import reversi.Reversi;
 import reversi.ReversiAIMiniMax;
@@ -26,7 +27,7 @@ public class Arcade {
 
     public enum PlayerFactory {
         HumanPlayer(g -> new HumanPlayer(g)),
-        //GUIPlayer(g -> new GUIPlayer()),
+        GUIPlayer(g -> new GUIPlayer(g)),
         RemotePlayer(g -> new RemotePlayer()),
         TicTacToeAIScore(g -> new TicTacToeAIScore((TicTacToe) g)),
         TicTacToeAIMiniMax(g -> new TicTacToeAIMiniMax((TicTacToe) g)),
