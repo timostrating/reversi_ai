@@ -195,7 +195,7 @@ public class Reversi extends GameRules {
         }
     }
 
-    protected class OpenPositionsReversi implements OpenPositions { // TODO we should implement this using a different data structure }
+    public class OpenPositionsReversi implements OpenPositions { // TODO we should implement this using a different data structure }
 
         LinkedList<Integer>
                 openXPositions = new LinkedList<>(),

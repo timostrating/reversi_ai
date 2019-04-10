@@ -5,6 +5,9 @@ import game_util.GameRules.GameState;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,28 +16,34 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
 import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
 import util.CompositionRoot;
 
+import java.util.ArrayList;
+
 public class PlayField {
 
     private static final Integer STARTTIME = 10; // TODO not hardcode
     // Images
-    private static Image o = new Image("GUI/pictures/o.png", 150, 150, false, true);
-    private static Image x = new Image("GUI/pictures/x.png", 150, 150, false, true);
+    private static Image kermit = new Image("GUI/pictures/Kermitgezicht.jpg", 60, 60, false,true);
+    private static Image o = new Image("GUI/pictures/o.png", 60, 60, false, true);
+    private static Image x = new Image("GUI/pictures/x.png", 60, 60, false, true);
     private static Image black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true);
     private static Image white = new Image("GUI/pictures/whitePiece.png", 60, 60, false, true);
     private VBox[] panes;
-    private int guiPlayerInput = 0;
+    public volatile int guiPlayerInput = -1; // MOET -1 zijn in het begin GuiPlayer heeft infiniate loop op de verandering van deze variable
     private Scene scene;
     private int player = 0;
 
+    private GameRules gameRules;
+    private boolean guiPlayerIsPlaying = false;
 
-    PlayField(int rows, int columns) {
+
+    PlayField(int rows, int columns, GameRules gameRules) {
+        CompositionRoot.getInstance().lobby.playField = this;
+        this.gameRules = gameRules;
 
         // Current Player
         Label currentPlayer = new Label("Kees");
@@ -106,32 +115,16 @@ public class PlayField {
                 panes[total] = pane;
 
                 pane.setOnMouseReleased(e -> {
-                    System.out.println(X + Y);
-                    setGuiPlayerInput(total);
+                    if (guiPlayerIsPlaying) { // TODO test
 
+//                        System.out.println(X + Y);
+                        setGuiPlayerInput(total);
 
-                    //TicTacToe
-                    if (player == 0 && rows == 3) {
-                        pane.getChildren().add(getPicture("x"));
-                        pane.setDisable(true);
-                        player = 1;
-                    } else if (player == 1 && rows == 3) {
-                        pane.getChildren().add(getPicture("o"));
-                        pane.setDisable(true);
-                        player = 0;
+                        if (gameRules instanceof TicTacToe) {
+                            pane.getChildren().add(getPicture((player == 0) ? "o" : "x"));
+                            pane.setDisable(true);
+                        }
                     }
-
-                    //Reversi
-                    if (player == 0 && rows == 8) {
-                        pane.getChildren().add(getPicture("black"));
-                        pane.setDisable(true);
-                        player = 1;
-                    } else if (player == 1 && rows == 8) {
-                        pane.getChildren().add(getPicture("white"));
-                        pane.setDisable(true);
-                        player = 0;
-                    }
-
                 });
                 pane.getStyleClass().add("game-grid-cell");
                 if (x == 0) {
@@ -174,6 +167,7 @@ public class PlayField {
         if (player.equals("o")) { imageView = new ImageView(o); }
         if (player.equals("black")) { imageView = new ImageView(black); }
         if (player.equals("white")) { imageView = new ImageView(white); }
+        if (player.equals("kermit")) { imageView = new ImageView(kermit); }
 
         return imageView;
     }
@@ -216,17 +210,34 @@ public class PlayField {
     }
 
 
-    public void setGuiPlayerInput(int position) { guiPlayerInput = position; }
     public Scene getScene() { return scene; }
     public VBox[] getPane() { return panes; }
 
+    ArrayList<Integer> lijstje = new ArrayList<>();
+    public void setGuiPlayerInput(int position) {
+        guiPlayerInput = position;
+        guiPlayerIsPlaying = false;
+        for (int index : lijstje)
+            panes[index].getChildren().remove(0);
+
+        lijstje.clear();
+    }
     public void currentTurnIsGuiPlayersTurn() {
-        // TODO vanaf nu is het de GUI Player aan zet.
+        Platform.runLater( () -> {
+            guiPlayerIsPlaying = true;
+            int playerNr = 2; // TODO HARDCODED
+            if (gameRules instanceof Reversi) {
+                Reversi reversi = (Reversi) gameRules;
+                for (int i=0; i<reversi.openPositions.size(playerNr); i++) {
+                    int index = reversi.openPositions.get(i, playerNr) + 1;
+                    panes[index].getChildren().add(getPicture("kermit"));
+                    lijstje.add(index);
+                }
+            }
+        });
     }
 
-    public int getGuiPlayerInputAndReset() {
-        int oldGuiPlayerInput = guiPlayerInput;
+    public void resetGuiPlayerInput() {
         guiPlayerInput = -1;
-        return oldGuiPlayerInput;
     }
 }

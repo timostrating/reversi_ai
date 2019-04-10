@@ -94,13 +94,6 @@ public class LobbyPane extends GridPane {
         this.add(buttonGrid, 1, 0);
 //                spel2, queue, challenge, humanOrAi);
 
-        // Games
-        PlayField ticTacToe = new PlayField(3,3);
-        PlayField reversi = new PlayField(8,8);
-
-        //Scenes
-        Scene ticTacToeScene = ticTacToe.getScene();
-        Scene reversiScene = reversi.getScene();
 
         //challenge button
         challenge.setOnAction(event -> {
@@ -116,10 +109,11 @@ public class LobbyPane extends GridPane {
         });
 
         //Register Buttons
-        spel1.setOnAction(event -> {
-            CompositionRoot.getInstance().lobby.setScene(ticTacToeScene);
+        spel1.setOnAction(event -> { // TODO REMOVE
             Arcade arcade = CompositionRoot.getInstance().arcade;
             GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.TicTacToeAIMiniMax);
+            PlayField ticTacToe = new PlayField(3,3, game);
+            CompositionRoot.getInstance().lobby.setScene(ticTacToe.getScene());
 
             game.onValidMovePlayed.register((pair0 -> {
                 System.out.println(game);
@@ -134,10 +128,11 @@ public class LobbyPane extends GridPane {
             new Thread(game).start();
         });
 
-        spel2.setOnAction(event -> {
-            CompositionRoot.getInstance().lobby.setScene(reversiScene);
+        spel2.setOnAction(event -> {  // TODO REMOVE
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.ReversiAIMiniMax, Arcade.PlayerFactory.ReversiAIMiniMax);
+            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.ReversiAIMiniMax, Arcade.PlayerFactory.GUIPlayer);
+            PlayField reversi = new PlayField(8,8, game);
+            CompositionRoot.getInstance().lobby.setScene(reversi.getScene());
 
             game.onValidMovePlayed.register(i -> {
                 System.out.println(game);

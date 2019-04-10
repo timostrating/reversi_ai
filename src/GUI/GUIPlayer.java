@@ -8,23 +8,24 @@ import util.CompositionRoot;
 
 public class GUIPlayer extends Player {
 
-    PlayField guiGame;
+    Lobby guiGame;
     GameRules game;
 
     public GUIPlayer(GameRules game) {
-        guiGame = CompositionRoot.getInstance().lobby.playField;
+        guiGame = CompositionRoot.getInstance().lobby;
         this.game = game;
     }
 
-    //TODO get en set fixen
     @Override
     public Move getInput() {
-        guiGame.currentTurnIsGuiPlayersTurn();
+        guiGame.playField.currentTurnIsGuiPlayersTurn();
 
         while (true) {
-            int paneNr = guiGame.getGuiPlayerInputAndReset();
-            if (paneNr != -1) {
-                return game.getMove(paneNr, getNr());
+            int guiInput = guiGame.playField.guiPlayerInput;
+            if (guiInput != -1) {
+                System.out.println("ja");
+                guiGame.playField.resetGuiPlayerInput();
+                return game.getMove(guiInput -1, getNr());
             }
         }
     }

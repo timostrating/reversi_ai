@@ -14,14 +14,13 @@ public class Lobby extends Application {
 
     @Override
     public void start(Stage primaryStage){
+        CompositionRoot.getInstance().setLobby(this);
 
-        CompositionRoot.getInstance();
         myPrimaryStage = primaryStage;
 
         //Pane
         BorderPane loginView = new LoginPane(primaryStage);
         Scene scene = new Scene(loginView, 576, 316);
-
 
         // Stage
         //primaryStage.setTitle("Super Kermit Bro's"); // Set the stage title
@@ -41,6 +40,5 @@ public class Lobby extends Application {
 
     public static void main(String[] args) { // TODO This is only for testing
         Application.launch();
-
     }
 }
