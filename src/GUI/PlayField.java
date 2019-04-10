@@ -240,4 +240,20 @@ public class PlayField {
     public void resetGuiPlayerInput() {
         guiPlayerInput = -1;
     }
+
+    public void redraw() {
+        if (gameRules instanceof Reversi) { // TODO remove if possible
+
+            Reversi reversi = (Reversi) gameRules;
+            for (int i=0; i<panes.length; i++)
+                panes[i].getChildren().clear();
+
+            for (int i=0; i<panes.length; i++) {
+                if (reversi.board.get(i) == 1)
+                    panes[i].getChildren().add(getPicture("x"));
+                if (reversi.board.get(i) == 2)
+                    panes[i].getChildren().add(getPicture("o"));
+            }
+        }
+    }
 }
