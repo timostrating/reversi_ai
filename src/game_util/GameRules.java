@@ -59,5 +59,12 @@ public abstract class GameRules implements Runnable {
     }
 
     public abstract GameState getGameSpecificState();
-    public abstract boolean playMove(int input, int playerNr);
+    public boolean playMove(int input, int playerNr) {
+        Move m = getMove(input, playerNr);
+        if (m != null)
+            m.doMove();
+
+        return (m != null);
+    }
+    public abstract Move getMove(int input, int playerNr);
 }

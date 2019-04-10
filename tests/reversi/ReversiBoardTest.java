@@ -17,7 +17,7 @@ class ReversiBoardTest {
     @BeforeEach
     void BeforeEach() {
         reversi = new Reversi();
-        reversi.initialize(new DefaultReferee(reversi), new HumanPlayer(), new HumanPlayer());
+        reversi.initialize(new DefaultReferee(reversi), new HumanPlayer(reversi), new HumanPlayer(reversi));
     }
 
     @AfterEach
@@ -28,8 +28,8 @@ class ReversiBoardTest {
 
     @Test void playExampleMoves1a() {
         System.err.println(reversi);
-        System.err.println(reversi);
         assert reversi.playMove(board.xyToI(4,2), 1);
+        System.err.println(reversi);
         assert reversi.playMove(board.xyToI(5,2), 2);
         assert reversi.playMove(board.xyToI(6,2), 1);
         assert reversi.playMove(board.xyToI(6,1), 2);

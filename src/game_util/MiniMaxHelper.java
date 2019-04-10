@@ -1,5 +1,6 @@
 package game_util;
 
+import util.OpenPosition;
 import util.OpenPositions;
 
 import static game_util.GameRules.GameState.*;
@@ -7,11 +8,11 @@ import static game_util.GameRules.GameState.*;
 /**
  * We assume that you want to use the miniMax algorithm for a game with 2 players
  */
-public class MiniMaxHelper {
+public class MiniMaxHelper<T extends OpenPosition> {
 
     GameRules game;
     GameBoard2D board;
-    OpenPositions openPositions;
+    OpenPositions<T> openPositions;
     int max;
     int min;
 
@@ -35,16 +36,16 @@ public class MiniMaxHelper {
         return 0;
     }
 
-    public PosAndScore minimax(int depth, int player, OpenPositions openPositions) {
+    public PosAndScore minimax(int depth, int player, OpenPositions<T> openPositions) {
         this.max = player;
         this.min = (player % 2) + 1;
         this.openPositions = openPositions;
         return minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
     }
-    private PosAndScore minimax(int depth, float alpha, float beta, int player) {
-        PosAndScore best = new PosAndScore(-1, -1); // (position, score)
 
-        if (player == max)
+    private PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
+        PosAndScore best = new PosAndScore(null, -1, null); // (position, score, move)
+        if (playerNr == max)
             best.score = Integer.MIN_VALUE;
         else
             best.score = Integer.MAX_VALUE;
@@ -55,25 +56,43 @@ public class MiniMaxHelper {
             return best;
         }
 
-        for (int posIndex = 0; posIndex < openPositions.size(); posIndex++) {
-            int pos = openPositions.get(posIndex);
-            board.set(pos, player);
-            openPositions.remove(posIndex);
+        for (int posIndex = 0; posIndex < openPositions.size(playerNr); posIndex++) {
+            T pos = openPositions.get(posIndex, playerNr);
+
+//            System.out.println(openPositions);
+//            String str = "";
+//            for (int y = 0; y < Reversi.BOARD_SIZE; y++) {
+//                for (int x = 0; x < Reversi.BOARD_SIZE; x++) {
+//                    str = (board.get(x, y) + " ").replace('0', '-');
+//                    if (openPositions.contains(board.xyToI(x, y), playerNr))
+//                        str = str.replace('-', 'v');
+//
+//                    System.out.print(str);
+//                }
+//                System.out.println("");
+//            }
+//            System.out.println();
+//            System.out.println();
+            Move m = game.getMove(pos.i, playerNr);
+            if (m == null)
+                continue;
+            m.doMove(false);
 
 
-            PosAndScore posAndScore = minimax(depth-1, alpha, beta, (player%2) +1);
-            board.set(pos, 0);
-            openPositions.add(posIndex, pos);
+            PosAndScore posAndScore = minimax(depth-1, alpha, beta, (playerNr%2) +1);
+
+            m.undoMove();
             posAndScore.pos = pos;
+            posAndScore.move = m;
 
-            if (player == max) {
-                if (best.score < posAndScore.score)
+            if (playerNr == max) {
+                if (best.score < posAndScore.score || best.pos == null)
                     best = posAndScore;
 
                 alpha = Math.max(alpha, posAndScore.score);
             }
             else {
-                if (best.score > posAndScore.score)
+                if (best.score > posAndScore.score || best.pos == null)
                     best = posAndScore;
 
                 beta = Math.min(beta, posAndScore.score);
@@ -88,17 +107,21 @@ public class MiniMaxHelper {
     }
 
     public class PosAndScore {
-        public int pos;
+        public OpenPosition pos;
         public float score;
+        public Move move;
 
-        PosAndScore(int pos, float score) {
+        PosAndScore(OpenPosition pos, float score, Move move) {
             this.pos = pos;
             this.score = score;
+            this.move = move;
         }
 
         @Override
         public String toString() {
-            return "Position: " + pos + ", Score: " + score;
+            if (pos == null)
+                return "No position, score : " + score;
+            return "Position: ("+board.iToX(pos.i)+", "+board.iToY(pos.i)+"), Score: " + score;
         }
     }
 }

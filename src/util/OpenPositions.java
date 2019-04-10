@@ -1,11 +1,25 @@
 package util;
 
-public interface OpenPositions {
-    int size();
+public interface OpenPositions<T extends OpenPosition> {
 
-    Integer get(int posIndex);
+    int size(int playerNr);
 
-    Integer remove(int posIndex);
+    T get(int posIndex, int playerNr);
 
-    void add(int posIndex, Integer pos);
+    T remove(int posIndex, int playerNr);
+
+    void add(int posIndex, T pos, int playerNr);
+
+    default void filter(int i, int playerNr) {
+        for (int j = 0; j < size(playerNr); j++) if (get(j, playerNr ).i == i) {
+            remove(j, playerNr);
+            return;
+        }
+    }
+
+    default boolean contains(int i, int playerNr) {
+        for (int j = 0; j < size(playerNr); j++) if (get(j, playerNr ).i == i) return true;
+        return false;
+    }
+
 }
