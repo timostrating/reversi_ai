@@ -4,6 +4,7 @@ import game_util.GameBoard2D;
 import game_util.GameRules;
 import game_util.Player;
 import util.OpenPosition;
+import javafx.util.Pair;
 import util.OpenPositions;
 import util.Utils;
 
@@ -83,7 +84,7 @@ public class Reversi extends GameRules {
         boolean validPlayMove = playOrTestMove(board.iToX(i), board.iToY(i), playerNr, false);
 
         if (validPlayMove)
-            onValidMovePlayed.notifyObjects(o -> o.callback(i));
+            onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(i, playerNr)));
 
         return validPlayMove;
     }
