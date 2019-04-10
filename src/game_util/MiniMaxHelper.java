@@ -1,6 +1,5 @@
 package game_util;
 
-import reversi.Reversi;
 import util.OpenPosition;
 import util.OpenPositions;
 
@@ -123,7 +122,7 @@ public class MiniMaxHelper<T extends OpenPosition> {
 
         @Override
         public String toString() {
-            return "Position: " + pos + ", Score: " + score;
+            return "Position: ("+board.iToX(pos.i)+", "+board.iToY(pos.i)+"), Score: " + score;
         }
     }
 }
