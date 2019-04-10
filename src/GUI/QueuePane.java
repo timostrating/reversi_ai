@@ -78,10 +78,12 @@ public class QueuePane extends BorderPane{
 
         } else {
 
-            Arcade.PlayerFactory first = humanOrAi ? Arcade.PlayerFactory.ReversiAIMiniMax : Arcade.PlayerFactory.HumanPlayer,
-                    second = Arcade.PlayerFactory.RemotePlayer;
+            Arcade.PlayerFactory
+                    first = Arcade.PlayerFactory.RemotePlayer,
+                    second = humanOrAi ? Arcade.PlayerFactory.ReversiAIMiniMax : Arcade.PlayerFactory.HumanPlayer;
 
-            if(message.get("OPPENENT").equals(message.get("PLAYERTOMOVE"))) {
+            if(message.get("OPPONENT").equals(message.get("PLAYERTOMOVE"))) {
+                System.out.println("Remote begins");
                 local = 1;
                 remote = 0;
                 second = first;
