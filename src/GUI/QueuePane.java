@@ -1,6 +1,9 @@
 package GUI;
 
 import game_util.Arcade;
+import game_util.Arcade.GameFactory;
+import game_util.Arcade.PlayerFactory;
+import game_util.Arcade.RefereeFactory;
 import game_util.GameRules;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -18,10 +21,10 @@ import util.CompositionRoot;
 import java.util.HashMap;
 
 public class QueuePane extends BorderPane{
-    LoginPane loginPane;
-    boolean humanOrAi;
-    AudioClip pokemon;
-    FadeTransition ft;
+    private LoginPane loginPane;
+    private boolean humanOrAi;
+    private AudioClip pokemon;
+    private FadeTransition ft;
 
 
     public QueuePane(Boolean aI){
@@ -70,28 +73,28 @@ public class QueuePane extends BorderPane{
 
         if(message.get("GAMETYPE").equals("Tic-tac-toe")) {
             if (humanOrAi) {
-                game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.RemotePlayer);
+                game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.NetworkedReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.RemotePlayer);
             } else {
-                game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.RemotePlayer);
+                game = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.NetworkedReferee, PlayerFactory.HumanPlayer, PlayerFactory.RemotePlayer);
             }
             playField = new PlayField(3,3, game);
             playScene = playField.getScene();
 
         } else {
 
-            Arcade.PlayerFactory
-                    first = Arcade.PlayerFactory.RemotePlayer,
-                    second = humanOrAi ? Arcade.PlayerFactory.ReversiAIMiniMax : Arcade.PlayerFactory.HumanPlayer;
+            PlayerFactory
+                    first = PlayerFactory.RemotePlayer,
+                    second = humanOrAi ? PlayerFactory.ReversiAIMiniMax : PlayerFactory.HumanPlayer;
 
             if(message.get("OPPONENT").equals(message.get("PLAYERTOMOVE"))) {
                 System.out.println("Remote begins");
                 local = 1;
                 remote = 0;
                 second = first;
-                first = Arcade.PlayerFactory.RemotePlayer;
+                first = PlayerFactory.RemotePlayer;
             }
 
-            game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, first, second);
+            game = arcade.createGame(GameFactory.Reversi, RefereeFactory.NetworkedReferee, first, second);
             playField = new PlayField(8, 8, game);
             playScene = playField.getScene();
         }
@@ -108,7 +111,7 @@ public class QueuePane extends BorderPane{
             Platform.runLater(() -> playField.displayWinScreen(game.getGameState()));
         });
 
-        game.start(true);
+        game.start(true); // Start the game in a new thread
         System.out.println("Continue");
         ft.stop();
         pokemon.stop();

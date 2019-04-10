@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class PlayField {
 
     private static final Integer STARTTIME = 10; // TODO not hardcode
+    private static final int GAME_VIEW_SIZE = 600;
     // Images
     private static Image kermit = new Image("GUI/pictures/Kermitgezicht.jpg", 60, 60, false,true);
     private static Image o = new Image("GUI/pictures/o.png", 60, 60, false, true);
@@ -75,9 +76,7 @@ public class PlayField {
 
         timeSeconds.set(STARTTIME);
         Timeline timeline = new Timeline();
-        timeline.getKeyFrames().add(
-                new KeyFrame(Duration.seconds(STARTTIME + 1),
-                        new KeyValue(timeSeconds, 0)));
+        timeline.getKeyFrames().add( new KeyFrame(Duration.seconds(STARTTIME + 1), new KeyValue(timeSeconds, 0)));
         timeline.playFromStart();
 
         playerPane.getChildren().add(timerLabel);
@@ -89,29 +88,23 @@ public class PlayField {
         panes = new VBox[rows * columns];
         game.getStyleClass().add("game-grid");
 
-        for (int i = 0; i < columns; i++) {
-            ColumnConstraints column = new ColumnConstraints();
-            column.setPrefWidth(200);
-            game.getColumnConstraints().add(column);
-        }
+        for (int x = 0; x < columns; x++)
+            game.getColumnConstraints().add(new ColumnConstraints((GAME_VIEW_SIZE / columns)));
 
-        for (int i = 0; i < rows; i++) {
-            RowConstraints row = new RowConstraints();
-            row.setPrefHeight(200);
-            game.getRowConstraints().add(row);
-        }
+        for (int y = 0; y < rows; y++)
+            game.getRowConstraints().add(new RowConstraints((GAME_VIEW_SIZE / rows)));
+
 
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows; y++) {
                 VBox pane = new VBox();
                 pane.setAlignment(Pos.CENTER);
-                final int total = y * rows + x;
+                final int total = y * rows + x; // This is required to be final so that the setOnMouseReleased lambda can use the memory
                 panes[total] = pane;
 
                 pane.setOnMouseReleased(e -> {
-                    if (guiPlayerIsPlaying) { // TODO test
-
-//                        System.out.println(X + Y);
+                    if (guiPlayerIsPlaying) {
+                        System.out.println("GuiPlayer clicked on: ("+total % rows+", " +total / columns+") i = "+total);
                         setGuiPlayerInput(total);
 
                         if (gameRules instanceof TicTacToe) {
@@ -121,28 +114,11 @@ public class PlayField {
                     }
                 });
                 pane.getStyleClass().add("game-grid-cell");
-                if (x == 0) {
-                    pane.getStyleClass().add("first-column");
-                }
-                if (y == 0) {
-                    pane.getStyleClass().add("first-row");
-                }
+                if (x == 0) { pane.getStyleClass().add("first-column"); }
+                if (y == 0) { pane.getStyleClass().add("first-row"); }
                 game.add(pane, x, y);
             }
         }
-
-        //Setting Start board reversi
-        if (rows ==8) {
-            panes[28].getChildren().add(getPicture("black"));
-            panes[28].setDisable(true);
-            panes[29].getChildren().add(getPicture("white"));
-            panes[29].setDisable(true);
-            panes[36].getChildren().add(getPicture("white"));
-            panes[36].setDisable(true);
-            panes[37].getChildren().add(getPicture("black"));
-            panes[37].setDisable(true);
-        }
-
 
         BorderPane totalPane = new BorderPane();
         totalPane.setTop(playerPane);
@@ -168,8 +144,6 @@ public class PlayField {
 
 
     void setPicture(GameRules games, int i, int player) {
-        i += 1;
-
         if (games instanceof TicTacToe) {
             panes[i].getChildren().add(getPicture((player == 1) ? "x" : "o"));
         }

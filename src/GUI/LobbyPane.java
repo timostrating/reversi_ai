@@ -67,15 +67,9 @@ public class LobbyPane extends GridPane {
         CheckBox humanOrAi = new CheckBox();
 
         humanOrAi.setText("Menselijke speler");
+        humanOrAi.setOnAction(event -> {humanOrAi.setText((humanOrAi.selectedProperty().getValue())? "Ai speler" : "Menselijke speler"); });
 
-        humanOrAi.setOnAction(event -> {
-            if(humanOrAi.selectedProperty().getValue())
-                humanOrAi.setText("Ai speler");
-            else
-                humanOrAi.setText("Menselijke speler");
-        });
-
-        listGrid.setHalignment(onlinePlayers, HPos.CENTER);
+        GridPane.setHalignment(onlinePlayers, HPos.CENTER);
 
         connection.getFromServer().onGameList.register(onGameList);
         connection.getToServer().getGameList();
@@ -136,8 +130,7 @@ public class LobbyPane extends GridPane {
 
             game.onValidMovePlayed.register(i -> {
                 System.out.println(game);
-                // TODO this is a hack
-                Platform.runLater(reversi::redraw);
+                Platform.runLater(reversi::redraw); // TODO this is a hack
             });
 
             new Thread(game).start();

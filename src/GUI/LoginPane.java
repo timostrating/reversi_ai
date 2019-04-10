@@ -1,7 +1,6 @@
 package GUI;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.ImageCursor;
@@ -12,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -21,13 +19,14 @@ import network.Connection;
 import util.CallbackWithParam;
 import util.CompositionRoot;
 
-public class LoginPane extends BorderPane{
+public class LoginPane extends BorderPane {
     public static String username;
     private Connection connection;
     Alert alertInfo;
 
     public LoginPane(Stage primaryStage){
         connection = CompositionRoot.getInstance().connection;
+
         //Adding icon and title to the title bar
         primaryStage.getIcons().add(new Image("/GUI/pictures/kermitIcon.jpg"));
         primaryStage.setTitle("Super henk Bro's");
@@ -80,8 +79,8 @@ public class LoginPane extends BorderPane{
         loginButton.setId("loginButton");
         loginTextField.setId("text-field");
 
-        gridPane.setHalignment(loginButton, HPos.CENTER);
-        gridPane.setHalignment(loginLabel, HPos.CENTER);
+        GridPane.setHalignment(loginButton, HPos.CENTER);
+        GridPane.setHalignment(loginLabel, HPos.CENTER);
 
         loginButton.setOnAction(event -> {
             if(connection.connect(hostText.getText(), Integer.parseInt(ipAdressText.getText()))) {
@@ -101,14 +100,7 @@ public class LoginPane extends BorderPane{
         this.setCenter(gridPane);
 
         //LoginButton with pressing Enter
-        loginTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER){
-                    loginButton.fire();
-                }
-            }
-        });
+        loginTextField.setOnKeyPressed(event -> { if(event.getCode() == KeyCode.ENTER){ loginButton.fire(); } });
 
         primaryStage.setResizable(false);
     }
@@ -116,13 +108,7 @@ public class LoginPane extends BorderPane{
     private CallbackWithParam<String[]> onPlayerList = this::validatePlayer;
 
     public void validatePlayer(String[] playerList){
-        boolean validatePlayer = true;
-        for(String player : playerList){
-            if(username.toLowerCase().equals(player.toLowerCase())){
-                validatePlayer = false;
-            }
-        }
-        if(validatePlayer) {
+        if(validPlayerName(playerList)) {
             connection.getToServer().setLogin(username);
             GridPane lobby = new LobbyPane();
             Scene scene1 = new Scene(lobby, 550, 300);
@@ -130,23 +116,21 @@ public class LoginPane extends BorderPane{
             scene1.setCursor(new ImageCursor(cursor));
             CompositionRoot.getInstance().lobby.setScene(scene1);
         } else {
-            if (username.equals("")) {
-                Platform.runLater(() -> {
-                alertInfo.setTitle("Verkeerde gebruikersnaam");
+            Platform.runLater(() -> {
                 alertInfo.setHeaderText(null);
-                alertInfo.setContentText("Voer een geldige naam in");
+                alertInfo.setContentText(username.equals("") ? "Voer een geldige naam in" : "Deze naam is al in gebruik");
                 alertInfo.showAndWait();
-                });
-            } else {
-                Platform.runLater(() -> {
-                    alertInfo.setTitle("Verkeerde gebruikersnaam");
-                    alertInfo.setHeaderText(null);
-                    alertInfo.setContentText("Deze naam is al in gebruik");
-                    alertInfo.showAndWait();
-                });
-
-            }
+            });
         }
         connection.getFromServer().onPlayerList.unregister(onPlayerList);
+    }
+
+    private boolean validPlayerName(String[] playerList) {
+        for(String player : playerList){
+            if(username.toLowerCase().equals(player.toLowerCase())){
+                return false;
+            }
+        }
+        return true;
     }
 }
