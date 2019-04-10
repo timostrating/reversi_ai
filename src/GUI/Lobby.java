@@ -38,6 +38,10 @@ public class Lobby extends Application {
         });
     }
 
+    public Stage getPrimaryStage() {
+        return myPrimaryStage;
+    }
+
     public static void main(String[] args) { // TODO This is only for testing
         Application.launch();
     }

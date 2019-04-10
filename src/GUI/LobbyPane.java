@@ -43,11 +43,14 @@ public class LobbyPane extends GridPane {
         connection = CompositionRoot.getInstance().connection;
 
         new Thread(() -> {
-            while(true){
+            boolean started = false, currScene = false;
+            while(currScene || !started){
+                currScene = CompositionRoot.getInstance().lobby.getPrimaryStage().getScene() == getScene();
+                started |= currScene;
                 try {
                     connection.getFromServer().onPlayerList.register(onPlayerList);
                     connection.getToServer().getPlayerList();
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
