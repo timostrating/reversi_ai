@@ -25,11 +25,11 @@ public class ReversiAIMiniMax extends Player {
                     maxWins = (max == 1 && p1Wins) || (max == 2 && p2Wins),
                     minWins = (min == 1 && p1Wins) || (min == 2 && p2Wins);
             if (maxWins)
-                return +1000f / reversi.board.amount(max);
+                return +1000f;
             if (minWins)
-                return -1000f / reversi.board.amount(min);
+                return -1000f;
             if (state == DRAW)
-                return 100f / reversi.board.amount(max);
+                return 100f;
 
             return reversi.playerScores[max] - reversi.playerScores[min];
         }

@@ -78,21 +78,12 @@ public class Reversi extends GameRules {
         if (canMove && board.containsCell(CellState.EMPTY.ordinal()))
             return GameState.PLAYING;
 
-        int score_X = 0;
-        int score_O = 0;
-
-        for (int y = 0; y < BOARD_SIZE; y++) {
-            for (int x = 0; x < BOARD_SIZE; x++) {
-                if (board.get(x, y) == CellState.X.ordinal())
-                    score_X++;
-                if (board.get(x, y) == CellState.O.ordinal())
-                    score_O++;
-            }
-        }
+        int score_X = board.amount(CellState.X.ordinal());
+        int score_O = board.amount(CellState.O.ordinal());
 
         if (score_X == score_O)
             return GameState.DRAW;
-        if (score_X < score_O)
+        if (score_X > score_O)
             return GameState.PLAYER_1_WINS;
         return GameState.PLAYER_2_WINS;
     }
@@ -217,11 +208,12 @@ public class Reversi extends GameRules {
 
 
         public void onChange(int x, int y) {
-            if (board.get(x, y) != 0) {
-                filter(board.xyToI(x, y), 1);
-                filter(board.xyToI(x, y), 2);
-            }
             for (BoardDirection dir : BoardDirection.values()) {
+                if (board.get(x, y) != 0) {
+                    removeArrow(x, y, 1, dir);
+                    removeArrow(x, y, 2, dir);
+                }
+
                 checkOpenPositionsInLine(x + dir.xStepsToBorder(x, y), y + dir.yStepsToBorder(x, y), dir);
             }
         }
