@@ -110,8 +110,7 @@ public class LobbyPane extends GridPane {
         //queue button
         queue.setOnAction(event -> {
             connection.getToServer().subscribeGame((String) gameList.getSelectionModel().getSelectedItem());
-            System.out.println(humanOrAi.selectedProperty().getValue());
-            BorderPane QueuePane = new QueuePane();
+            BorderPane QueuePane = new QueuePane(humanOrAi.selectedProperty().getValue());
             Scene scene = new Scene(QueuePane, 500, 400);
             CompositionRoot.getInstance().lobby.setScene(scene);
         });
@@ -138,11 +137,11 @@ public class LobbyPane extends GridPane {
         spel2.setOnAction(event -> {
             CompositionRoot.getInstance().lobby.setScene(reversiScene);
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.ReversiAIMiniMax);
+            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.ReversiAIMiniMax, Arcade.PlayerFactory.ReversiAIMiniMax);
 
             game.onValidMovePlayed.register(i -> {
                 System.out.println(game);
-                Platform.runLater(() -> ticTacToe.setPicture(game, i.getKey(), i.getValue()));
+                Platform.runLater(() -> reversi.setPicture(game, i.getKey(), i.getValue()));
             });
 
             new Thread(game).start();

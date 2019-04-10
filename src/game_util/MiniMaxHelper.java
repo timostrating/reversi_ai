@@ -1,18 +1,15 @@
 package game_util;
 
-import util.OpenPosition;
 import util.OpenPositions;
-
-import static game_util.GameRules.GameState.*;
 
 /**
  * We assume that you want to use the miniMax algorithm for a game with 2 players
  */
-public class MiniMaxHelper<T extends OpenPosition> {
+public class MiniMaxHelper {
 
     GameRules game;
     GameBoard2D board;
-    OpenPositions<T> openPositions;
+    OpenPositions openPositions;
     Evaluator evaluator;
     int max;
     int min;
@@ -32,7 +29,7 @@ public class MiniMaxHelper<T extends OpenPosition> {
         return evaluator.eval(state, min, max);
     }
 
-    public PosAndScore minimax(int depth, int player, OpenPositions<T> openPositions) {
+    public PosAndScore minimax(int depth, int player, OpenPositions openPositions) {
         this.max = player;
         this.min = (player % 2) + 1;
         this.openPositions = openPositions;
@@ -40,7 +37,7 @@ public class MiniMaxHelper<T extends OpenPosition> {
     }
 
     protected PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
-        PosAndScore best = new PosAndScore(null, -1, null); // (position, score, move)
+        PosAndScore best = new PosAndScore(-1, -1, null); // (position, score, move)
         if (playerNr == max)
             best.score = Integer.MIN_VALUE;
         else
@@ -53,27 +50,11 @@ public class MiniMaxHelper<T extends OpenPosition> {
         }
 
         for (int posIndex = 0; posIndex < openPositions.size(playerNr); posIndex++) {
-            T pos = openPositions.get(posIndex, playerNr);
+            int pos = openPositions.get(posIndex, playerNr);
 
-//            System.out.println(openPositions);
-//            String str = "";
-//            for (int y = 0; y < Reversi.BOARD_SIZE; y++) {
-//                for (int x = 0; x < Reversi.BOARD_SIZE; x++) {
-//                    str = (board.get(x, y) + " ").replace('0', '-');
-//                    if (openPositions.contains(board.xyToI(x, y), playerNr))
-//                        str = str.replace('-', 'v');
-//
-//                    System.out.print(str);
-//                }
-//                System.out.println("");
-//            }
-//            System.out.println();
-//            System.out.println();
-            Move m = game.getMove(pos.i, playerNr);
-            if (m == null)
-                continue;
+            Move m = game.getMove(pos, playerNr);
+            if (m == null) continue;
             m.doMove(false);
-
 
             PosAndScore posAndScore = minimax(depth-1, alpha, beta, (playerNr%2) +1);
 
@@ -82,13 +63,13 @@ public class MiniMaxHelper<T extends OpenPosition> {
             posAndScore.move = m;
 
             if (playerNr == max) {
-                if (best.score < posAndScore.score || best.pos == null)
+                if (best.score < posAndScore.score || best.pos == -1)
                     best = posAndScore;
 
                 alpha = Math.max(alpha, posAndScore.score);
             }
             else {
-                if (best.score > posAndScore.score || best.pos == null)
+                if (best.score > posAndScore.score || best.pos == -1)
                     best = posAndScore;
 
                 beta = Math.min(beta, posAndScore.score);
@@ -103,11 +84,11 @@ public class MiniMaxHelper<T extends OpenPosition> {
     }
 
     public class PosAndScore {
-        public OpenPosition pos;
+        public int pos;
         public float score;
         public Move move;
 
-        PosAndScore(OpenPosition pos, float score, Move move) {
+        PosAndScore(int pos, float score, Move move) {
             this.pos = pos;
             this.score = score;
             this.move = move;
@@ -115,9 +96,7 @@ public class MiniMaxHelper<T extends OpenPosition> {
 
         @Override
         public String toString() {
-            if (pos == null)
-                return "No position, score : " + score;
-            return "Position: ("+board.iToX(pos.i)+", "+board.iToY(pos.i)+"), Score: " + score;
+            return "Position: ("+board.iToX(pos)+", "+board.iToY(pos)+"), Score: " + score;
         }
     }
 }

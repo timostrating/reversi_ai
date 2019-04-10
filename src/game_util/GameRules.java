@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import util.Callback;
 import util.CallbackWithParam;
 import util.Delegate;
+import util.OpenPositions;
 
 public abstract class GameRules implements Runnable {
     public enum GameState {PLAYING, DRAW, PLAYER_1_WINS, PLAYER_2_WINS  /* PLAYER_3.4.5..N_WINS*/ }

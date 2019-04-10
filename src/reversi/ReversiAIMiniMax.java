@@ -4,7 +4,6 @@ import game_util.GameRules;
 import game_util.MiniMaxHelper;
 import game_util.Move;
 import game_util.Player;
-import util.OpenPosition;
 
 import static game_util.GameRules.GameState.*;
 
@@ -13,7 +12,7 @@ public class ReversiAIMiniMax extends Player {
     private Reversi reversi;
 
     Reversi.OpenPositionsReversi openPositions;
-    MiniMaxHelper<OpenPosition> miniMaxHelper;
+    MiniMaxHelper miniMaxHelper;
 
     class ReversiEvaluator implements MiniMaxHelper.Evaluator {
 
@@ -25,11 +24,11 @@ public class ReversiAIMiniMax extends Player {
                     maxWins = (max == 1 && p1Wins) || (max == 2 && p2Wins),
                     minWins = (min == 1 && p1Wins) || (min == 2 && p2Wins);
             if (maxWins)
-                return +1000f / reversi.board.amount(max);
+                return +1000f;
             if (minWins)
-                return -1000f / reversi.board.amount(min);
+                return -1000f;
             if (state == DRAW)
-                return 100f / reversi.board.amount(max);
+                return 100f;
 
             return reversi.playerScores[max] - reversi.playerScores[min];
         }
@@ -37,7 +36,7 @@ public class ReversiAIMiniMax extends Player {
 
     public ReversiAIMiniMax(Reversi reversi) {
         this.reversi = reversi;
-        miniMaxHelper = new MiniMaxHelper<>(reversi, reversi.board, new ReversiEvaluator());
+        miniMaxHelper = new MiniMaxHelper(reversi, reversi.board, new ReversiEvaluator());
     }
 
     @Override

@@ -104,8 +104,7 @@ public class PlayField {
                 final int Y = y * rows;
                 final int total = X + Y;
                 panes[total] = pane;
-                pane.setStyle("-fx-background-color: Chartreuse;");
-                pane.setStyle("-fx-background-size: 20px 20px;");
+
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y);
                     setGuiPlayerInput(total);
@@ -144,6 +143,19 @@ public class PlayField {
                 game.add(pane, x, y);
             }
         }
+
+        //Setting Start board reversi
+        if (rows ==8) {
+            panes[28].getChildren().add(getPicture("black"));
+            panes[28].setDisable(true);
+            panes[29].getChildren().add(getPicture("white"));
+            panes[29].setDisable(true);
+            panes[36].getChildren().add(getPicture("white"));
+            panes[36].setDisable(true);
+            panes[37].getChildren().add(getPicture("black"));
+            panes[37].setDisable(true);
+        }
+
 
         BorderPane totalPane = new BorderPane();
         totalPane.setTop(playerPane);
@@ -193,8 +205,9 @@ public class PlayField {
         }
         else { // else if (gamestate == GameState.DRAW)
             winningPlayer = new Label("It's a draw!");
+
         }
-        winningPlayer.setStyle("-fx-font-size: 10em;");
+        winningPlayer.setStyle("-fx-font-size: 8em;");
         winPane.getChildren().add(winningPlayer);
 
         Scene winScene = new Scene(winPane, 1000, 700);

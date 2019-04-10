@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 class ReversiBoardTest {
 
@@ -140,4 +141,49 @@ class ReversiBoardTest {
             }
         }
     }
+
+
+    @Test
+    void openPositions() {
+        /**
+         *   0 1 2 3 4 5 6 7
+         * 0 X - X O - - O X
+         * 1 - X - O X X X -
+         * 2 - X X O X X - -
+         * 3 - - - O O X - -
+         * 4 - - - O X O - -
+         * 5 - - X X - O - -
+         * 6 - - X - - - - -
+         * 7 - - - - - - - -
+         */
+
+        assert reversi.playMove(board.xyToI(5, 3), 1);
+        assert reversi.playMove(board.xyToI(5, 2), 2);
+        assert reversi.playMove(board.xyToI(5, 1), 1);
+        assert reversi.playMove(board.xyToI(6, 1), 2);
+        assert reversi.playMove(board.xyToI(4, 2), 1);
+        assert reversi.playMove(board.xyToI(3, 2), 2);
+        assert reversi.playMove(board.xyToI(7, 0), 1);
+        assert reversi.playMove(board.xyToI(5, 5), 2);
+        assert reversi.playMove(board.xyToI(2, 2), 1);
+        assert reversi.playMove(board.xyToI(6, 0), 2);
+        assert reversi.playMove(board.xyToI(4, 1), 1);
+        assert reversi.playMove(board.xyToI(1, 1), 2);
+        assert reversi.playMove(board.xyToI(2, 5), 1);
+        assert reversi.playMove(board.xyToI(3, 5), 2);
+        assert reversi.playMove(board.xyToI(1, 2), 1);
+        assert reversi.playMove(board.xyToI(3, 1), 2);
+        assert reversi.playMove(board.xyToI(2, 0), 1);
+        assert reversi.playMove(board.xyToI(5, 4), 2);
+        assert reversi.playMove(board.xyToI(0, 0), 1);
+        assert reversi.playMove(board.xyToI(3, 0), 2);
+        assert reversi.playMove(board.xyToI(2, 6), 1);
+
+        LinkedList<Integer>
+                openO = reversi.getOpenPositions().openOPositions,
+                openX = reversi.getOpenPositions().openXPositions;
+        assert openO.contains(board.xyToI(1, 0));
+        assert openX.contains(board.xyToI(4, 0));
+    }
+
 }
