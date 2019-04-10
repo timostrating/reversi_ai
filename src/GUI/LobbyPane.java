@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import network.Connection;
 import util.ArrayUtils;
 import util.CallbackWithParam;
@@ -99,10 +98,6 @@ public class LobbyPane extends GridPane {
         PlayField ticTacToe = new PlayField(3,3);
         PlayField reversi = new PlayField(8,8);
 
-        //Panes
-        Pane[] ticTacToePane = ticTacToe.getPane();
-        Pane[] reversiPane = reversi.getPane();
-
         //Scenes
         Scene ticTacToeScene = ticTacToe.getScene();
         Scene reversiScene = reversi.getScene();
@@ -125,25 +120,18 @@ public class LobbyPane extends GridPane {
         spel1.setOnAction(event -> {
             CompositionRoot.getInstance().lobby.setScene(ticTacToeScene);
             Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.TicTacToeAIMiniMax);
+            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.TicTacToeAIMiniMax);
 
-            game.onValidMovePlayed.register(i -> {
+            game.onValidMovePlayed.register((pair0 -> {
                 System.out.println(game);
-                Platform.runLater(() -> {
-                    ticTacToe.setPicture(game, i.getKey(), i.getValue());
-                });
+                Platform.runLater(() -> ticTacToe.setPicture(game, pair0.getKey(), pair0.getValue()));
+            }));
+
+            game.onGameEnded.register(() -> {
+                Platform.runLater(() -> ticTacToe.displayWinScreen(game.getGameState()));
             });
 
 
-            // TODO: Kan dit weg?
-//            game.onValidMovePlayed.register((i)-> {
-//
-//
-//                Platform.runLater(() -> {
-//                    ticTacToePane[i % 3][i / 3].getChildren().add(PlayField.Anims.getPicture("x"));
-//                });
-//
-//            }); // TODO: hardcoded size  and nr 1 ?
             new Thread(game).start();
         });
 
@@ -154,21 +142,9 @@ public class LobbyPane extends GridPane {
 
             game.onValidMovePlayed.register(i -> {
                 System.out.println(game);
-                Platform.runLater(() -> {
-                    ticTacToe.setPicture(game, i.getKey(), i.getValue());
-                });
+                Platform.runLater(() -> ticTacToe.setPicture(game, i.getKey(), i.getValue()));
             });
 
-
-            // TODO: Kan dit weg?
-//            game.onValidMovePlayed.register((i)-> {
-//
-//
-//                Platform.runLater(() -> {
-//                    reversiPane[i % 3][i / 3].getChildren().add(PlayField.Anims.getPicture("black"));
-//                });
-//
-//            }); // TODO: hardcoded size  and nr 1 ?
             new Thread(game).start();
         });
 

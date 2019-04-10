@@ -13,27 +13,23 @@ public class MiniMaxHelper<T extends OpenPosition> {
     GameRules game;
     GameBoard2D board;
     OpenPositions<T> openPositions;
+    Evaluator evaluator;
     int max;
     int min;
 
-    public MiniMaxHelper(GameRules game, GameBoard2D board) {
+    public MiniMaxHelper(GameRules game, GameBoard2D board, Evaluator evaluator) {
         this.game = game;
         this.board = board;
+        this.evaluator = evaluator;
+    }
+
+    @FunctionalInterface
+    public interface Evaluator {
+        float eval(GameRules.GameState state, int minPlayer, int maxPlayer);
     }
 
     private float eval(GameRules.GameState state) {
-        boolean
-                p1Wins = state == PLAYER_1_WINS,
-                p2Wins = state == PLAYER_2_WINS,
-                maxWins = (max == 1 && p1Wins) || (max == 2 && p2Wins),
-                minWins = (min == 1 && p1Wins) || (min == 2 && p2Wins);
-        if (maxWins)
-            return +100f / board.amount(max);
-        if (minWins)
-            return -100f / board.amount(min);
-        if (state == DRAW)
-            return 1f / board.amount(max);
-        return 0;
+        return evaluator.eval(state, min, max);
     }
 
     public PosAndScore minimax(int depth, int player, OpenPositions<T> openPositions) {

@@ -1,6 +1,7 @@
 package GUI;
 
 import game_util.GameRules;
+import game_util.GameRules.GameState;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -17,21 +18,20 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
 import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
+import util.CompositionRoot;
 
 public class PlayField {
 
-    private VBox[] panes;
-   private int paneNr = 0;
-   private Scene scene;
    private static final Integer STARTTIME = 10;
-
-    private int player = 0;
-
     // Images
     private static Image o = new Image("GUI/pictures/o.png", 150, 150, false ,true);
     private static Image x = new Image("GUI/pictures/x.png",150,150,false,true);
     private static Image black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true);
     private static Image white = new Image("GUI/pictures/whitePiece.png",60, 60, false, true);
+    private VBox[] panes;
+    private int paneNr = 0;
+    private Scene scene;
+    private int player = 0;
 
 
 
@@ -40,6 +40,7 @@ public class PlayField {
 
     PlayField(int rows, int columns) {
 
+        // Current Player
         Label currentPlayer = new Label("Kees");
         currentPlayer.setStyle("-fx-font-size: 3em;");
         HBox playerPane = new HBox();
@@ -47,6 +48,7 @@ public class PlayField {
         playerPane.setAlignment(Pos.CENTER);
         playerPane.getChildren().add(currentPlayer);
 
+        // Player List
         Label player1 = new Label("Player 1 has 10 points");
         Label player2 = new Label("Player 2 has 13 points");
         player1.setPadding(new Insets(50,0,0,0));
@@ -56,6 +58,7 @@ public class PlayField {
         scorePane.getChildren().addAll(player1, player2);
 
 
+        // Timer
         // Bind the timerLabel text property to the timeSeconds property
         Label timerLabel = new Label();
         IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
@@ -105,6 +108,8 @@ public class PlayField {
                 final int Y = y * rows;
                 final int total = X + Y;
                 panes[total] = pane;
+                pane.setStyle("-fx-background-color: Chartreuse;");
+                pane.setStyle("-fx-background-size: 20px 20px;");
                 pane.setOnMouseReleased(e -> {
                     System.out.println(X + Y );
                     setPaneNR(total);
@@ -158,48 +163,73 @@ public class PlayField {
 
     }
 
-        private static ImageView getPicture(String player) {
+    private static ImageView getPicture(String player) {
 
-            ImageView imageView = null;
-            if (player == "x") {
-                imageView = new ImageView(x);
-            }
-            if (player == "o") {
-                imageView = new ImageView(o);
-            }
-            if (player == "black") {
-                imageView = new ImageView(black);
-            }
-            if (player == "white") {
-                imageView = new ImageView(white);
-            }
-
-            return imageView;
+        ImageView imageView = null;
+        if (player.equals("x")) {
+            imageView = new ImageView(x);
+        }
+        if (player.equals("o")) {
+            imageView = new ImageView(o);
+        }
+        if (player.equals("black")) {
+            imageView = new ImageView(black);
+        }
+        if (player.equals("white")) {
+            imageView = new ImageView(white);
         }
 
-        //TODO speler meegeven
-        void setPicture(GameRules games, int i, int player) {
-        i +=1;
+        return imageView;
+    }
 
-        if (games instanceof TicTacToe) {
-                if (player == 1) {
-                    panes[i].getChildren().add(getPicture("x"));
-                }
-                else if (player == 2) {
-                    panes[i].getChildren().add(getPicture("o"));
-                }
-            }
-            else if (games instanceof Reversi) {
-                if (player == 1) {
-                    panes[i].getChildren().add(getPicture("black"));
-                }
-                else if (player == 2) {
-                    panes[i].getChildren().add(getPicture("white"));
-                }
-            }
-            System.out.println("zet " + i + " voor player " + player);
 
+    void setPicture(GameRules games, int i, int player) {
+    i +=1;
+
+    if (games instanceof TicTacToe) {
+            if (player == 1) {
+                panes[i].getChildren().add(getPicture("x"));
+            }
+            else if (player == 2) {
+                panes[i].getChildren().add(getPicture("o"));
+            }
         }
+        else if (games instanceof Reversi) {
+            if (player == 1) {
+                panes[i].getChildren().add(getPicture("black"));
+            }
+            else if (player == 2) {
+                panes[i].getChildren().add(getPicture("white"));
+            }
+        }
+        System.out.println("zet " + i + " voor player " + player);
+
+    }
+
+    void displayWinScreen(GameState gamestate) {
+        VBox winPane = new VBox();
+        winPane.setAlignment(Pos.CENTER);
+        winPane.setStyle("-fx-background-color: Chartreuse;");
+        Label winningPlayer;
+        if (gamestate == GameState.PLAYER_1_WINS) {
+            winningPlayer = new Label("Player 1 has won!");
+            winningPlayer.setStyle("-fx-font-size: 10em;");
+            winPane.getChildren().add(winningPlayer);
+        }
+        else if (gamestate == GameState.PLAYER_2_WINS) {
+            winningPlayer = new Label("Player 2 has won!");
+            winningPlayer.setStyle("-fx-font-size: 10em;");
+            winPane.getChildren().add(winningPlayer);
+        }
+        else if (gamestate == GameState.DRAW) {
+            winningPlayer = new Label("It's a draw!");
+            winningPlayer.setStyle("-fx-font-size: 10em;");
+            winPane.getChildren().add(winningPlayer);
+        }
+        Scene winScene = new Scene(winPane,1000,700);
+        CompositionRoot.getInstance().lobby.setScene(winScene);
+
+    }
 
 
     public void setPaneNR(int position) { paneNr = position; }
