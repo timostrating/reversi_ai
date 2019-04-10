@@ -119,6 +119,8 @@ public class MiniMaxHelper<T extends OpenPosition> {
 
         @Override
         public String toString() {
+            if (pos == null)
+                return "No position, score : " + score;
             return "Position: ("+board.iToX(pos.i)+", "+board.iToY(pos.i)+"), Score: " + score;
         }
     }
