@@ -136,7 +136,8 @@ public class LobbyPane extends GridPane {
 
             game.onValidMovePlayed.register(i -> {
                 System.out.println(game);
-                Platform.runLater(() -> reversi.setPicture(game, i.getKey(), i.getValue()));
+                // TODO this is a hack
+                Platform.runLater(reversi::redraw);
             });
 
             new Thread(game).start();

@@ -58,7 +58,7 @@ public class QueuePane extends BorderPane{
             pokemon.stop();
         });
     }
-    private CallbackWithParam<HashMap<String,String>> onMatch = message -> {
+    private CallbackWithParam<HashMap<String,String>> onMatch = message -> { // TODO FIX dit is het zelfde als in de lobby
         PlayField playField;
         Scene playScene;
         Arcade arcade = CompositionRoot.getInstance().arcade;
