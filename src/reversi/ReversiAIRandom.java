@@ -17,7 +17,6 @@ public class ReversiAIRandom extends Player {
 
     @Override
     protected Move getInput() {
-
         Reversi.OpenPositionsReversi openPositions = reversi.getOpenPositions();
         System.out.println(openPositions);
 
