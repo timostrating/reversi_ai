@@ -83,8 +83,9 @@ public class QueuePane extends BorderPane{
         } else {
 
             PlayerFactory
-                    first = PlayerFactory.RemotePlayer,
-                    second = humanOrAi ? PlayerFactory.ReversiAIMiniMax : PlayerFactory.HumanPlayer;
+                    // NIET WEER KAPOT MAKEN TIMO anders weet kermit je wel te vinden
+                    first = humanOrAi ? PlayerFactory.ReversiAIMiniMax : PlayerFactory.HumanPlayer,
+                    second = PlayerFactory.RemotePlayer;
 
 
             if(message.get("OPPONENT").equals(message.get("PLAYERTOMOVE"))) {
