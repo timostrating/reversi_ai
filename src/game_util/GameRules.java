@@ -5,6 +5,8 @@ import util.Callback;
 import util.CallbackWithParam;
 import util.Delegate;
 
+import java.util.Arrays;
+
 public abstract class GameRules implements Runnable {
     public enum GameState {PLAYING, DRAW, PLAYER_1_WINS, PLAYER_2_WINS  /* PLAYER_3.4.5..N_WINS*/ }
 
@@ -20,6 +22,8 @@ public abstract class GameRules implements Runnable {
         this.players = players;
         for (int i = 0; i < players.length; i++)
             players[i].setNr(i + 1);
+
+        referee.initialize();
     }
 
     @Override
@@ -30,9 +34,6 @@ public abstract class GameRules implements Runnable {
     public void start(boolean newThread) {
         if (newThread) {
             new Thread(this).start();
-            try {
-                Thread.sleep(1000); // wait for the Referee to have registered to all events.
-            } catch (InterruptedException ignored) {}
         } else run();
     }
 
@@ -57,7 +58,7 @@ public abstract class GameRules implements Runnable {
 
     public Player getPlayerByName(String name) {
         for (Player p : players) if (p.getName().equals(name)) return p;
-        return null;
+        throw new RuntimeException(name + " is not a player. Players are: " + Arrays.toString(players));
     }
 
     public final GameState getGameState() {

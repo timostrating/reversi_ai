@@ -41,10 +41,10 @@ public class Reversi extends GameRules {
     }
 
     public void reset() {
-        setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2 - 1, CellState.X.ordinal());
-        setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2, CellState.O.ordinal());
-        setOnBoardAndNotify(BOARD_SIZE / 2, BOARD_SIZE / 2, CellState.X.ordinal());
-        setOnBoardAndNotify(BOARD_SIZE / 2, BOARD_SIZE / 2 - 1, CellState.O.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2 - 1, CellState.O.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2, CellState.X.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2, BOARD_SIZE / 2, CellState.O.ordinal());
+        setOnBoardAndNotify(BOARD_SIZE / 2, BOARD_SIZE / 2 - 1, CellState.X.ordinal());
     }
 
     public OpenPositionsReversi getOpenPositions() {
