@@ -13,7 +13,7 @@ public class CompositionRoot {
     public Arcade arcade;
 
     private CompositionRoot() {
-        this.lobby = new Lobby();
+        this.lobby = null; // This is the intended way
         this.connection = new Connection();
         this.arcade = new Arcade();
     }
@@ -25,8 +25,8 @@ public class CompositionRoot {
         return  compositionRoot;
     }
 
-    public static void main(String[] args) {
-        getInstance();
+    public void setLobby (Lobby lobby) {
+        this.lobby = lobby;
     }
 }
 

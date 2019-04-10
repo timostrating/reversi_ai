@@ -65,23 +65,23 @@ public class QueuePane extends BorderPane{
         GameRules game;
         System.out.println(humanOrAi);
         if(message.get("GAMETYPE").equals("Tic-tac-toe")) {
-            playField = new PlayField(3,3);
-            playScene = playField.getScene();
             if (humanOrAi) {
                 game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.RemotePlayer);
             } else {
                 game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.RemotePlayer);
             }
+            playField = new PlayField(3,3, game);
+            playScene = playField.getScene();
 
         } else {
 
-            playField = new PlayField(8, 8);
-            playScene = playField.getScene();
             if (humanOrAi){
                 game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.ReversiAIMiniMax, Arcade.PlayerFactory.RemotePlayer);
             } else {
                 game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.RemotePlayer);
             }
+            playField = new PlayField(8, 8, game);
+            playScene = playField.getScene();
         }
 //        if(message.get("OPPENENT").equals(message.get("PL")))
         game.getPlayer(0).setName(loginPane.username);
