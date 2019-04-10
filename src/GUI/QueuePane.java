@@ -64,6 +64,9 @@ public class QueuePane extends BorderPane{
         Arcade arcade = CompositionRoot.getInstance().arcade;
         GameRules game;
         System.out.println(humanOrAi);
+
+        int local = 0, remote = 1;
+
         if(message.get("GAMETYPE").equals("Tic-tac-toe")) {
             if (humanOrAi) {
                 game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.RemotePlayer);
@@ -75,17 +78,23 @@ public class QueuePane extends BorderPane{
 
         } else {
 
-            if (humanOrAi){
-                game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.ReversiAIMiniMax, Arcade.PlayerFactory.RemotePlayer);
-            } else {
-                game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, Arcade.PlayerFactory.HumanPlayer, Arcade.PlayerFactory.RemotePlayer);
+            Arcade.PlayerFactory first = humanOrAi ? Arcade.PlayerFactory.ReversiAIMiniMax : Arcade.PlayerFactory.HumanPlayer,
+                    second = Arcade.PlayerFactory.RemotePlayer;
+
+            if(message.get("OPPENENT").equals(message.get("PLAYERTOMOVE"))) {
+                local = 1;
+                remote = 0;
+                second = first;
+                first = Arcade.PlayerFactory.RemotePlayer;
             }
+
+            game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.NetworkedReferee, first, second);
             playField = new PlayField(8, 8, game);
             playScene = playField.getScene();
         }
-//        if(message.get("OPPENENT").equals(message.get("PL")))
-        game.getPlayer(0).setName(loginPane.username);
-        game.getPlayer(1).setName(message.get("OPPONENT"));
+
+        game.getPlayer(local).setName(loginPane.username);
+        game.getPlayer(remote).setName(message.get("OPPONENT"));
         CompositionRoot.getInstance().lobby.setScene(playScene);
         game.onValidMovePlayed.register((pair0 -> {
             System.out.println(game);
