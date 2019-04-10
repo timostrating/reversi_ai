@@ -19,6 +19,22 @@ public class Reversi extends GameRules {
     private OpenPositionsReversi openPositions = new OpenPositionsReversi();
 
     public GameBoard2D board;
+    public float[] playerScores = {
+            -9999,  // score for non exisiting player
+            0,      // score for player 1
+            0       // score for player 2
+    };
+
+    private double[][] scores = {
+            {1.01, -.43, .38,  .07,  0,    .42,  -.2,  1.02},
+            {-.27, -.74, -.16, -.14, -.13, -.25, -.65, -.39},
+            {.56,  -.3,  .12,  .05,  -.04, .07,  -.15, .48},
+            {.01,  -.08, .01,  -01,  -.04, -.02, -.12, .03},
+            {-.1,  -.08, .01,  -.01, -.03, .02,  -.04, -.2},
+            {.59,  -.23, .06,  .01,  .04,  .06,  -.19, .35},
+            {-.06, -.55, -.18, -.08, -.15, -.31, -.82, -.58},
+            {.96,  -.42, .67,  -.02, -.03, .81,  -.51, 1.01}
+    };
 
     public Reversi() {
         this.board = new GameBoard2D(BOARD_SIZE);
@@ -124,8 +140,12 @@ public class Reversi extends GameRules {
                 @Override
                 public void doMove(boolean permanent) {
                     setOnBoardAndNotify(x, y, playerNr);
-                    for (int[] pos : flips)
+                    for (int[] pos : flips) {
                         flipOnBoardAndNotify(pos[0], pos[1], playerNr);
+                        playerScores[playerNr] += scores[pos[1]][pos[0]]; // Y first X second!!!
+                    }
+
+                    playerScores[playerNr] += scores[y][x];
 
                     if (permanent)
                         onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(input, playerNr)));
@@ -134,8 +154,11 @@ public class Reversi extends GameRules {
                 @Override
                 public void undoMove() {
                     setOnBoardAndNotify(x, y, 0);
-                    for (int[] pos : flips)
+                    playerScores[playerNr] -= scores[y][x];
+                    for (int[] pos : flips) {
                         flipOnBoardAndNotify(pos[0], pos[1], (playerNr % 2) + 1);
+                        playerScores[playerNr] -= scores[pos[1]][pos[0]];
+                    }
                 }
             };
         }
@@ -194,8 +217,10 @@ public class Reversi extends GameRules {
 
 
         public void onChange(int x, int y) {
-            if (board.get(x, y) != 0)
-                filter(board.xyToI(x, y), board.get(x, y));
+            if (board.get(x, y) != 0) {
+                filter(board.xyToI(x, y), 1);
+                filter(board.xyToI(x, y), 2);
+            }
             for (BoardDirection dir : BoardDirection.values()) {
                 checkOpenPositionsInLine(x + dir.xStepsToBorder(x, y), y + dir.yStepsToBorder(x, y), dir);
             }

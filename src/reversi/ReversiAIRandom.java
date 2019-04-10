@@ -17,16 +17,6 @@ public class ReversiAIRandom extends Player {
 
     @Override
     protected Move getInput() {
-        if (getNr() == 2) {
-            int randomInt = 0;
-            while (true) {
-                Move m = reversi.getMove(randomInt, getNr());
-                if (m != null)
-                    return m;
-
-                randomInt = r.nextInt(Reversi.CELL_COUNT);
-            }
-        }
 
         Reversi.OpenPositionsReversi openPositions = reversi.getOpenPositions();
         System.out.println(openPositions);
