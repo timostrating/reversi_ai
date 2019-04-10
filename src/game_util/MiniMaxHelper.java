@@ -43,7 +43,7 @@ public class MiniMaxHelper<T extends OpenPosition> {
         return minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
     }
 
-    private PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
+    protected PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
         PosAndScore best = new PosAndScore(null, -1, null); // (position, score, move)
         if (playerNr == max)
             best.score = Integer.MIN_VALUE;
