@@ -1,5 +1,9 @@
 package GUI;
 
+import game_util.Arcade;
+import game_util.Arcade.GameFactory;
+import game_util.Arcade.PlayerFactory;
+import game_util.Arcade.RefereeFactory;
 import game_util.GameRules;
 import game_util.GameRules.GameState;
 import javafx.animation.KeyFrame;
@@ -21,6 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
+import util.CallbackWithParam;
 import util.CompositionRoot;
 
 import java.util.ArrayList;
@@ -44,6 +49,7 @@ public class PlayField {
     private boolean guiPlayerIsPlaying = false;
 
 
+    PlayField(int boardSize, GameRules gameRules) { this(boardSize, boardSize, gameRules); }
     PlayField(int rows, int columns, GameRules gameRules) {
         CompositionRoot.getInstance().lobby.playField = this;
         this.gameRules = gameRules;
@@ -234,5 +240,60 @@ public class PlayField {
                     panes[i].getChildren().add(getPicture("o"));
             }
         }
+    }
+
+    public enum StandardGameType {
+        OFFLINE_AI_VS_PLAYER(RefereeFactory.DefaultReferee, PlayerFactory.BestAvailableAI, PlayerFactory.GUIPlayer),
+        OFFLINE_PLAYER_VS_AI(RefereeFactory.DefaultReferee, PlayerFactory.GUIPlayer, PlayerFactory.BestAvailableAI),
+        ONLINE_AI_VS_REMOTE(RefereeFactory.NetworkedReferee, PlayerFactory.BestAvailableAI, PlayerFactory.RemotePlayer),
+        ONLINE_HUMAN_VS_REMOTE(RefereeFactory.NetworkedReferee, PlayerFactory.BestAvailableAI, PlayerFactory.HumanPlayer),
+        ONLINE_REMOTE_VS_AI(RefereeFactory.NetworkedReferee, PlayerFactory.RemotePlayer, PlayerFactory.BestAvailableAI),
+        ONLINE_REMOTE_VS_HUMAN(RefereeFactory.NetworkedReferee, PlayerFactory.RemotePlayer, PlayerFactory.HumanPlayer);
+
+        public final RefereeFactory refereeFactory;
+        public final PlayerFactory first;
+        public final PlayerFactory second;
+
+        StandardGameType(RefereeFactory refereeFactory, PlayerFactory first, PlayerFactory second) {
+            this.refereeFactory = refereeFactory;
+            this.first = first;
+            this.second = second;
+        }
+    }
+
+    public static PlayField createGameAndPlayField(GameFactory gameFactory, StandardGameType standardGameType) {
+        return createGameAndPlayField(gameFactory, standardGameType, (e)->{} );
+    }
+    public static PlayField createGameAndPlayField(GameFactory gameFactory, StandardGameType standardGameType, CallbackWithParam<GameRules> BeforeGameStart) {
+
+        Arcade arcade = CompositionRoot.getInstance().arcade;
+        GameRules game = arcade.createGame(gameFactory, standardGameType.refereeFactory, standardGameType.first, standardGameType.second);
+        PlayField playField = new PlayField(gameFactory.boardSize, game);
+
+        BeforeGameStart.callback(game);
+
+        registerDefaultCallBacks(game, playField);
+        new Thread(game).start();
+
+        return playField;
+    }
+
+    private static void registerDefaultCallBacks(GameRules game, PlayField playField) {
+        Platform.runLater(playField::redraw); // TODO this is a hack
+
+        game.onValidMovePlayed.register((pair0 -> {
+            Platform.runLater(() -> playField.setPicture(game, pair0.getKey(), pair0.getValue()));
+            if (game instanceof Reversi) {
+                Platform.runLater(playField::redraw); // TODO this is a hack
+            }
+        }));
+
+        game.onGameEnded.register(() -> {
+            Platform.runLater(() -> playField.displayWinScreen(game.getGameState()));
+        });
+
+        game.onValidMovePlayed.register(i -> {
+            System.out.println(game);
+        });
     }
 }

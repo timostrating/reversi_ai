@@ -1,7 +1,7 @@
 package GUI;
 
+import GUI.PlayField.StandardGameType;
 import game_util.Arcade;
-import game_util.GameRules;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -63,8 +63,8 @@ public class LobbyPane extends GridPane {
         Label onlinePlayers = new Label("Online spelers");
         Label withAi = new Label("Met de Ai spelen");
         Label gameType = new Label("Spel selecteren");
-        Button spel1 = new Button("Tic Tac Toe");
-        Button spel2 = new Button("Reversi");
+        Button ticTacToeButton = new Button("Tic Tac Toe");
+        Button reversiButton = new Button("Reversi");
         Button queue = new Button("Zoeken naar spel");
         Button challenge = new Button("Speler uitdagen");
         CheckBox humanOrAi = new CheckBox();
@@ -84,12 +84,11 @@ public class LobbyPane extends GridPane {
         buttonGrid.add(humanOrAi, 0,3);
         buttonGrid.add(queue, 0,4);
         buttonGrid.add(challenge, 0,5);
-        buttonGrid.add(spel1, 0, 6);
-        buttonGrid.add(spel2, 0,7);
+        buttonGrid.add(ticTacToeButton, 0, 6);
+        buttonGrid.add(reversiButton, 0,7);
 
         this.add(listGrid, 0, 0);
         this.add(buttonGrid, 1, 0);
-//                spel2, queue, challenge, humanOrAi);
 
 
         //challenge button
@@ -105,41 +104,17 @@ public class LobbyPane extends GridPane {
             CompositionRoot.getInstance().lobby.setScene(scene);
         });
 
-        //Register Buttons
-        spel1.setOnAction(event -> { // TODO REMOVE
-            Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.TicTacToe, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.TicTacToeAIMiniMax, Arcade.PlayerFactory.TicTacToeAIMiniMax);
-            PlayField ticTacToe = new PlayField(3,3, game);
-            CompositionRoot.getInstance().lobby.setScene(ticTacToe.getScene());
-
-            game.onValidMovePlayed.register((pair0 -> {
-                System.out.println(game);
-                Platform.runLater(() -> ticTacToe.setPicture(game, pair0.getKey(), pair0.getValue()));
-            }));
-
-            game.onGameEnded.register(() -> {
-                Platform.runLater(() -> ticTacToe.displayWinScreen(game.getGameState()));
-            });
-
-
-            new Thread(game).start();
+        // game Button
+        ticTacToeButton.setOnAction(event -> {
+            PlayField playField = PlayField.createGameAndPlayField(Arcade.GameFactory.TicTacToe, StandardGameType.OFFLINE_AI_VS_PLAYER);
+            CompositionRoot.getInstance().lobby.setScene(playField.getScene());
         });
-
-        spel2.setOnAction(event -> {  // TODO REMOVE
-            Arcade arcade = CompositionRoot.getInstance().arcade;
-            GameRules game = arcade.createGame(Arcade.GameFactory.Reversi, Arcade.RefereeFactory.DefaultReferee, Arcade.PlayerFactory.ReversiAIMiniMax, Arcade.PlayerFactory.GUIPlayer);
-            PlayField reversi = new PlayField(8,8, game);
-            CompositionRoot.getInstance().lobby.setScene(reversi.getScene());
-
-            game.onValidMovePlayed.register(i -> {
-                System.out.println(game);
-                Platform.runLater(reversi::redraw); // TODO this is a hack
-            });
-
-            new Thread(game).start();
+        reversiButton.setOnAction(event -> {
+            PlayField playField = PlayField.createGameAndPlayField(Arcade.GameFactory.Reversi, StandardGameType.OFFLINE_AI_VS_PLAYER);
+            CompositionRoot.getInstance().lobby.setScene(playField.getScene());
         });
-
     }
+
 
     private void gameTypesToBox(String[] message) {
         gameList = new ChoiceBox();

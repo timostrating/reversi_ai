@@ -17,11 +17,14 @@ public class Arcade {
     @FunctionalInterface interface China { Object aliExpress(GameRules game); }
 
     public enum GameFactory {
-        TicTacToe(g -> new TicTacToe()),
-        Reversi(g -> new Reversi());
+        TicTacToe(3, g -> new TicTacToe()),
+        Reversi(8, g -> new Reversi());
 
+        public final int boardSize;
         private China china;
-        private GameFactory(China china) { this.china = china; }
+        private GameFactory(int boardSize, China china) {
+            this.boardSize = boardSize;
+            this.china = china; }
         public GameRules toObject() { return (GameRules) china.aliExpress(null); }
     }
 
@@ -32,7 +35,15 @@ public class Arcade {
         TicTacToeAIScore(g -> new TicTacToeAIScore((TicTacToe) g)),
         TicTacToeAIMiniMax(g -> new TicTacToeAIMiniMax((TicTacToe) g)),
         ReversiAIRandom(g -> new ReversiAIRandom((Reversi) g)),
-        ReversiAIMiniMax(g -> new ReversiAIMiniMax((Reversi) g));
+        ReversiAIMiniMax(g -> new ReversiAIMiniMax((Reversi) g)),
+        BestAvailableAI(game -> {
+            if (game instanceof TicTacToe)
+                return new TicTacToeAIMiniMax((TicTacToe) game);
+            else if (game instanceof Reversi)
+                return new ReversiAIMiniMax((Reversi) game);
+            else
+                throw new RuntimeException("Unfortunately humans are better than the best AI");
+        });
 
         private China china;
         private PlayerFactory(China china) { this.china = china; }
