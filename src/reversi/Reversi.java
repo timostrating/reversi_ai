@@ -208,11 +208,12 @@ public class Reversi extends GameRules {
 
 
         public void onChange(int x, int y) {
-            if (board.get(x, y) != 0) {
-                filter(board.xyToI(x, y), 1);
-                filter(board.xyToI(x, y), 2);
-            }
             for (BoardDirection dir : BoardDirection.values()) {
+                if (board.get(x, y) != 0) {
+                    removeArrow(x, y, 1, dir);
+                    removeArrow(x, y, 2, dir);
+                }
+
                 checkOpenPositionsInLine(x + dir.xStepsToBorder(x, y), y + dir.yStepsToBorder(x, y), dir);
             }
         }
