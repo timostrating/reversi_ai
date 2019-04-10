@@ -51,9 +51,7 @@ public class LobbyPane extends GridPane {
                     connection.getFromServer().onPlayerList.register(onPlayerList);
                     connection.getToServer().getPlayerList();
                     Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                } catch (InterruptedException e) { }
             }
         }).start();
 

@@ -24,6 +24,8 @@ public class NetworkedReferee extends DefaultReferee {
     private Player localPlayer, remotePlayer;
     private GameRules.GameState gameState;
 
+    private boolean firstMoveToBePlayed = true;
+
     public NetworkedReferee(GameRules game) {
         super(game);
         Connection connection = CompositionRoot.getInstance().connection;
@@ -65,12 +67,17 @@ public class NetworkedReferee extends DefaultReferee {
     };
 
     private CallbackWithParam<HashMap<String, String>> onLocalTurn = message -> {
+
+        if (firstMoveToBePlayed && localPlayer.getNr() == 1)
+            return; // ignore, turn already started earlier.
+
         System.out.println("Local turn");
         System.out.println(game);
         game.nextPlayer(localPlayer);
     };
 
     private CallbackWithParam<HashMap<String, String>> onMove = message -> {
+        firstMoveToBePlayed = false;
         Player p = game.getPlayerByName(message.get("PLAYER"));
         System.out.println("Received move for player " + p);
         Move m = game.getMove(Integer.valueOf(message.get("MOVE")), p.getNr());
@@ -88,6 +95,10 @@ public class NetworkedReferee extends DefaultReferee {
     @Override
     public void letTheGameStart(Callback onEnded) {
         this.onEnded = onEnded;
+        if (localPlayer.getNr() == 1) {
+            System.out.println("LocalPlayer will begin");
+            game.nextPlayer(localPlayer);
+        }
     }
 
     private void endGame() {
