@@ -10,7 +10,9 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -203,6 +205,17 @@ public class PlayField {
         }
         winningPlayer.setStyle("-fx-font-size: 8em;");
         winPane.getChildren().add(winningPlayer);
+        Button back = new Button("Terug naar lobby");
+        back.setOnAction(e -> {
+
+            GridPane lobby = new LobbyPane();
+            Scene scene1 = new Scene(lobby, 550, 300);
+            Image cursor = new Image("GUI/pictures/kermitCursor.png");
+            scene1.setCursor(new ImageCursor(cursor));
+            CompositionRoot.getInstance().lobby.setScene(scene1);
+
+        });
+        winPane.getChildren().add(back);
 
         Scene winScene = new Scene(winPane, 1000, 700);
         CompositionRoot.getInstance().lobby.setScene(winScene);

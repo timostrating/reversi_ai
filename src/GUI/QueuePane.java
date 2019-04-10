@@ -20,6 +20,9 @@ import java.util.HashMap;
 public class QueuePane extends BorderPane{
     LoginPane loginPane;
     boolean humanOrAi;
+    AudioClip pokemon;
+    FadeTransition ft;
+
 
     public QueuePane(Boolean aI){
         humanOrAi = aI;
@@ -39,13 +42,11 @@ public class QueuePane extends BorderPane{
 
         this.getChildren().add(gridPane);
 
-        String musicFile = "sounds/pokemon.mp3";
-
-        AudioClip pokemon = new AudioClip(this.getClass().getResource("sounds/pokemon.mp3").toExternalForm());
+        pokemon = new AudioClip(this.getClass().getResource("sounds/pokemon.mp3").toExternalForm());
 
         pokemon.play(100);
 
-        FadeTransition ft = new FadeTransition(Duration.millis(2000), this);
+        ft = new FadeTransition(Duration.millis(6000), this);
         ft.setFromValue(0);
         ft.setToValue(1);
         ft.play();
@@ -109,6 +110,8 @@ public class QueuePane extends BorderPane{
 
         game.start(true);
         System.out.println("Continue");
+        ft.stop();
+        pokemon.stop();
 
         unregister();
     };
