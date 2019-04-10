@@ -110,8 +110,7 @@ public class LobbyPane extends GridPane {
         //queue button
         queue.setOnAction(event -> {
             connection.getToServer().subscribeGame((String) gameList.getSelectionModel().getSelectedItem());
-            System.out.println(humanOrAi.selectedProperty().getValue());
-            BorderPane QueuePane = new QueuePane();
+            BorderPane QueuePane = new QueuePane(humanOrAi.selectedProperty().getValue());
             Scene scene = new Scene(QueuePane, 500, 400);
             CompositionRoot.getInstance().lobby.setScene(scene);
         });
