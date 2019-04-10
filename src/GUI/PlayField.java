@@ -86,13 +86,7 @@ public class PlayField {
         GridPane game = new GridPane();
         game.setAlignment(Pos.CENTER);
 
-        int a = rows;
-        int b = columns;
-        a += 1;
-        b = b * b;
-        int position = a + b;
-
-        panes = new VBox[position];
+        panes = new VBox[rows * columns];
         game.getStyleClass().add("game-grid");
 
         for (int i = 0; i < columns; i++) {
@@ -111,9 +105,7 @@ public class PlayField {
             for (int y = 0; y < rows; y++) {
                 VBox pane = new VBox();
                 pane.setAlignment(Pos.CENTER);
-                final int X = x + 1;
-                final int Y = y * rows;
-                final int total = X + Y;
+                final int total = y * rows + x;
                 panes[total] = pane;
 
                 pane.setOnMouseReleased(e -> {
@@ -242,7 +234,7 @@ public class PlayField {
             if (gameRules instanceof Reversi) {
                 Reversi reversi = (Reversi) gameRules;
                 for (int i=0; i<reversi.openPositions.size(playerNr); i++) {
-                    int index = reversi.openPositions.get(i, playerNr) + 1;
+                    int index = reversi.openPositions.get(i, playerNr);
                     panes[index].getChildren().add(getPicture("kermit"));
                     lijstje.add(index);
                 }

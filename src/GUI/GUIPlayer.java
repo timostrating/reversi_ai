@@ -23,9 +23,8 @@ public class GUIPlayer extends Player {
         while (true) {
             int guiInput = guiGame.playField.guiPlayerInput;
             if (guiInput != -1) {
-                System.out.println("ja");
                 guiGame.playField.resetGuiPlayerInput();
-                return game.getMove(guiInput -1, getNr());
+                return game.getMove(guiInput, getNr());
             }
         }
     }
