@@ -67,7 +67,10 @@ public class Arcade {
         GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMax, PlayerFactory.ReversiAIRandom);
         game.onNextPlayer.register(() -> System.out.println(game));
 //        game.onValidMovePlayed.register((i) -> System.out.println(game));
-//        game.onGameEnded.register(() -> System.err.println(game));
+        game.onGameEnded.register(() -> {
+            System.err.println(game.getGameState());
+            System.err.println(game);
+        });
         game.run();
 
 
