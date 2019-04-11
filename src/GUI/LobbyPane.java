@@ -63,11 +63,12 @@ public class LobbyPane extends GridPane {
         Label onlinePlayers = new Label("Online spelers");
         Label withAi = new Label("");
         Label gameType = new Label("Spel selecteren");
-        Label username = new Label(loginPane.username);
+        Label username = new Label("Ingelogd als: " + loginPane.username);
         Button ticTacToeButton = new Button("Tic Tac Toe");
         Button reversiButton = new Button("Reversi");
         Button queue = new Button("Zoeken naar spel");
         Button challenge = new Button("Speler uitdagen");
+        Button logout = new Button("Uitloggen");
         CheckBox isAiCheckBox = new CheckBox();
 
         isAiCheckBox.setText("De Ai laten spelen");
@@ -87,6 +88,7 @@ public class LobbyPane extends GridPane {
         buttonGrid.add(challenge, 1,2);
         buttonGrid.add(ticTacToeButton, 0, 6);
         buttonGrid.add(reversiButton, 0,7);
+        buttonGrid.add(logout, 1, 8);
 
         this.add(listGrid, 0, 0);
         this.add(buttonGrid, 1, 0);
@@ -115,7 +117,17 @@ public class LobbyPane extends GridPane {
             PlayField playField = PlayField.createGameAndPlayField(Arcade.GameFactory.Reversi, OFFLINE_AI_VS_PLAYER);
             CompositionRoot.getInstance().lobby.setScene(playField.getScene());
         });
+
+        //logout Button
+        logout.setOnAction(e -> {
+            connection.closeConnection();
+            connection.getToServer().setLogout();
+            BorderPane loginPane = new LoginPane();
+            Scene scene = new Scene(loginPane, 576, 316);
+            CompositionRoot.getInstance().lobby.setScene(scene);
+        });
     }
+
 
 
     private void gameTypesToBox(String[] message) {
@@ -164,15 +176,17 @@ public class LobbyPane extends GridPane {
 
             ButtonType buttonYes = new ButtonType("Ja");
             ButtonType buttonNo = new ButtonType("Nee");
+            CheckBox ai = new CheckBox("laat de Ai spelen");
 
             alert.getButtonTypes().setAll(buttonYes, buttonNo);
+            alert.getDialogPane().setContent(ai);
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == buttonYes){
                 connection.getToServer().setChallengeAccept(Integer.parseInt(message.get("CHALLENGENUMBER")));
                 connection.getFromServer().onChallenge.unregister(onChallenge);
                 connection.getToServer().subscribeGame((String) gameList.getSelectionModel().getSelectedItem());
-                BorderPane QueuePane = new QueuePane(true);
+                BorderPane QueuePane = new QueuePane(ai.selectedProperty().getValue());
                 Scene scene = new Scene(QueuePane, 500, 400);
                 CompositionRoot.getInstance().lobby.setScene(scene);
             } else {
