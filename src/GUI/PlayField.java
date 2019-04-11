@@ -44,6 +44,10 @@ public class PlayField {
     public volatile int guiPlayerInput = -1; // MOET -1 zijn in het begin GuiPlayer heeft infiniate loop op de verandering van deze variable
     private Scene scene;
     private int player = 0;
+    private String pPlayer1;
+    private String pPlayer2;
+    Label player1, player2;
+
 
     private GameRules gameRules;
     private boolean guiPlayerIsPlaying = false;
@@ -54,7 +58,7 @@ public class PlayField {
         CompositionRoot.getInstance().lobby.playField = this;
         this.gameRules = gameRules;
 
-        // Current Player
+        // Current
         Label currentPlayer = new Label("Kees");
         currentPlayer.setStyle("-fx-font-size: 3em;");
         HBox playerPane = new HBox();
@@ -63,8 +67,8 @@ public class PlayField {
         playerPane.getChildren().add(currentPlayer);
 
         // Player List
-        Label player1 = new Label("Player 1 has 10 points");
-        Label player2 = new Label("Player 2 has 13 points");
+        player1 = new Label(null);
+        player2 = new Label(null);
         player1.setPadding(new Insets(50, 0, 0, 0));
         player1.setStyle("-fx-font-size: 2em;");
         player2.setStyle("-fx-font-size: 2em;");
@@ -166,10 +170,10 @@ public class PlayField {
         winPane.setStyle("-fx-background-color: Chartreuse;");
         Label winningPlayer;
         if (gamestate == GameState.PLAYER_1_WINS) {
-            winningPlayer = new Label("Player 1 has won!");
+            winningPlayer = new Label(gameRules.getPlayer(0).getName()+ " has won!");
         }
         else if (gamestate == GameState.PLAYER_2_WINS) {
-            winningPlayer = new Label("Player 2 has won!");
+            winningPlayer = new Label(gameRules.getPlayer(1).getName() + " has won!");
         }
         else { // else if (gamestate == GameState.DRAW)
             winningPlayer = new Label("It's a draw!");
@@ -228,6 +232,9 @@ public class PlayField {
 
     public void redraw() {
         if (gameRules instanceof Reversi) { // TODO remove if possible
+
+            player1.setText("Player 1: " + gameRules.getPlayer(0).getName());
+            player2.setText("Player 2: " + gameRules.getPlayer(1).getName());
 
             Reversi reversi = (Reversi) gameRules;
             for (int i=0; i<panes.length; i++)
