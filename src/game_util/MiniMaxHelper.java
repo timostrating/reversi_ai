@@ -25,7 +25,7 @@ public class MiniMaxHelper {
         float eval(GameRules.GameState state, int minPlayer, int maxPlayer);
     }
 
-    private float eval(GameRules.GameState state) {
+    protected float eval(GameRules.GameState state) {
         return evaluator.eval(state, min, max);
     }
 
@@ -92,6 +92,12 @@ public class MiniMaxHelper {
             this.pos = pos;
             this.score = score;
             this.move = move;
+        }
+
+        public synchronized void set(PosAndScore posAndScore) {
+            this.pos = posAndScore.pos;
+            this.score = posAndScore.score;
+            this.move = posAndScore.move;
         }
 
         @Override
