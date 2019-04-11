@@ -45,9 +45,8 @@ public class PlayField {
     public volatile int guiPlayerInput = -1; // MOET -1 zijn in het begin GuiPlayer heeft infiniate loop op de verandering van deze variable
     private Scene scene;
     private int player = 0;
-    private String pPlayer1;
-    private String pPlayer2;
     Label player1, player2;
+    Label timerLabel;
 
 
     private GameRules gameRules;
@@ -67,6 +66,7 @@ public class PlayField {
         playerPane.setAlignment(Pos.CENTER);
         playerPane.getChildren().add(currentPlayer);
 
+
         // Player List
         player1 = new Label("Player 1");
         player2 = new Label("Player 2");
@@ -79,14 +79,14 @@ public class PlayField {
 
         // Timer
         // Bind the timerLabel text property to the timeSeconds property
-        Label timerLabel = new Label();
+        timerLabel = new Label();
+        Timeline timeline = new Timeline();
         IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
         timerLabel.textProperty().bind(timeSeconds.asString());
         timerLabel.setTextFill(Color.BLACK);
         timerLabel.setStyle("-fx-font-size: 3em;");
 
         timeSeconds.set(STARTTIME);
-        Timeline timeline = new Timeline();
         timeline.getKeyFrames().add( new KeyFrame(Duration.seconds(STARTTIME + 1), new KeyValue(timeSeconds, 0)));
         timeline.playFromStart();
 
@@ -117,11 +117,6 @@ public class PlayField {
                     if (guiPlayerIsPlaying) {
                         System.out.println("GuiPlayer clicked on: ("+total % rows+", " +total / columns+") i = "+total);
                         setGuiPlayerInput(total);
-
-                        if (gameRules instanceof TicTacToe) {
-                            pane.getChildren().add(getPicture((player == 0) ? "o" : "x"));
-                            pane.setDisable(true);
-                        }
                     }
                 });
                 pane.getStyleClass().add("game-grid-cell");
@@ -243,11 +238,11 @@ public class PlayField {
 
     public void redraw() {
         if (gameRules instanceof Reversi) { // TODO remove if possible
-
             if (gameRules.getPlayer(0).getName() != null) {
                 player1.setText("Player 1: " + gameRules.getPlayer(0).getName());
                 player2.setText("Player 2: " + gameRules.getPlayer(1).getName());
             }
+
 
             Reversi reversi = (Reversi) gameRules;
             for (int i=0; i<panes.length; i++)
