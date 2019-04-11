@@ -28,8 +28,10 @@ import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
 import util.CallbackWithParam;
 import util.CompositionRoot;
+import util.Delegate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlayField {
 
@@ -45,11 +47,14 @@ public class PlayField {
     private Scene scene;
     private int player = 0;
     Label player1, player2;
+    Label currentPlayer;
     HBox playerPane;
-
+    boolean switching = true;
 
     private GameRules gameRules;
     private boolean guiPlayerIsPlaying = false;
+    LoginPane loginPane;
+    String username;
 
 
     PlayField(int boardSize, GameRules gameRules) { this(boardSize, boardSize, gameRules); }
@@ -58,12 +63,12 @@ public class PlayField {
         this.gameRules = gameRules;
 
         // Current
-        Label currentPlayer = new Label("Kees");
+        currentPlayer = new Label("");
         currentPlayer.setStyle("-fx-font-size: 3em;");
         playerPane = new HBox();
         playerPane.setSpacing(200);
         playerPane.setAlignment(Pos.CENTER);
-        playerPane.getChildren().add(currentPlayer);
+        playerPane.getChildren().addAll(currentPlayer, createTimer());
 
 
         // Player List
@@ -236,7 +241,8 @@ public class PlayField {
                 player2.setText("Player 2: " + gameRules.getPlayer(1).getName());
             }
 
-            playerPane.getChildren().set(0,createTimer());
+            playerPane.getChildren().set(1,createTimer());
+            playerPane.getChildren().set(0, getCurrentPlayer());
 
             Reversi reversi = (Reversi) gameRules;
             for (int i=0; i<panes.length; i++)
@@ -260,19 +266,20 @@ public class PlayField {
         ONLINE_REMOTE_VS_HUMAN(RefereeFactory.NetworkedReferee, PlayerFactory.RemotePlayer, PlayerFactory.HumanPlayer);
 
         public final RefereeFactory refereeFactory;
+
         public final PlayerFactory first;
         public final PlayerFactory second;
-
         StandardGameType(RefereeFactory refereeFactory, PlayerFactory first, PlayerFactory second) {
             this.refereeFactory = refereeFactory;
             this.first = first;
             this.second = second;
         }
-    }
 
+    }
     public static PlayField createGameAndPlayField(GameFactory gameFactory, StandardGameType standardGameType) {
         return createGameAndPlayField(gameFactory, standardGameType, (e)->{} );
     }
+
     public static PlayField createGameAndPlayField(GameFactory gameFactory, StandardGameType standardGameType, CallbackWithParam<GameRules> BeforeGameStart) {
 
         Arcade arcade = CompositionRoot.getInstance().arcade;
@@ -286,7 +293,6 @@ public class PlayField {
 
         return playField;
     }
-
     private Label createTimer() {
         Integer startTime = 10;
         Label timerLabel = new Label();
@@ -300,6 +306,17 @@ public class PlayField {
         timeline.playFromStart();
 
         return timerLabel;
+    }
+
+    public Label getCurrentPlayer() {
+        if(switching) {
+            currentPlayer.setText(gameRules.getPlayer(0).getName());
+            switching = false;
+        } else if (!switching){
+            currentPlayer.setText(gameRules.getPlayer(1).getName());
+            switching = true;
+        }
+        return currentPlayer;
     }
 
     private static void registerDefaultCallBacks(GameRules game, PlayField playField) {
