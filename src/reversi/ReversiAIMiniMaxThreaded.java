@@ -19,7 +19,7 @@ public class ReversiAIMiniMaxThreaded extends Player {
     @Override
     public Move getInput() {
         openPositions = reversi.getOpenPositions();
-        MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(10, getNr(), openPositions);
+        MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(7, getNr(), openPositions);
         System.out.println(best);
         return best.move;
     }

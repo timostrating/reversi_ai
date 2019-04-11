@@ -312,7 +312,7 @@ public class Reversi extends GameRules {
         }
 
 
-        LinkedList<Integer> getOpenPositions(int playerNr) {
+        public LinkedList<Integer> getOpenPositions(int playerNr) {
             return playerNr == 1 ? openXPositions : openOPositions;
         }
 

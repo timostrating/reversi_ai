@@ -19,8 +19,7 @@ public class GameBoard2D {
 
     public GameBoard2D clone() {
         GameBoard2D newBoard = new GameBoard2D(boardSize);
-        for (int i = 0; i < boardSize; i++)
-            newBoard.board[i] = board[i];
+        newBoard.board = board.clone();
         return newBoard;
     }
 

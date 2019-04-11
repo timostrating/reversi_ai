@@ -94,10 +94,14 @@ public class MiniMaxHelper {
             this.move = move;
         }
 
-        public synchronized void set(PosAndScore posAndScore) {
-            this.pos = posAndScore.pos;
-            this.score = posAndScore.score;
-            this.move = posAndScore.move;
+        public synchronized void setIf(boolean lower, PosAndScore posAndScore, boolean print) {
+            if (pos == -1 || (lower && score < posAndScore.score) || (!lower && score > posAndScore.score)) {
+
+                this.pos = posAndScore.pos;
+                this.score = posAndScore.score;
+                this.move = posAndScore.move;
+                if (print) System.out.println("Best set to " + this + " because " + (lower ? "lower" : "higher"));
+            } else if (print) System.out.println("Did not set Best to " + this + " because " + (lower ? "lower" : "higher"));
         }
 
         @Override
