@@ -68,8 +68,8 @@ public class PlayField {
         playerPane.getChildren().add(currentPlayer);
 
         // Player List
-        player1 = new Label(null);
-        player2 = new Label(null);
+        player1 = new Label("Player 1");
+        player2 = new Label("PLayer 2");
         player1.setPadding(new Insets(50, 0, 0, 0));
         player1.setStyle("-fx-font-size: 2em;");
         player2.setStyle("-fx-font-size: 2em;");
