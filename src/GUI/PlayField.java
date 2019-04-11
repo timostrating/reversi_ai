@@ -23,6 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import network.Connection;
 import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
 import util.CallbackWithParam;
@@ -181,7 +182,17 @@ public class PlayField {
         }
         winningPlayer.setStyle("-fx-font-size: 8em;");
         winPane.getChildren().add(winningPlayer);
+        Button continueTournament = new Button("Door gaan met het toernooi");
         Button back = new Button("Terug naar lobby");
+
+        continueTournament.setOnAction(e -> {
+            Connection connection = CompositionRoot.getInstance().connection;
+            connection.getToServer().subscribeGame("Reversi");
+            BorderPane QueuePane = new QueuePane(true);
+            Scene scene = new Scene(QueuePane, 500, 400);
+            CompositionRoot.getInstance().lobby.setScene(scene);
+        });
+
         back.setOnAction(e -> {
 
             GridPane lobby = new LobbyPane();
@@ -191,7 +202,7 @@ public class PlayField {
             CompositionRoot.getInstance().lobby.setScene(scene1);
 
         });
-        winPane.getChildren().add(back);
+        winPane.getChildren().addAll(back, continueTournament);
 
         Scene winScene = new Scene(winPane, 1000, 700);
         CompositionRoot.getInstance().lobby.setScene(winScene);
