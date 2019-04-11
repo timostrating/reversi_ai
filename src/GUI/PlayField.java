@@ -28,10 +28,8 @@ import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
 import util.CallbackWithParam;
 import util.CompositionRoot;
-import util.Delegate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PlayField {
 
@@ -46,10 +44,11 @@ public class PlayField {
     public volatile int guiPlayerInput = -1; // MOET -1 zijn in het begin GuiPlayer heeft infiniate loop op de verandering van deze variable
     private Scene scene;
     private int player = 0;
-    Label player1, player2;
-    Label currentPlayer;
-    HBox playerPane;
-    boolean switching = true;
+    private Label player1, player2;
+    private Label currentPlayer;
+    private HBox currentPlayerPane;
+    private HBox timerPane;
+    private boolean switching = true;
 
     private GameRules gameRules;
     private boolean guiPlayerIsPlaying = false;
@@ -62,14 +61,21 @@ public class PlayField {
         CompositionRoot.getInstance().lobby.playField = this;
         this.gameRules = gameRules;
 
-        // Current
+        // Current player
         currentPlayer = new Label("");
         currentPlayer.setStyle("-fx-font-size: 3em;");
-        playerPane = new HBox();
-        playerPane.setSpacing(200);
-        playerPane.setAlignment(Pos.CENTER);
-        playerPane.getChildren().addAll(currentPlayer, createTimer());
+        currentPlayer.setPadding(new Insets(10, 0,0,250));
+        currentPlayerPane = new HBox();
+        currentPlayerPane.getChildren().add(currentPlayer);
 
+        // Timer
+        timerPane = new HBox();
+        timerPane.setPadding(new Insets(10, 350,0,0));
+        timerPane.getChildren().add(createTimer());
+
+        BorderPane top = new BorderPane();
+        top.setLeft(currentPlayerPane);
+        top.setRight(timerPane);
 
         // Player List
         player1 = new Label("Player 1");
@@ -116,7 +122,7 @@ public class PlayField {
         }
 
         BorderPane totalPane = new BorderPane();
-        totalPane.setTop(playerPane);
+        totalPane.setTop(top);
         totalPane.setCenter(game);
         totalPane.setRight(scorePane);
 
@@ -242,8 +248,8 @@ public class PlayField {
                 player2.setText("Player 2: " + gameRules.getPlayer(1).getName());
             }
 
-            playerPane.getChildren().set(1,createTimer());
-            playerPane.getChildren().set(0, getCurrentPlayer());
+            currentPlayerPane.getChildren().set(0, getCurrentPlayer());
+            timerPane.getChildren().set(0,createTimer());
 
             Reversi reversi = (Reversi) gameRules;
             for (int i=0; i<panes.length; i++)
