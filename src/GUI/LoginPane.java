@@ -44,7 +44,7 @@ public class LoginPane extends BorderPane {
 
         Label hostLabel = new Label("Host");
         Label ipAdressLabel = new Label("Ip adress");
-        TextField hostText = new TextField("localhost");
+        TextField hostText = new TextField("145.33.225.170");
         TextField ipAdressText = new TextField("7789");
 
         Label loginLabel = new Label("Gebruikersnaam");
