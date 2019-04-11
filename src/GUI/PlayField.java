@@ -69,7 +69,7 @@ public class PlayField {
 
         // Player List
         player1 = new Label("Player 1");
-        player2 = new Label("PLayer 2");
+        player2 = new Label("Player 2");
         player1.setPadding(new Insets(50, 0, 0, 0));
         player1.setStyle("-fx-font-size: 2em;");
         player2.setStyle("-fx-font-size: 2em;");
@@ -244,8 +244,10 @@ public class PlayField {
     public void redraw() {
         if (gameRules instanceof Reversi) { // TODO remove if possible
 
-            player1.setText("Player 1: " + gameRules.getPlayer(0).getName());
-            player2.setText("Player 2: " + gameRules.getPlayer(1).getName());
+            if (gameRules.getPlayer(0).getName() != null) {
+                player1.setText("Player 1: " + gameRules.getPlayer(0).getName());
+                player2.setText("Player 2: " + gameRules.getPlayer(1).getName());
+            }
 
             Reversi reversi = (Reversi) gameRules;
             for (int i=0; i<panes.length; i++)
