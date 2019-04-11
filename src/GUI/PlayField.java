@@ -33,7 +33,6 @@ import java.util.ArrayList;
 
 public class PlayField {
 
-    private static final Integer STARTTIME = 10; // TODO not hardcode
     private static final int GAME_VIEW_SIZE = 600;
     // Images
     private static Image kermit = new Image("GUI/pictures/Kermitgezicht.jpg", 60, 60, false,true);
@@ -46,7 +45,7 @@ public class PlayField {
     private Scene scene;
     private int player = 0;
     Label player1, player2;
-    Label timerLabel;
+    HBox playerPane;
 
 
     private GameRules gameRules;
@@ -61,7 +60,7 @@ public class PlayField {
         // Current
         Label currentPlayer = new Label("Kees");
         currentPlayer.setStyle("-fx-font-size: 3em;");
-        HBox playerPane = new HBox();
+        playerPane = new HBox();
         playerPane.setSpacing(200);
         playerPane.setAlignment(Pos.CENTER);
         playerPane.getChildren().add(currentPlayer);
@@ -75,22 +74,6 @@ public class PlayField {
         player2.setStyle("-fx-font-size: 2em;");
         VBox scorePane = new VBox();
         scorePane.getChildren().addAll(player1, player2);
-
-
-        // Timer
-        // Bind the timerLabel text property to the timeSeconds property
-        timerLabel = new Label();
-        Timeline timeline = new Timeline();
-        IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
-        timerLabel.textProperty().bind(timeSeconds.asString());
-        timerLabel.setTextFill(Color.BLACK);
-        timerLabel.setStyle("-fx-font-size: 3em;");
-
-        timeSeconds.set(STARTTIME);
-        timeline.getKeyFrames().add( new KeyFrame(Duration.seconds(STARTTIME + 1), new KeyValue(timeSeconds, 0)));
-        timeline.playFromStart();
-
-        playerPane.getChildren().add(timerLabel);
 
 
         GridPane game = new GridPane();
@@ -253,6 +236,7 @@ public class PlayField {
                 player2.setText("Player 2: " + gameRules.getPlayer(1).getName());
             }
 
+            playerPane.getChildren().set(0,createTimer());
 
             Reversi reversi = (Reversi) gameRules;
             for (int i=0; i<panes.length; i++)
@@ -301,6 +285,21 @@ public class PlayField {
         new Thread(game).start();
 
         return playField;
+    }
+
+    private Label createTimer() {
+        Integer startTime = 10;
+        Label timerLabel = new Label();
+        Timeline timeline = new Timeline();
+        IntegerProperty timeSeconds = new SimpleIntegerProperty(startTime);
+        timerLabel.textProperty().bind(timeSeconds.asString());
+        timerLabel.setTextFill(Color.BLACK);
+        timerLabel.setStyle("-fx-font-size: 3em;");
+        timeSeconds.set(startTime);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(startTime + 1), new KeyValue(timeSeconds, 0)));
+        timeline.playFromStart();
+
+        return timerLabel;
     }
 
     private static void registerDefaultCallBacks(GameRules game, PlayField playField) {
