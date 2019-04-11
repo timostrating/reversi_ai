@@ -28,6 +28,7 @@ import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
 import util.CallbackWithParam;
 import util.CompositionRoot;
+import util.StringUtils;
 
 import java.util.ArrayList;
 
@@ -35,36 +36,35 @@ public class PlayField {
 
     private static final int GAME_VIEW_SIZE = 600;
     // Images
-    private static Image kermit = new Image("GUI/pictures/Kermitgezicht.jpg", 60, 60, false,true);
-    private static Image o = new Image("GUI/pictures/o.png", 60, 60, false, true);
-    private static Image x = new Image("GUI/pictures/x.png", 60, 60, false, true);
-    private static Image black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true);
-    private static Image white = new Image("GUI/pictures/whitePiece.png", 60, 60, false, true);
+    private static Image kermit = new Image("GUI/pictures/kermitPiece.gif", 60, 60, false,true),
+            o = new Image("GUI/pictures/o.png", 60, 60, false, true),
+            x = new Image("GUI/pictures/x.png", 60, 60, false, true),
+            black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true),
+            white = new Image("GUI/pictures/whitePiece.png", 60, 60, false, true);
     private VBox[] panes;
     public volatile int guiPlayerInput = -1; // MOET -1 zijn in het begin GuiPlayer heeft infiniate loop op de verandering van deze variable
     private Scene scene;
-    private int player = 0;
-    private Label player1, player2;
+    private Label player1;
+    private Label player2;
     private Label currentPlayer;
-    private HBox currentPlayerPane;
-    private HBox timerPane;
+    private HBox currentPlayerPane, timerPane;
     private boolean switching = true;
-
     private GameRules gameRules;
     private boolean guiPlayerIsPlaying = false;
-    LoginPane loginPane;
-    String username;
-
+    VBox winPane;
 
     PlayField(int boardSize, GameRules gameRules) { this(boardSize, boardSize, gameRules); }
     PlayField(int rows, int columns, GameRules gameRules) {
         CompositionRoot.getInstance().lobby.playField = this;
         this.gameRules = gameRules;
 
+        GridPane gridPane = new GridPane();
+        gridPane.setStyle("-fx-background-color: white;");
+
         // Current player
         currentPlayer = new Label("");
         currentPlayer.setStyle("-fx-font-size: 3em;");
-        currentPlayer.setPadding(new Insets(10, 0,0,250));
+        currentPlayer.setPadding(new Insets(10, 0,0,40));
         currentPlayerPane = new HBox();
         currentPlayerPane.getChildren().add(currentPlayer);
 
@@ -74,18 +74,30 @@ public class PlayField {
         timerPane.getChildren().add(createTimer());
 
         BorderPane top = new BorderPane();
+        top.setStyle("-fx-background-color: white; -fx-border; -fx-border-width: 0 0 2 0; -fx-border-color: black;");
         top.setLeft(currentPlayerPane);
         top.setRight(timerPane);
 
+        // forfeit button
+        Button forfeitButton = new Button("Opgeven");
+
         // Player List
-        player1 = new Label("Player 1");
-        player2 = new Label("Player 2");
-        player1.setPadding(new Insets(30, 20, 0, 20));
+        player1 = new Label("");
+        player2 = new Label("");
+        player1.setPadding(new Insets(10, 20, 0, 20));
         player2.setPadding(new Insets(10, 20, 0, 20));
         player1.setStyle("-fx-font-size: 2em;");
         player2.setStyle("-fx-font-size: 2em;");
+        ImageView blackGamePiece = new ImageView(black);
+        ImageView whiteGamePiece = new ImageView(white);
         VBox scorePane = new VBox();
-        scorePane.getChildren().addAll(player1, player2);
+        gridPane.add(blackGamePiece, 0,0);
+        gridPane.add(whiteGamePiece, 0,1);
+        gridPane.add(player1, 1,0);
+        gridPane.add(player2, 1,1);
+        gridPane.add(forfeitButton, 0,4);
+        scorePane.getChildren().addAll(gridPane);
+
 
 
         GridPane game = new GridPane();
@@ -122,12 +134,17 @@ public class PlayField {
         }
 
         BorderPane totalPane = new BorderPane();
+        totalPane.setStyle("-fx-background-color: white;");
         totalPane.setTop(top);
         totalPane.setCenter(game);
         totalPane.setRight(scorePane);
 
         scene = new Scene(totalPane, 1000, 700, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
+
+        forfeitButton.setOnAction(event -> {
+            CompositionRoot.getInstance().connection.getToServer().setForfeit();
+        });
 
     }
 
@@ -156,34 +173,47 @@ public class PlayField {
     }
 
     void displayWinScreen(GameState gamestate) {
-        VBox winPane = new VBox();
+        winPane = new VBox();
         winPane.setAlignment(Pos.CENTER);
-        winPane.setStyle("-fx-background-color: Chartreuse;");
         Label winningPlayer;
         if (gamestate == GameState.PLAYER_1_WINS) {
             if (gameRules.getPlayer(0).getName() != null) {
-                winningPlayer = new Label(gameRules.getPlayer(0).getName() + " has won!");
+                if(gameRules.getPlayer(0).getName().equals(LoginPane.username)) {
+                    winningPlayer = new Label("Je hebt gewonnen!");
+                    setWinStyle();
+                } else {
+                    winningPlayer = new Label("Je hebt verloren!");
+                    setLoseStyle();
+                }
+            } else {
+                winningPlayer = new Label("Speler 1 heeft gewonnen!");
             }
-            else {
-                winningPlayer = new Label("Player 1 has won!");
-            }
-        }
-        else if (gamestate == GameState.PLAYER_2_WINS) {
+        } else if (gamestate == GameState.PLAYER_2_WINS) {
             if (gameRules.getPlayer(1).getName() != null) {
-                winningPlayer = new Label(gameRules.getPlayer(1).getName() + " has won!");
+                if (gameRules.getPlayer(1).getName().equals(LoginPane.username)) {
+                    winningPlayer = new Label("Je hebt gewonnen!");
+                    setWinStyle();
+                } else {
+                    winningPlayer = new Label("Je hebt verloren!");
+                    setLoseStyle();
+                }
+            } else {
+                winningPlayer = new Label("Speler 2 heeft gewonnen!");
             }
-            else {
-                winningPlayer = new Label("Player 2 has won!");
-            }
+        }  else { // else if (gamestate == GameState.DRAW)
+            winningPlayer = new Label("Het is gelijk spel geworden!");
+            winPane.setStyle("-fx-background-image: url(\"GUI/pictures/pokemonHand.gif\");\n" +
+                    "-fx-background-repeat: stretch;   \n" +
+                    "-fx-background-size: 900 506;\n" +
+                    "-fx-background-position: center center;\n" +
+                    "-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);");
         }
-        else { // else if (gamestate == GameState.DRAW)
-            winningPlayer = new Label("It's a draw!");
 
-        }
-        winningPlayer.setStyle("-fx-font-size: 8em;");
+        winningPlayer.setStyle("-fx-font-size: 6em; -fx-text-fill: white;");
         winPane.getChildren().add(winningPlayer);
         Button continueTournament = new Button("Door gaan met het toernooi");
         Button back = new Button("Terug naar lobby");
+
 
         continueTournament.setOnAction(e -> {
             Connection connection = CompositionRoot.getInstance().connection;
@@ -212,6 +242,22 @@ public class PlayField {
 
     public Scene getScene() { return scene; }
     public VBox[] getPane() { return panes; }
+
+    private void setWinStyle(){
+        winPane.setStyle("-fx-background-image: url(\"GUI/pictures/kermitDance.gif\");;\n" +
+                "    -fx-background-repeat: stretch;   \n" +
+                "    -fx-background-size: 900 506;\n" +
+                "    -fx-background-position: center center;\n");
+    }
+
+    private void setLoseStyle(){
+        winPane.setStyle("-fx-background-image: url(\"GUI/pictures/kermitDark.gif\");\n" +
+                "-fx-background-repeat: stretch;   \n" +
+                "-fx-background-size: 900 506;\n" +
+                "-fx-background-position: center center;\n" +
+                "-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);");
+
+    }
 
     ArrayList<Integer> lijstje = new ArrayList<>();
     public void setGuiPlayerInput(int position) {
@@ -244,11 +290,11 @@ public class PlayField {
     public void redraw() {
         if (gameRules instanceof Reversi) { // TODO remove if possible
             if (gameRules.getPlayer(0).getName() != null) {
-                player1.setText("Player 1: " + gameRules.getPlayer(0).getName());
-                player2.setText("Player 2: " + gameRules.getPlayer(1).getName());
+                player1.setText(StringUtils.capitalize(gameRules.getPlayer(0).getName()));
+                player2.setText(StringUtils.capitalize(gameRules.getPlayer(1).getName()));
+                currentPlayerPane.getChildren().set(0, getCurrentPlayer());
             }
 
-            currentPlayerPane.getChildren().set(0, getCurrentPlayer());
             timerPane.getChildren().set(0,createTimer());
 
             Reversi reversi = (Reversi) gameRules;
@@ -317,10 +363,10 @@ public class PlayField {
 
     public Label getCurrentPlayer() {
         if(switching) {
-            currentPlayer.setText(gameRules.getPlayer(0).getName());
+            currentPlayer.setText("Aan zet: " + StringUtils.capitalize(gameRules.getPlayer(0).getName()));
             switching = false;
         } else if (!switching){
-            currentPlayer.setText(gameRules.getPlayer(1).getName());
+            currentPlayer.setText("Aan zet: " + StringUtils.capitalize(gameRules.getPlayer(1).getName()));
             switching = true;
         }
         return currentPlayer;

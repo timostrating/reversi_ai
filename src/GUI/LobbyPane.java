@@ -20,88 +20,102 @@ import java.util.Optional;
 import static GUI.PlayField.StandardGameType.OFFLINE_AI_VS_PLAYER;
 
 public class LobbyPane extends GridPane {
-    Connection connection;
-    ChoiceBox gameList;
-    ListView<String> playerList;
-    GridPane listGrid;
-    GridPane buttonGrid;
-    LoginPane loginPane;
+    private Connection connection;
+    private ChoiceBox gameList;
+    private ListView<String> playerList;
+    private GridPane listGrid;
+    private GridPane buttonGrid;
+    private LoginPane loginPane;
 
     public LobbyPane() {
 
+        // setting horizontal and vertical gap for the primary gridpane
         this.setHgap(5);
         this.setVgap(5);
+
+        // set the padding for the primary gridpane
         this.setPadding(new Insets(15,15,15,15));
 
+        // make a list and button gridpane
         listGrid = new GridPane();
         buttonGrid = new GridPane();
 
-        listGrid.setVgap(10);
+        listGrid.setVgap(10); // set the vertical gap for the list gridpane
 
+        // set the horizontal and vertical gap for the button gridpane
         buttonGrid.setVgap(10);
         buttonGrid.setHgap(5);
-        buttonGrid.setPadding(new Insets(0,15,15,15));
 
+        buttonGrid.setPadding(new Insets(0,15,15,15)); // set padding for button gridpane
+
+        // getting connection
         connection = CompositionRoot.getInstance().connection;
 
-        new Thread(() -> {
-            boolean started = false, currScene = false;
-            while(currScene || !started){
-                currScene = CompositionRoot.getInstance().lobby.getPrimaryStage().getScene() == getScene();
-                started |= currScene;
-                if (started) try {
-                    connection.getFromServer().onPlayerList.register(onPlayerList);
-                    connection.getToServer().getPlayerList();
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) { }
-            }
-        }).start();
+        // update online player list
+        updateOnlinePlayers();
 
-        connection.getFromServer().onChallenge.register(onChallenge);
+        // register for online events
+        registerOnlineEvents();
 
-        //Buttons
-        Label onlinePlayers = new Label("Online spelers");
-        Label withAi = new Label("");
-        Label gameType = new Label("Spel selecteren");
-        Label username = new Label("Ingelogd als: " + loginPane.username);
-        Button ticTacToeButton = new Button("Tic Tac Toe");
-        Button reversiButton = new Button("Reversi");
-        Button queue = new Button("Zoeken naar spel");
-        Button challenge = new Button("Speler uitdagen");
-        Button logout = new Button("Uitloggen");
-        CheckBox isAiCheckBox = new CheckBox();
-
-        isAiCheckBox.setText("De Ai laten spelen");
-
-        GridPane.setHalignment(onlinePlayers, HPos.CENTER);
-
-        connection.getFromServer().onGameList.register(onGameList);
+        // get the gamelist from the server
         connection.getToServer().getGameList();
 
+        // create labels for list gridpane
+        Label onlinePlayers = new Label("Online spelers");
+        Label username = new Label("Ingelogd als: " + LoginPane.username);
+
+        // create labels for button gridpane
+        Label gameType = new Label("Spel selecteren");
+        Label offlineLabel = new Label("Offline spelen");
+
+        // create buttons for button gridpane
+        Button ticTacToeButton = new Button("Tic Tac Toe");
+        Button reversiButton = new Button("Reversi");
+        Button queueButton = new Button("Zoeken naar spel");
+        Button challengeButton = new Button("Speler uitdagen");
+        Button logoutButton = new Button("Uitloggen");
+
+        // create checkbox for button gridpane
+        CheckBox isAiCheckBox = new CheckBox("De Ai laten spelen");
+
+        // Set the position for labels and buttons to the center
+        GridPane.setHalignment(onlinePlayers, HPos.CENTER);
+        GridPane.setHalignment(offlineLabel, HPos.CENTER);
+        GridPane.setHalignment(reversiButton, HPos.CENTER);
+        GridPane.setHalignment(ticTacToeButton, HPos.CENTER);
+
+        // add labels to the list gridpane
         listGrid.add(onlinePlayers, 0,0);
         listGrid.add(username, 0, 2);
 
+        // add labels to the button gridpane
         buttonGrid.add(gameType, 0,0);
-        buttonGrid.add(withAi, 1,0);
-        buttonGrid.add(isAiCheckBox, 1,1);
-        buttonGrid.add(queue, 0,2);
-        buttonGrid.add(challenge, 1,2);
-        buttonGrid.add(ticTacToeButton, 0, 6);
-        buttonGrid.add(reversiButton, 0,7);
-        buttonGrid.add(logout, 1, 8);
+        buttonGrid.add(offlineLabel, 0, 3, 2,1);
 
+        // add buttons to the button gridpane
+        buttonGrid.add(queueButton, 0,2);
+        buttonGrid.add(challengeButton, 1,2);
+        buttonGrid.add(ticTacToeButton, 0, 4);
+        buttonGrid.add(reversiButton, 1,4);
+        buttonGrid.add(logoutButton, 1, 8);
+
+        // add checkbox to button gridpane
+        buttonGrid.add(isAiCheckBox, 1,1);
+
+        // add list gridpane and button gridpane to the primary gridpane
         this.add(listGrid, 0, 0);
         this.add(buttonGrid, 1, 0);
 
-
         //challenge button
-        challenge.setOnAction(event -> {
+        challengeButton.setOnAction(event -> {
             connection.getToServer().setChallenge(playerList.getSelectionModel().getSelectedItem(), (String) gameList.getSelectionModel().getSelectedItem());
-            queue.fire();
+            BorderPane QueuePane = new QueuePane(isAiCheckBox.selectedProperty().getValue());
+            Scene scene = new Scene(QueuePane, 500, 400);
+            CompositionRoot.getInstance().lobby.setScene(scene);
         });
 
         //queue button
-        queue.setOnAction(event -> {
+        queueButton.setOnAction(event -> {
             connection.getToServer().subscribeGame((String) gameList.getSelectionModel().getSelectedItem());
             BorderPane QueuePane = new QueuePane(isAiCheckBox.selectedProperty().getValue());
             Scene scene = new Scene(QueuePane, 500, 400);
@@ -119,7 +133,7 @@ public class LobbyPane extends GridPane {
         });
 
         //logout Button
-        logout.setOnAction(e -> {
+        logoutButton.setOnAction(e -> {
             connection.closeConnection();
             connection.getToServer().setLogout();
             BorderPane loginPane = new LoginPane();
@@ -128,7 +142,25 @@ public class LobbyPane extends GridPane {
         });
     }
 
+    private void updateOnlinePlayers(){
+        new Thread(() -> {
+            boolean started = false, currScene = false;
+            while(currScene || !started){
+                currScene = CompositionRoot.getInstance().lobby.getPrimaryStage().getScene() == getScene();
+                started |= currScene;
+                if (started) try {
+                    connection.getFromServer().onPlayerList.register(onPlayerList);
+                    connection.getToServer().getPlayerList();
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) { }
+            }
+        }).start();
+    }
 
+    private void registerOnlineEvents(){
+        connection.getFromServer().onChallenge.register(onChallenge);
+        connection.getFromServer().onGameList.register(onGameList);
+    }
 
     private void gameTypesToBox(String[] message) {
         gameList = new ChoiceBox();
@@ -171,7 +203,7 @@ public class LobbyPane extends GridPane {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Inkomende uitdaging");
-            alert.setHeaderText(null);
+            alert.setHeaderText("");
             alert.setContentText("Wil je een potje " + message.get("GAMETYPE").toLowerCase() + " spelen met " + message.get("CHALLENGER"));
 
             ButtonType buttonYes = new ButtonType("Ja");
@@ -189,7 +221,7 @@ public class LobbyPane extends GridPane {
                 BorderPane QueuePane = new QueuePane(ai.selectedProperty().getValue());
                 Scene scene = new Scene(QueuePane, 500, 400);
                 CompositionRoot.getInstance().lobby.setScene(scene);
-            } else {
+            } else if(result.get() == buttonNo){
                 alert.close();
             }
         });

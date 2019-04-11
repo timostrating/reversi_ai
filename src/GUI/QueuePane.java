@@ -19,7 +19,6 @@ import java.util.HashMap;
 import static GUI.PlayField.StandardGameType.*;
 
 public class QueuePane extends BorderPane{
-    private LoginPane loginPane;
     private boolean isAi;
     private AudioClip pokemon;
     private FadeTransition ft;
@@ -27,6 +26,7 @@ public class QueuePane extends BorderPane{
 
     public QueuePane(Boolean aI){
         isAi = aI;
+
         CompositionRoot.getInstance().connection.getFromServer().onMatch.register(onMatch);
 
         GridPane gridPane = new GridPane();
