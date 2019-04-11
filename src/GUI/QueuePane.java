@@ -20,13 +20,13 @@ import static GUI.PlayField.StandardGameType.*;
 
 public class QueuePane extends BorderPane{
     private LoginPane loginPane;
-    private boolean isAiOrHuman;
+    private boolean isAi;
     private AudioClip pokemon;
     private FadeTransition ft;
 
 
     public QueuePane(Boolean aI){
-        isAiOrHuman = aI;
+        isAi = aI;
         CompositionRoot.getInstance().connection.getFromServer().onMatch.register(onMatch);
 
         GridPane gridPane = new GridPane();
@@ -68,10 +68,10 @@ public class QueuePane extends BorderPane{
         if (message.get("OPPONENT").equals(message.get("PLAYERTOMOVE"))) {
             System.out.println("Remote begins");
             weAreFirst = false;
-            gameType = (isAiOrHuman) ? ONLINE_REMOTE_VS_AI : ONLINE_REMOTE_VS_HUMAN;
+            gameType = (isAi) ? ONLINE_REMOTE_VS_AI : ONLINE_REMOTE_VS_HUMAN;
         } else {
             weAreFirst = true;
-            gameType = (isAiOrHuman) ? ONLINE_AI_VS_REMOTE : ONLINE_HUMAN_VS_REMOTE;
+            gameType = (isAi) ? ONLINE_AI_VS_REMOTE : ONLINE_HUMAN_VS_REMOTE;
         }
 
         if (message.get("GAMETYPE").equals("Tic-tac-toe")) {
