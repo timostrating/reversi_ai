@@ -166,10 +166,20 @@ public class PlayField {
         winPane.setStyle("-fx-background-color: Chartreuse;");
         Label winningPlayer;
         if (gamestate == GameState.PLAYER_1_WINS) {
-            winningPlayer = new Label(gameRules.getPlayer(0).getName()+ " has won!");
+            if (gameRules.getPlayer(0).getName() != null) {
+                winningPlayer = new Label(gameRules.getPlayer(0).getName() + " has won!");
+            }
+            else {
+                winningPlayer = new Label("Player 1 has won!");
+            }
         }
         else if (gamestate == GameState.PLAYER_2_WINS) {
-            winningPlayer = new Label(gameRules.getPlayer(1).getName() + " has won!");
+            if (gameRules.getPlayer(1).getName() != null) {
+                winningPlayer = new Label(gameRules.getPlayer(1).getName() + " has won!");
+            }
+            else {
+                winningPlayer = new Label("Player 2 has won!");
+            }
         }
         else { // else if (gamestate == GameState.DRAW)
             winningPlayer = new Label("It's a draw!");
