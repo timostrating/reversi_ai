@@ -246,9 +246,9 @@ public class PlayField {
 
             for (int i=0; i<panes.length; i++) {
                 if (reversi.board.get(i) == 1)
-                    panes[i].getChildren().add(getPicture("x"));
+                    panes[i].getChildren().add(getPicture("black"));
                 if (reversi.board.get(i) == 2)
-                    panes[i].getChildren().add(getPicture("o"));
+                    panes[i].getChildren().add(getPicture("white"));
             }
         }
     }
