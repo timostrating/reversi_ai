@@ -285,6 +285,11 @@ public class PlayField {
             Platform.runLater(() -> playField.setPicture(game, pair0.getKey(), pair0.getValue()));
             if (game instanceof Reversi) {
                 Platform.runLater(playField::redraw); // TODO this is a hack
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }));
 
