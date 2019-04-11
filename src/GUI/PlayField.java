@@ -74,7 +74,8 @@ public class PlayField {
         // Player List
         player1 = new Label("Player 1");
         player2 = new Label("Player 2");
-        player1.setPadding(new Insets(50, 0, 0, 0));
+        player1.setPadding(new Insets(30, 20, 0, 20));
+        player2.setPadding(new Insets(10, 20, 0, 20));
         player1.setStyle("-fx-font-size: 2em;");
         player2.setStyle("-fx-font-size: 2em;");
         VBox scorePane = new VBox();
