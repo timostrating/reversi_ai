@@ -3,6 +3,7 @@ package GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import util.CompositionRoot;
@@ -19,7 +20,10 @@ public class Lobby extends Application {
         myPrimaryStage = primaryStage;
 
         //Pane
-        BorderPane loginView = new LoginPane(primaryStage);
+        BorderPane loginView = new LoginPane();
+        primaryStage.setTitle("Super Kermit Bro's");
+        primaryStage.getIcons().add(new Image("/GUI/pictures/kermitIcon.jpg"));
+        primaryStage.setResizable(false);
         Scene scene = new Scene(loginView, 576, 316);
 
         // Stage

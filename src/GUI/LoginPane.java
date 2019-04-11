@@ -24,12 +24,10 @@ public class LoginPane extends BorderPane {
     private Connection connection;
     Alert alertInfo;
 
-    public LoginPane(Stage primaryStage){
+    public LoginPane(){
         connection = CompositionRoot.getInstance().connection;
 
         //Adding icon and title to the title bar
-        primaryStage.getIcons().add(new Image("/GUI/pictures/kermitIcon.jpg"));
-        primaryStage.setTitle("Super henk Bro's");
 
         alertInfo = new Alert(Alert.AlertType.INFORMATION);
 
@@ -101,8 +99,6 @@ public class LoginPane extends BorderPane {
 
         //LoginButton with pressing Enter
         loginTextField.setOnKeyPressed(event -> { if(event.getCode() == KeyCode.ENTER){ loginButton.fire(); } });
-
-        primaryStage.setResizable(false);
     }
 
     private CallbackWithParam<String[]> onPlayerList = this::validatePlayer;

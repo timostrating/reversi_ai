@@ -123,7 +123,7 @@ public class FromServer implements Runnable {
                     System.out.println(input);
                 }
             } catch (IOException e){
-                e.printStackTrace();
+                break;
             }
         }
     }
