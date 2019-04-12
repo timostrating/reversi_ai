@@ -108,8 +108,6 @@ public class LoginPane extends BorderPane {
             connection.getToServer().setLogin(username);
             GridPane lobby = new LobbyPane();
             Scene scene1 = new Scene(lobby, 550, 300);
-            Image cursor = new Image("GUI/pictures/kermitCursor.png");
-            scene1.setCursor(new ImageCursor(cursor));
             CompositionRoot.getInstance().lobby.setScene(scene1);
         } else {
             Platform.runLater(() -> {
