@@ -24,13 +24,14 @@ class QueuePane extends BorderPane{
     private FadeTransition ft;
 
 
-    QueuePane(Boolean aI){
-        isAi = aI;
+    QueuePane(Boolean isAi){
+        this.isAi = isAi;
 
         CompositionRoot.getInstance().connection.getFromServer().onMatch.register(onMatch); // register to online events
 
         // creating a gridpane and set padding, h and v gap
         GridPane gridPane = new GridPane();
+        gridPane.getStylesheets().add("GUI/queuePaneStyle.css");
         gridPane.setPadding(new Insets(270, 20, 20, 20));
         gridPane.setHgap(5);
         gridPane.setVgap(5);
