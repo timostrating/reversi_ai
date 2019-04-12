@@ -204,7 +204,7 @@ public class PlayField {
             winningPlayer = new Label("Het is gelijk spel geworden!");
             winPane.setStyle("-fx-background-image: url(\"GUI/pictures/pokemonHand.gif\");\n" +
                     "-fx-background-repeat: stretch;   \n" +
-                    "-fx-background-size: 900 506;\n" +
+                    "-fx-background-size: 1000 700;\n" +
                     "-fx-background-position: center center;\n" +
                     "-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);");
         }
@@ -246,14 +246,14 @@ public class PlayField {
     private void setWinStyle(){
         winPane.setStyle("-fx-background-image: url(\"GUI/pictures/kermitDance.gif\");;\n" +
                 "    -fx-background-repeat: stretch;   \n" +
-                "    -fx-background-size: 900 506;\n" +
+                "    -fx-background-size: 1000 700;\n" +
                 "    -fx-background-position: center center;\n");
     }
 
     private void setLoseStyle(){
         winPane.setStyle("-fx-background-image: url(\"GUI/pictures/kermitDark.gif\");\n" +
                 "-fx-background-repeat: stretch;   \n" +
-                "-fx-background-size: 900 506;\n" +
+                "-fx-background-size: 1000 700;\n" +
                 "-fx-background-position: center center;\n" +
                 "-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);");
 
