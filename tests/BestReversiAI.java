@@ -7,7 +7,7 @@ import util.Callback;
 import static game_util.Arcade.PlayerFactory.ReversiAIMiniMax;
 import static game_util.Arcade.RefereeFactory.DefaultReferee;
 
-public class best_reversi_ai {
+public class BestReversiAI {
 
     Arcade arcade = new Arcade();
     Reversi reversi;
