@@ -9,6 +9,8 @@ import util.OpenPositions;
 import util.Utils;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class Reversi extends GameRules {
@@ -111,7 +113,7 @@ public class Reversi extends GameRules {
     public Move getMove(int input, int playerNr, float[] playerScores, GameBoard2D board, OpenPositionsReversi openPositions) {
         int x = board.iToX(input), y = board.iToY(input);
 
-        if (!touchesOpponentAndIsEmpty(x, y, playerNr))
+        if (!touchesOpponentAndIsEmpty(x, y, playerNr, board))
             return null;
 
         LinkedList<int[]> flips = new LinkedList<>();
@@ -172,6 +174,10 @@ public class Reversi extends GameRules {
     }
 
     private boolean touchesOpponentAndIsEmpty(int x, int y, int playerNr) {
+        return touchesOpponentAndIsEmpty(x, y, playerNr, board);
+    }
+
+    private boolean touchesOpponentAndIsEmpty(int x, int y, int playerNr, GameBoard2D board) {
         if (!board.isInBounds(x, y) || board.get(x, y) != CellState.EMPTY.ordinal())
             return false;
 
@@ -229,10 +235,8 @@ public class Reversi extends GameRules {
 
         public OpenPositionsReversi clone(GameBoard2D clonedBoard) {
             OpenPositionsReversi newOpenPoss = new OpenPositionsReversi(clonedBoard);
-            for (int xPos : openXPositions)
-                newOpenPoss.openXPositions.add(xPos);
-            for (int oPos : openOPositions)
-                newOpenPoss.openOPositions.add(oPos);
+            newOpenPoss.openXPositions.addAll(openXPositions);
+            newOpenPoss.openOPositions.addAll(openOPositions);
             for (int x = 0; x < BOARD_SIZE; x++) {
                 for (int y = 0; y < BOARD_SIZE; y++) {
                     newOpenPoss.validationArrowsX[x][y] = validationArrowsX[x][y].clone();
@@ -256,8 +260,10 @@ public class Reversi extends GameRules {
         private void addArrow(int x, int y, int playerNr, BoardDirection dir) {
             boolean[][][] arrows = playerNr == 1 ? validationArrowsX : validationArrowsO;
 
-            if (!Utils.any(arrows[x][y]))
+            if (!Utils.any(arrows[x][y])) {
                 getOpenPositions(playerNr).add(board.xyToI(x, y));
+                Collections.sort(getOpenPositions(playerNr));
+            }
 
             arrows[x][y][dir.ordinal()] = true;
         }

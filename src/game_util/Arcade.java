@@ -78,14 +78,19 @@ public class Arcade {
         Arcade arcade = new Arcade();
 
 //        GameRules game_util = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
-        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMaxThreaded, PlayerFactory.ReversiAIMiniMax);
+        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMax, PlayerFactory.ReversiAIMiniMax);
         game.onNextPlayer.register(() -> System.out.println(game));
 //        game.onValidMovePlayed.register((i) -> System.out.println(game));
         game.onGameEnded.register(() -> {
             System.err.println(game.getGameState());
             System.err.println(game);
         });
+
+        long beginTime = System.currentTimeMillis();
+
         game.run();
+
+        System.out.println("Game took " + (System.currentTimeMillis() - beginTime) / 1000 + "s");
 
 
 //        Connection c = CompositionRoot.getInstance().connection;

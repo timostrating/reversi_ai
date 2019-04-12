@@ -29,14 +29,20 @@ public class MiniMaxHelper {
         return evaluator.eval(state, min, max);
     }
 
+    int calls = 0;
+
     public PosAndScore minimax(int depth, int player, OpenPositions openPositions) {
+        calls = 0;
         this.max = player;
         this.min = (player % 2) + 1;
         this.openPositions = openPositions;
-        return minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
+        PosAndScore bla = minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
+        System.out.println("single threaded calls: " + calls);
+        return bla;
     }
 
     protected PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
+        calls++;
         PosAndScore best = new PosAndScore(-1, -1, null); // (position, score, move)
         if (playerNr == max)
             best.score = Integer.MIN_VALUE;
@@ -100,8 +106,9 @@ public class MiniMaxHelper {
                 this.pos = posAndScore.pos;
                 this.score = posAndScore.score;
                 this.move = posAndScore.move;
-                if (print) System.out.println("Best set to " + this + " because " + (lower ? "lower" : "higher"));
-            } else if (print) System.out.println("Did not set Best to " + this + " because " + (lower ? "lower" : "higher"));
+//                if (print) System.out.println("Best set to " + this + " because " + (lower ? "lower" : "higher"));
+            }
+//            else if (print) System.out.println("Did not set Best to " + this + " because " + (lower ? "lower" : "higher"));
         }
 
         @Override

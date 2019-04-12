@@ -45,12 +45,17 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
     @Override
     protected PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
         startDepth = depth;
-        return minimax(
+        calls = 0;
+        PosAndScore bla = minimax(
                 depth, alpha, beta, playerNr,
 
                 reversi.playerScores, board, reversi.openPositions, false
         );
+        System.out.println("multithreaded calls: " + calls);
+        return bla;
     }
+
+    int calls = 0;
 
     protected PosAndScore minimax(
             int depth, float alpha, float beta, int playerNr,
@@ -60,6 +65,8 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
 
             boolean isInSeperateThread
     ) {
+
+        calls++;
 
         final PosAndScore best = new PosAndScore(-1, -1, null); // (position, score, move)
         if (playerNr == max)
@@ -79,10 +86,13 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
 
         for (int posIndex = 0; posIndex < openPositions.size(playerNr); posIndex++) {
 
-            int pos = openPositions.get(posIndex, playerNr);
+            final int pos = openPositions.get(posIndex, playerNr);
 
             Move m = reversi.getMove(pos, playerNr, playerScores, board, openPositions);
-            if (m == null) continue;
+            if (m == null) {
+                System.err.println("wuuuuuuuuuu player: " + playerNr + " pos: (" + board.iToX(pos) + ", " + board.iToY(pos) + ")\n" + openPositions + "\n" + board);
+                continue;
+            }
             m.doMove(false);
 
             if (threadsInUse < MAX_THREADS && startDepth == depth) {
@@ -153,9 +163,6 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
 //                Thread.sleep(10);
 //            } catch (InterruptedException e) { }
         }
-        if (startDepth == depth)
-            for (int pos : openPositions.getOpenPositions(playerNr))
-                System.out.println(board.iToX(pos) + ", " + board.iToY(pos));
 
         return best;
     }
