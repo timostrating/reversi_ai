@@ -43,19 +43,16 @@ public class TimerTest extends Application {
 
         Button button = new Button();
         button.setText("Start Timer");
-        button.setOnAction(new EventHandler<ActionEvent>() {
-
-            public void handle(ActionEvent event) {
-                if (timeline != null) {
-                    timeline.stop();
-                }
-                timeSeconds.set(STARTTIME);
-                timeline = new Timeline();
-                timeline.getKeyFrames().add(
-                        new KeyFrame(Duration.seconds(STARTTIME+1),
-                                new KeyValue(timeSeconds, 0)));
-                timeline.playFromStart();
+        button.setOnAction(event -> {
+            if (timeline != null) {
+                timeline.stop();
             }
+            timeSeconds.set(STARTTIME);
+            timeline = new Timeline();
+            timeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(STARTTIME+1),
+                            new KeyValue(timeSeconds, 0)));
+            timeline.playFromStart();
         });
 
         VBox vb = new VBox(20);             // gap between components is 20

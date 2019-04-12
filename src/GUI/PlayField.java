@@ -51,10 +51,10 @@ public class PlayField {
     private boolean switching = true;
     private GameRules gameRules;
     private boolean guiPlayerIsPlaying = false;
-    VBox winPane;
+    private VBox winPane;
 
-    PlayField(int boardSize, GameRules gameRules) { this(boardSize, boardSize, gameRules); }
-    PlayField(int rows, int columns, GameRules gameRules) {
+    private PlayField(int boardSize, GameRules gameRules) { this(boardSize, boardSize, gameRules); }
+    private PlayField(int rows, int columns, GameRules gameRules) {
         CompositionRoot.getInstance().lobby.playField = this;
         this.gameRules = gameRules;
 
@@ -142,9 +142,7 @@ public class PlayField {
         scene = new Scene(totalPane, 1000, 700, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
 
-        forfeitButton.setOnAction(event -> {
-            CompositionRoot.getInstance().connection.getToServer().setForfeit();
-        });
+        forfeitButton.setOnAction(event -> CompositionRoot.getInstance().connection.getToServer().setForfeit());
 
     }
 
@@ -161,7 +159,7 @@ public class PlayField {
     }
 
 
-    void setPicture(GameRules games, int i, int player) {
+    private void setPicture(GameRules games, int i, int player) {
         if (games instanceof TicTacToe) {
             panes[i].getChildren().add(getPicture((player == 1) ? "x" : "o"));
         }
@@ -172,7 +170,7 @@ public class PlayField {
 
     }
 
-    void displayWinScreen(GameState gamestate) {
+    private void displayWinScreen(GameState gamestate) {
         winPane = new VBox();
         winPane.setAlignment(Pos.CENTER);
         Label winningPlayer;
@@ -241,7 +239,6 @@ public class PlayField {
 
 
     public Scene getScene() { return scene; }
-    public VBox[] getPane() { return panes; }
 
     private void setWinStyle(){
         winPane.setStyle("-fx-background-image: url(\"GUI/pictures/kermitDance.gif\");;\n" +
@@ -259,8 +256,8 @@ public class PlayField {
 
     }
 
-    ArrayList<Integer> lijstje = new ArrayList<>();
-    public void setGuiPlayerInput(int position) {
+    private ArrayList<Integer> lijstje = new ArrayList<>();
+    private void setGuiPlayerInput(int position) {
         guiPlayerInput = position;
         guiPlayerIsPlaying = false;
         for (int index : lijstje)
@@ -287,7 +284,7 @@ public class PlayField {
         guiPlayerInput = -1;
     }
 
-    public void redraw() {
+    private void redraw() {
         if (gameRules instanceof Reversi) { // TODO remove if possible
             if (gameRules.getPlayer(0).getName() != null) {
                 player1.setText(StringUtils.capitalize(gameRules.getPlayer(0).getName()));
@@ -298,9 +295,7 @@ public class PlayField {
             timerPane.getChildren().set(0,createTimer());
 
             Reversi reversi = (Reversi) gameRules;
-            for (int i=0; i<panes.length; i++)
-                panes[i].getChildren().clear();
-
+            for (VBox pane : panes) pane.getChildren().clear();
             for (int i=0; i<panes.length; i++) {
                 if (reversi.board.get(i) == 1)
                     panes[i].getChildren().add(getPicture("black"));
@@ -312,7 +307,7 @@ public class PlayField {
 
     public enum StandardGameType {
         OFFLINE_AI_VS_PLAYER(RefereeFactory.DefaultReferee, PlayerFactory.BestAvailableAI, PlayerFactory.GUIPlayer),
-        OFFLINE_PLAYER_VS_AI(RefereeFactory.DefaultReferee, PlayerFactory.GUIPlayer, PlayerFactory.BestAvailableAI),
+       // OFFLINE_PLAYER_VS_AI(RefereeFactory.DefaultReferee, PlayerFactory.GUIPlayer, PlayerFactory.BestAvailableAI),
         ONLINE_AI_VS_REMOTE(RefereeFactory.NetworkedReferee, PlayerFactory.BestAvailableAI, PlayerFactory.RemotePlayer),
         ONLINE_HUMAN_VS_REMOTE(RefereeFactory.NetworkedReferee, PlayerFactory.BestAvailableAI, PlayerFactory.HumanPlayer),
         ONLINE_REMOTE_VS_AI(RefereeFactory.NetworkedReferee, PlayerFactory.RemotePlayer, PlayerFactory.BestAvailableAI),
@@ -361,11 +356,11 @@ public class PlayField {
         return timerLabel;
     }
 
-    public Label getCurrentPlayer() {
+    private Label getCurrentPlayer() {
         if(switching) {
             currentPlayer.setText("Aan zet: " + StringUtils.capitalize(gameRules.getPlayer(0).getName()));
             switching = false;
-        } else if (!switching){
+        } else {
             currentPlayer.setText("Aan zet: " + StringUtils.capitalize(gameRules.getPlayer(1).getName()));
             switching = true;
         }
@@ -387,12 +382,7 @@ public class PlayField {
             }
         }));
 
-        game.onGameEnded.register(() -> {
-            Platform.runLater(() -> playField.displayWinScreen(game.getGameState()));
-        });
-
-        game.onValidMovePlayed.register(i -> {
-            System.out.println(game);
-        });
+        game.onGameEnded.register(() -> Platform.runLater(() -> playField.displayWinScreen(game.getGameState())));
+        game.onValidMovePlayed.register(i -> System.out.println(game));
     }
 }

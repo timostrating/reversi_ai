@@ -3,18 +3,15 @@ package GUI;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 import network.Connection;
 import util.CallbackWithParam;
 import util.CompositionRoot;
@@ -22,9 +19,9 @@ import util.CompositionRoot;
 public class LoginPane extends BorderPane {
     public static String username;
     private Connection connection;
-    Alert alertInfo;
+    private Alert alertInfo;
 
-    public LoginPane(){
+    LoginPane(){
         connection = CompositionRoot.getInstance().connection;
 
         //Adding icon and title to the title bar
@@ -103,7 +100,7 @@ public class LoginPane extends BorderPane {
 
     private CallbackWithParam<String[]> onPlayerList = this::validatePlayer;
 
-    public void validatePlayer(String[] playerList){
+    private void validatePlayer(String[] playerList){
         if(validPlayerName(playerList)) {
             connection.getToServer().setLogin(username);
             GridPane lobby = new LobbyPane();

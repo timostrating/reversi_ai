@@ -18,13 +18,13 @@ import java.util.HashMap;
 
 import static GUI.PlayField.StandardGameType.*;
 
-public class QueuePane extends BorderPane{
+class QueuePane extends BorderPane{
     private boolean isAi;
     private AudioClip pokemon;
     private FadeTransition ft;
 
 
-    public QueuePane(Boolean aI){
+    QueuePane(Boolean aI){
         isAi = aI;
 
         CompositionRoot.getInstance().connection.getFromServer().onMatch.register(onMatch);
@@ -93,9 +93,7 @@ public class QueuePane extends BorderPane{
         game.getPlayer((weAreFirst)? 1 : 0).setName(aiName);
     }
 
-
-
-    public void unregister(){
+    private void unregister(){
         CompositionRoot.getInstance().connection.getFromServer().onMatch.unregister(onMatch);
     }
 }

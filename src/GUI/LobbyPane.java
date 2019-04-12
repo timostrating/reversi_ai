@@ -20,15 +20,14 @@ import java.util.Optional;
 
 import static GUI.PlayField.StandardGameType.OFFLINE_AI_VS_PLAYER;
 
-public class LobbyPane extends GridPane {
+class LobbyPane extends GridPane {
     private Connection connection;
-    private ComboBox gameList;
+    private ComboBox<String> gameList;
     private ListView<String> playerList;
     private GridPane listGrid;
     private GridPane buttonGrid;
-    private LoginPane loginPane;
 
-    public LobbyPane() {
+    LobbyPane() {
 
         this.getStylesheets().add("/GUI/lobbyPaneStyle.css");
 
@@ -134,7 +133,7 @@ public class LobbyPane extends GridPane {
 
         //challenge button
         challengeButton.setOnAction(event -> {
-            connection.getToServer().setChallenge(playerList.getSelectionModel().getSelectedItem(), (String) gameList.getSelectionModel().getSelectedItem());
+            connection.getToServer().setChallenge(playerList.getSelectionModel().getSelectedItem(), gameList.getSelectionModel().getSelectedItem());
             BorderPane QueuePane = new QueuePane(isAiCheckBox.selectedProperty().getValue());
             Scene scene = new Scene(QueuePane, 500, 400);
             CompositionRoot.getInstance().lobby.setScene(scene);
@@ -142,7 +141,7 @@ public class LobbyPane extends GridPane {
 
         //queue button
         queueButton.setOnAction(event -> {
-            connection.getToServer().subscribeGame((String) gameList.getSelectionModel().getSelectedItem());
+            connection.getToServer().subscribeGame(gameList.getSelectionModel().getSelectedItem());
             BorderPane QueuePane = new QueuePane(isAiCheckBox.selectedProperty().getValue());
             Scene scene = new Scene(QueuePane, 500, 400);
             CompositionRoot.getInstance().lobby.setScene(scene);
@@ -178,7 +177,7 @@ public class LobbyPane extends GridPane {
                     connection.getFromServer().onPlayerList.register(onPlayerList);
                     connection.getToServer().getPlayerList();
                     Thread.sleep(3000);
-                } catch (InterruptedException e) { }
+                } catch (InterruptedException ignored) { }
             }
         }).start();
     }
@@ -189,7 +188,7 @@ public class LobbyPane extends GridPane {
     }
 
     private void gameTypesToBox(String[] message) {
-        gameList = new ComboBox();
+        gameList = new ComboBox<>();
 
         for(String game : message){
             gameList.getItems().add(game);
@@ -202,7 +201,7 @@ public class LobbyPane extends GridPane {
     private void playerListToList(String[] message){
         Platform.runLater(() -> {
             if(playerList == null) {
-                playerList = new ListView();
+                playerList = new ListView<>();
                 playerList.setPrefWidth(200);
                 playerList.setPrefHeight(200);
                 listGrid.add(playerList, 0,1);
@@ -244,7 +243,7 @@ public class LobbyPane extends GridPane {
             if (result.get() == buttonYes){
                 connection.getToServer().setChallengeAccept(Integer.parseInt(message.get("CHALLENGENUMBER")));
                 connection.getFromServer().onChallenge.unregister(onChallenge);
-                connection.getToServer().subscribeGame((String) gameList.getSelectionModel().getSelectedItem());
+                connection.getToServer().subscribeGame(gameList.getSelectionModel().getSelectedItem());
                 BorderPane QueuePane = new QueuePane(ai.selectedProperty().getValue());
                 Scene scene = new Scene(QueuePane, 500, 400);
                 CompositionRoot.getInstance().lobby.setScene(scene);
@@ -254,7 +253,7 @@ public class LobbyPane extends GridPane {
         });
     }
 
-    CallbackWithParam<String[]> onGameList = this::gameTypesToBox;
-    CallbackWithParam<String[]> onPlayerList = this::playerListToList;
-    CallbackWithParam<HashMap<String, String>> onChallenge = this::getChallenge;
+    private CallbackWithParam<String[]> onGameList = this::gameTypesToBox;
+    private CallbackWithParam<String[]> onPlayerList = this::playerListToList;
+    private CallbackWithParam<HashMap<String, String>> onChallenge = this::getChallenge;
 }

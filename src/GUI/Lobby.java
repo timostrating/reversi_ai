@@ -13,7 +13,7 @@ public class Lobby extends Application {
 
     private static Stage myPrimaryStage;
     public PlayField playField;
-    Image cursor;
+    private Image cursor;
 
     @Override
     public void start(Stage primaryStage){

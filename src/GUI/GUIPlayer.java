@@ -8,8 +8,8 @@ import util.CompositionRoot;
 
 public class GUIPlayer extends Player {
 
-    Lobby guiGame;
-    GameRules game;
+    private Lobby guiGame;
+    private GameRules game;
 
     public GUIPlayer(GameRules game) {
         guiGame = CompositionRoot.getInstance().lobby;
