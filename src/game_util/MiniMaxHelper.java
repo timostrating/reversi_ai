@@ -8,13 +8,13 @@ import util.OpenPositions;
 public class MiniMaxHelper {
 
     GameRules game;
-    GameBoard2D board;
+    GameBoard board;
     OpenPositions openPositions;
     Evaluator evaluator;
     int max;
     int min;
 
-    public MiniMaxHelper(GameRules game, GameBoard2D board, Evaluator evaluator) {
+    public MiniMaxHelper(GameRules game, GameBoard board, Evaluator evaluator) {
         this.game = game;
         this.board = board;
         this.evaluator = evaluator;

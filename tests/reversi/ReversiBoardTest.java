@@ -1,7 +1,7 @@
 package reversi;
 
 import game_util.DefaultReferee;
-import game_util.GameBoard2D;
+import game_util.GameBoard;
 import game_util.HumanPlayer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ import java.util.LinkedList;
 class ReversiBoardTest {
 
     Reversi reversi = new Reversi();
-    GameBoard2D board = reversi.board;
+    GameBoard board = reversi.board;
 
     @BeforeEach
     void BeforeEach() {

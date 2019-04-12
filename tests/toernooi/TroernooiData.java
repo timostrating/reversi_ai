@@ -1,7 +1,6 @@
 package toernooi;
 
 import game_util.DefaultReferee;
-import game_util.GameBoard2D;
 import game_util.HumanPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import reversi.Reversi;
 public class TroernooiData {
 
     Reversi reversi = new Reversi();
-    GameBoard2D board = reversi.board;
 
     @BeforeEach
     void BeforeEach() {
@@ -20,9 +18,18 @@ public class TroernooiData {
 
     @Test
     void playGame1() {  // we are 2 we WON
-        assert reversi.playMove(37, 1);    assert reversi.playMove(45, 2);
-        assert reversi.playMove(53, 1);    assert reversi.playMove(29, 2);
-        assert reversi.playMove(21, 1);    assert reversi.playMove(38, 2);
+        System.out.print(reversi);
+        assert reversi.playMove(37, 1);
+        System.out.print(reversi);
+        assert reversi.playMove(45, 2);
+        System.out.print(reversi);
+        assert reversi.playMove(53, 1);
+        System.out.print(reversi);
+        assert reversi.playMove(29, 2);
+        System.out.print(reversi);
+        assert reversi.playMove(21, 1);
+        System.out.print(reversi);
+        assert reversi.playMove(38, 2);
         assert reversi.playMove(39, 1);    assert reversi.playMove(43, 2);
         assert reversi.playMove(50, 1);    assert reversi.playMove(51, 2);
         assert reversi.playMove(18, 1);    assert reversi.playMove(14, 2);

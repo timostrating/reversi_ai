@@ -5,6 +5,8 @@ import game_util.MiniMaxHelper;
 import game_util.Move;
 import game_util.Player;
 
+import java.util.LinkedList;
+
 import static game_util.GameRules.GameState.*;
 
 public class ReversiAIMiniMax extends Player {
@@ -42,7 +44,19 @@ public class ReversiAIMiniMax extends Player {
     @Override
     public Move getInput() {
         openPositions = reversi.getOpenPositions();
-        MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(7, getNr(), openPositions);
+
+        // Killer move detection
+        LinkedList<Integer> myOpenPositions = openPositions.getOpenPositions(getNr());
+        if (myOpenPositions.get(0) == 0)
+            return reversi.getMove(1, getNr());
+        if (myOpenPositions.get(myOpenPositions.size() -1) == reversi.board.xyToI(7, 7))
+            return reversi.getMove(reversi.board.xyToI(7, 7), getNr());
+        if (myOpenPositions.contains(reversi.board.xyToI(0, 7)))
+            return reversi.getMove(reversi.board.xyToI(0, 7), getNr());
+        if (myOpenPositions.contains(reversi.board.xyToI(7, 0)))
+            return reversi.getMove(reversi.board.xyToI(7, 0), getNr());
+
+        MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(5, getNr(), openPositions);
         System.out.println("__Player_"+getNr() +"__ "+ best.toString());
         return best.move;
     }

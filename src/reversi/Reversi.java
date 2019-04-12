@@ -1,15 +1,10 @@
 package reversi;
 
-import game_util.GameBoard2D;
-import game_util.GameRules;
-import game_util.Move;
-import game_util.Player;
+import game_util.*;
 import javafx.util.Pair;
 import util.OpenPositions;
 import util.Utils;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -20,7 +15,7 @@ public class Reversi extends GameRules {
 
     public OpenPositionsReversi openPositions;
 
-    public GameBoard2D board;
+    public GameBoard board;
     public float[] playerScores = {
             -9999,  // score for non exisiting player
             0,      // score for player 1
@@ -42,8 +37,9 @@ public class Reversi extends GameRules {
     };
 
     public Reversi() {
-        this.board = new GameBoard2D(BOARD_SIZE);
+        this.board = new BitGameBoard2D(BOARD_SIZE);
         openPositions = new OpenPositionsReversi(board);
+
         board.reset(this::reset);
     }
 
@@ -106,16 +102,21 @@ public class Reversi extends GameRules {
         if (openPositions.openOPositions.size() > 0 || openPositions.openXPositions.size() > 0)
             return GameState.PLAYING;
 
-        if (xCells == 0) // player 1 is outplayed
-            return GameState.PLAYER_2_WINS;
-        if (oCells == 0) // player 2 is outplayed
-            return GameState.PLAYER_1_WINS;
-        if (xCells == oCells)
-            return GameState.DRAW;
+        if (xCells + oCells < CELL_COUNT) {
+            if (xCells == 0) // player 1 is outplayed
+                return GameState.PLAYER_2_WINS;
+            if (oCells == 0) // player 2 is outplayed
+                return GameState.PLAYER_1_WINS;
+        } else {
+            if (xCells == oCells)
+                return GameState.DRAW;
 
-        if (xCells > oCells)
-            return GameState.PLAYER_1_WINS;
-        return GameState.PLAYER_2_WINS;
+            if (xCells > oCells)
+                return GameState.PLAYER_1_WINS;
+
+            return GameState.PLAYER_2_WINS;
+        }
+        throw new RuntimeException("We evaluate the game wrong");
     }
 
     public boolean isValidMove(int i, int playerNr) {
@@ -190,7 +191,7 @@ public class Reversi extends GameRules {
         return touchesOpponentAndIsEmpty(x, y, playerNr, board);
     }
 
-    private boolean touchesOpponentAndIsEmpty(int x, int y, int playerNr, GameBoard2D board) {
+    private boolean touchesOpponentAndIsEmpty(int x, int y, int playerNr, GameBoard board) {
         if (!board.isInBounds(x, y) || board.get(x, y) != CellState.EMPTY.ordinal())
             return false;
 
@@ -232,7 +233,7 @@ public class Reversi extends GameRules {
 
     public static class OpenPositionsReversi implements OpenPositions { // TODO we should implement this using a different data structure }
 
-        GameBoard2D board;
+        GameBoard board;
 
         public LinkedList<Integer>
                 openXPositions = new LinkedList<>(),
@@ -242,11 +243,11 @@ public class Reversi extends GameRules {
                 validationArrowsX = new boolean[BOARD_SIZE][BOARD_SIZE][BoardDirection.values().length],
                 validationArrowsO = new boolean[BOARD_SIZE][BOARD_SIZE][BoardDirection.values().length];
 
-        public OpenPositionsReversi(GameBoard2D board) {
+        public OpenPositionsReversi(GameBoard board) {
             this.board = board;
         }
 
-        public OpenPositionsReversi clone(GameBoard2D clonedBoard) {
+        public OpenPositionsReversi clone(GameBoard clonedBoard) {
             OpenPositionsReversi newOpenPoss = new OpenPositionsReversi(clonedBoard);
             newOpenPoss.openXPositions.addAll(openXPositions);
             newOpenPoss.openOPositions.addAll(openOPositions);

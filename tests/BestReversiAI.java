@@ -1,23 +1,20 @@
 import game_util.Arcade;
-import game_util.Arcade.GameFactory;
 import org.junit.jupiter.api.Test;
 import reversi.Reversi;
+import reversi.ReversiAIMiniMax;
 import util.Callback;
-
-import static game_util.Arcade.PlayerFactory.ReversiAIMiniMax;
-import static game_util.Arcade.RefereeFactory.DefaultReferee;
 
 public class BestReversiAI {
 
-    Arcade arcade = new Arcade();
-    Reversi reversi;
+    Reversi reversi = new Reversi();
 
     Callback printBoard = () -> System.out.println(reversi.toString());
 //    Callback printBoard = () -> {});
 
     @Test
     public void playAIvsAI() {
-        reversi = (Reversi) arcade.createGame(GameFactory.Reversi, DefaultReferee, ReversiAIMiniMax, ReversiAIMiniMax);
+        reversi = new Reversi();
+        reversi.initialize(Arcade.RefereeFactory.DefaultReferee.toObject(reversi), new ReversiAIMiniMax(reversi), new ReversiAIMiniMax(reversi));
         reversi.getGameSpecificState();
         reversi.onNextPlayer.register(printBoard);
         reversi.onGameEnded.register(printBoard);

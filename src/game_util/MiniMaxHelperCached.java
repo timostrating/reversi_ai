@@ -1,7 +1,7 @@
 package game_util;
 
 public class MiniMaxHelperCached extends MiniMaxHelper {
-    public MiniMaxHelperCached(GameRules game, GameBoard2D board, Evaluator evaluator) {
+    public MiniMaxHelperCached(GameRules game, GameBoard board, Evaluator evaluator) {
         super(game, board, evaluator);
     }
 

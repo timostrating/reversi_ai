@@ -37,7 +37,7 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
 
     }
 
-    public ReversiMiniMaxThreadedHelper(Reversi reversi, GameBoard2D board) {
+    public ReversiMiniMaxThreadedHelper(Reversi reversi, GameBoard board) {
         super(reversi, board, null);
         this.reversi = reversi;
     }
