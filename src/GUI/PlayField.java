@@ -78,8 +78,14 @@ public class PlayField {
         top.setLeft(currentPlayerPane);
         top.setRight(timerPane);
 
+        GridPane forfeitButtonPane = new GridPane();
+        gridPane.setPadding(new Insets(15,15,15,15));
+        forfeitButtonPane.setPadding(new Insets(25,45,25,45));
+
         // forfeit button
         Button forfeitButton = new Button("Opgeven");
+
+        forfeitButton.setId("button1");
 
         // Player List
         player1 = new Label("");
@@ -95,7 +101,9 @@ public class PlayField {
         gridPane.add(whiteGamePiece, 0,1);
         gridPane.add(player1, 1,0);
         gridPane.add(player2, 1,1);
-        gridPane.add(forfeitButton, 0,4);
+        forfeitButtonPane.add(forfeitButton, 0,0);
+        gridPane.add(forfeitButtonPane, 0,4, 2,1);
+        gridPane.getStylesheets().add("GUI/playFieldStyle.css");
         scorePane.getChildren().addAll(gridPane);
 
 

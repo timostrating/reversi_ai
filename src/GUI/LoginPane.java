@@ -28,6 +28,8 @@ public class LoginPane extends BorderPane {
 
         this.setPadding(new Insets(5, 0, 0, 60)); //set padding of the Borderpane
 
+        this.getStylesheets().add("GUI/loginPaneStyle.css");
+
         HBox hBox = new HBox(); //create hbox
 
         // create gridpane and set padding and v, h gap
@@ -35,6 +37,8 @@ public class LoginPane extends BorderPane {
         gridPane.setPadding(new Insets(0, 0, 0, 0));
         gridPane.setHgap(5);
         gridPane.setVgap(5);
+
+        Label marLab = new Label("");
 
         // create labels and textfields for the borderpane (connection)
         Label hostLabel = new Label("Host");
@@ -47,6 +51,9 @@ public class LoginPane extends BorderPane {
         TextField loginTextField = new TextField();
         Button loginButton = new Button("Login");
 
+        loginLabel.setStyle("-fx-font: 24 arial;");
+        GridPane.setHalignment(loginTextField, HPos.CENTER);
+
         // set focus on the login text field
         hostText.setFocusTraversable(false);
         ipAdressText.setFocusTraversable(false);
@@ -54,13 +61,6 @@ public class LoginPane extends BorderPane {
 
         // set style to all the elements of the borderpane
         this.setStyle("-fx-background-image: url(\"GUI/pictures/kermit.jpg\");");
-        loginLabel.setStyle("-fx-font-size: 20; -fx-padding: 5 20 0 20");
-        loginTextField.setStyle("-fx-background-color: rgb(255,255,255,0.7); -fx-text-fill: black; -fx-border-color: rgb(0,0,0,0.3); -fx-border-width: 3; -fx-border-radius: 3;");
-        loginButton.setStyle("-fx-font-size: 15; -fx-padding: 6 50 6 50;");
-        hostLabel.setStyle("-fx-font-size: 12");
-        ipAdressLabel.setStyle("-fx-font-size: 12");
-        hostText.setStyle("-fx-font-size: 12");
-        ipAdressText.setStyle("-fx-font-size: 12");
         this.setTop(hBox);
         this.setCenter(gridPane);
 
@@ -70,10 +70,13 @@ public class LoginPane extends BorderPane {
         gridPane.add(ipAdressLabel, 0, 1);
         gridPane.add(ipAdressText, 1, 1);
         gridPane.add(loginLabel, 0,8, 2, 1);
-        gridPane.add(loginTextField, 0,9, 2,1);
-        gridPane.add(loginButton, 0,10,2,1);
+        gridPane.add(loginTextField, 0,10, 2,1);
+        gridPane.add(marLab, 0,11,2,1);
+        gridPane.add(loginButton, 0,12,2,1);
         GridPane.setHalignment(loginButton, HPos.CENTER);
         GridPane.setHalignment(loginLabel, HPos.CENTER);
+
+        loginLabel.setPadding(new Insets(0, 0,20,0));
 
         // login button action
         loginButton.setOnAction(event -> {

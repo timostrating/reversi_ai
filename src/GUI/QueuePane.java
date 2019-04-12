@@ -48,7 +48,7 @@ class QueuePane extends BorderPane{
         pokemon = new AudioClip(this.getClass().getResource("sounds/pokemon.mp3").toExternalForm()); //pokemon song as audioclip
         pokemon.play(100);
 
-        ft = new FadeTransition(Duration.millis(6000), this); // fade transitions for the background image
+        ft = new FadeTransition(Duration.millis(3000), this); // fade transitions for the background image
         ft.setFromValue(0);
         ft.setToValue(1);
         ft.play();
