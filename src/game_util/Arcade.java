@@ -78,7 +78,7 @@ public class Arcade {
         Arcade arcade = new Arcade();
 
 //        GameRules game_util = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
-        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMax, PlayerFactory.ReversiAIMiniMax);
+        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMaxThreaded, PlayerFactory.ReversiAIMiniMaxThreaded);
         game.onNextPlayer.register(() -> System.out.println(game));
 //        game.onValidMovePlayed.register((i) -> System.out.println(game));
         game.onGameEnded.register(() -> {

@@ -47,6 +47,14 @@ public class Reversi extends GameRules {
         board.reset(this::reset);
     }
 
+    public Reversi(Reversi reversi) {
+        board = reversi.board.clone();
+        openPositions = reversi.openPositions.clone(board);
+        playerScores = reversi.playerScores.clone();
+        xCells = reversi.xCells;
+        oCells = reversi.oCells;
+    }
+
     public void reset() {
         setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2 - 1, CellState.O.ordinal());
         setOnBoardAndNotify(BOARD_SIZE / 2 - 1, BOARD_SIZE / 2, CellState.X.ordinal());
@@ -59,9 +67,6 @@ public class Reversi extends GameRules {
     }
 
     private void setOnBoardAndNotify(int x, int y, int playerNr) {
-        setOnBoardAndNotify(x, y, playerNr, board, openPositions);
-    }
-    private void setOnBoardAndNotify(int x, int y, int playerNr, GameBoard2D board, OpenPositionsReversi openPositions) {
         int oldV = board.get(x,y);
         if (oldV == 1 && playerNr == 0)
             xCells--;
@@ -78,10 +83,6 @@ public class Reversi extends GameRules {
     }
 
     private void flipOnBoardAndNotify(int x, int y, int playerNr) {
-        flipOnBoardAndNotify(x, y, playerNr, board, openPositions);
-    }
-
-    private void flipOnBoardAndNotify(int x, int y, int playerNr, GameBoard2D board, OpenPositionsReversi openPositions) {
         board.set(x, y, playerNr);
         if (playerNr == CellState.X.ordinal()) {
             xCells++;
@@ -102,10 +103,6 @@ public class Reversi extends GameRules {
      * We trust in the fact that openpositions is implemented correctly
      */
     public GameState getGameSpecificState() {
-        return getGameSpecificState(board, openPositions);
-    }
-
-    public GameState getGameSpecificState(GameBoard2D board, OpenPositionsReversi openPositions) {
         if (openPositions.openOPositions.size() > 0 || openPositions.openXPositions.size() > 0)
             return GameState.PLAYING;
 
@@ -127,10 +124,6 @@ public class Reversi extends GameRules {
 
     @Override
     public Move getMove(int input, int playerNr) {
-        return getMove(input, playerNr, playerScores, board, openPositions);
-    }
-
-    public Move getMove(int input, int playerNr, float[] playerScores, GameBoard2D board, OpenPositionsReversi openPositions) {
         int x = board.iToX(input), y = board.iToY(input);
 
         if (!touchesOpponentAndIsEmpty(x, y, playerNr, board))
@@ -167,9 +160,9 @@ public class Reversi extends GameRules {
 
                 @Override
                 public void doMove(boolean permanent) {
-                    setOnBoardAndNotify(x, y, playerNr, board, openPositions);
+                    setOnBoardAndNotify(x, y, playerNr);
                     for (int[] pos : flips) {
-                        flipOnBoardAndNotify(pos[0], pos[1], playerNr, board, openPositions);
+                        flipOnBoardAndNotify(pos[0], pos[1], playerNr);
                         playerScores[playerNr] += scores[pos[1]][pos[0]]; // Y first X second!!!
                     }
 
@@ -181,10 +174,10 @@ public class Reversi extends GameRules {
 
                 @Override
                 public void undoMove() {
-                    setOnBoardAndNotify(x, y, 0, board, openPositions);
+                    setOnBoardAndNotify(x, y, 0);
                     playerScores[playerNr] -= scores[y][x];
                     for (int[] pos : flips) {
-                        flipOnBoardAndNotify(pos[0], pos[1], (playerNr % 2) + 1, board, openPositions);
+                        flipOnBoardAndNotify(pos[0], pos[1], (playerNr % 2) + 1);
                         playerScores[playerNr] -= scores[pos[1]][pos[0]];
                     }
                 }

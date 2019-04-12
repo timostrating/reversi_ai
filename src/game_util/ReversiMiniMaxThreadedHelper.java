@@ -49,7 +49,7 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
         PosAndScore bla = minimax(
                 depth, alpha, beta, playerNr,
 
-                reversi.playerScores, board, reversi.openPositions, false
+                reversi
         );
         System.out.println("multithreaded calls: " + calls);
         return bla;
@@ -60,12 +60,8 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
     protected PosAndScore minimax(
             int depth, float alpha, float beta, int playerNr,
 
-            // reversi specific things:
-            float[] playerScores, GameBoard2D board, Reversi.OpenPositionsReversi openPositions,
-
-            boolean isInSeperateThread
+            Reversi reversi
     ) {
-
         calls++;
 
         final PosAndScore best = new PosAndScore(-1, -1, null); // (position, score, move)
@@ -76,34 +72,27 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
 
         AtomicInteger waitForThreads = new AtomicInteger(0);
 
-        GameRules.GameState state = reversi.getGameSpecificState(board, openPositions);
+        GameRules.GameState state = reversi.getGameSpecificState();
 
         if (depth == 0 || state != GameRules.GameState.PLAYING) { // TODO
-            float score = eval(state, playerScores);
+            float score = eval(state, reversi.playerScores);
             best.score = score;
             return best;
         }
 
-        for (int posIndex = 0; posIndex < openPositions.size(playerNr); posIndex++) {
+        for (int posIndex = 0; posIndex < reversi.openPositions.size(playerNr); posIndex++) {
 
-            final int pos = openPositions.get(posIndex, playerNr);
+            final int pos = reversi.openPositions.get(posIndex, playerNr);
 
-            Move m = reversi.getMove(pos, playerNr, playerScores, board, openPositions);
-            if (m == null) {
-                System.err.println("wuuuuuuuuuu player: " + playerNr + " pos: (" + board.iToX(pos) + ", " + board.iToY(pos) + ")\n" + openPositions + "\n" + board);
-                continue;
-            }
+            Move m = reversi.getMove(pos, playerNr);
             m.doMove(false);
 
             if (threadsInUse < MAX_THREADS && startDepth == depth) {
                 threadsInUse++;
                 waitForThreads.incrementAndGet();
-//                System.out.println("Starting minimax on seperate thread");
                 // send work to a waiting thread.
 
-                float[] clonedPlayerScores = playerScores.clone();
-                GameBoard2D clonedBoard = board.clone();
-                Reversi.OpenPositionsReversi clonedOpenPoss = openPositions.clone(clonedBoard);
+                Reversi clonedReversi = new Reversi(reversi);
                 float clonedAlpha = alpha, clonedBeta = beta;
 
                 POOL.execute(() -> {
@@ -111,20 +100,16 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
                     PosAndScore posAndScore = minimax(
                             depth-1, clonedAlpha, clonedBeta, (playerNr%2) +1,
 
-                            clonedPlayerScores, clonedBoard, clonedOpenPoss,
-
-                            true
+                            clonedReversi
                     );
 
                     posAndScore.pos = pos;
                     posAndScore.move = m;
 
-                    best.setIf(playerNr == max, posAndScore, startDepth == depth);
+                    best.setIf(playerNr == max, posAndScore);
 
                     threadsInUse--;
                     waitForThreads.decrementAndGet();
-//                    System.out.println("Minimax on seperate thread done.");
-
                 });
                 m.undoMove();
                 continue;
@@ -133,9 +118,7 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
             PosAndScore posAndScore = minimax(
                     depth-1, alpha, beta, (playerNr%2) +1,
 
-                    playerScores, board, openPositions,
-
-                    false
+                    reversi
             );
 
             m.undoMove();
@@ -143,26 +126,21 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
             posAndScore.move = m;
 
             if (playerNr == max) {
-                best.setIf(true, posAndScore, startDepth == depth);
+                best.setIf(true, posAndScore);
 
                 alpha = Math.max(alpha, posAndScore.score);
             }
             else {
-                best.setIf(false, posAndScore, startDepth == depth);
+                best.setIf(false, posAndScore);
 
                 beta = Math.min(beta, posAndScore.score);
             }
 
             if (beta <= alpha)
                 break;
-
         }
 
-        while (waitForThreads.intValue() > 0) {
-//            try {
-//                Thread.sleep(10);
-//            } catch (InterruptedException e) { }
-        }
+        while (waitForThreads.intValue() > 0) {}
 
         return best;
     }
