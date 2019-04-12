@@ -4,6 +4,7 @@ import GUI.GUIPlayer;
 import network.RemotePlayer;
 import reversi.Reversi;
 import reversi.ReversiAIMiniMax;
+import reversi.ReversiAIMiniMaxThreaded;
 import reversi.ReversiAIRandom;
 import tic_tac_toe.TicTacToe;
 import tic_tac_toe.TicTacToeAIMiniMax;
@@ -36,11 +37,12 @@ public class Arcade {
         TicTacToeAIMiniMax(g -> new TicTacToeAIMiniMax((TicTacToe) g)),
         ReversiAIRandom(g -> new ReversiAIRandom((Reversi) g)),
         ReversiAIMiniMax(g -> new ReversiAIMiniMax((Reversi) g)),
+        ReversiAIMiniMaxThreaded(g -> new ReversiAIMiniMaxThreaded((Reversi) g)),
         BestAvailableAI(game -> {
             if (game instanceof TicTacToe)
                 return new TicTacToeAIMiniMax((TicTacToe) game);
             else if (game instanceof Reversi)
-                return new ReversiAIMiniMax((Reversi) game);
+                return new ReversiAIMiniMaxThreaded((Reversi) game);
             else
                 throw new RuntimeException("Unfortunately humans are better than the best AI");
         });
@@ -76,14 +78,19 @@ public class Arcade {
         Arcade arcade = new Arcade();
 
 //        GameRules game_util = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
-        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMax, PlayerFactory.ReversiAIRandom);
+        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMaxThreaded, PlayerFactory.ReversiAIMiniMaxThreaded);
         game.onNextPlayer.register(() -> System.out.println(game));
 //        game.onValidMovePlayed.register((i) -> System.out.println(game));
         game.onGameEnded.register(() -> {
             System.err.println(game.getGameState());
             System.err.println(game);
         });
+
+        long beginTime = System.currentTimeMillis();
+
         game.run();
+
+        System.out.println("Game took " + (System.currentTimeMillis() - beginTime) / 1000 + "s");
 
 
 //        Connection c = CompositionRoot.getInstance().connection;

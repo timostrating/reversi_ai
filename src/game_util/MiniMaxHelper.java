@@ -25,18 +25,24 @@ public class MiniMaxHelper {
         float eval(GameRules.GameState state, int minPlayer, int maxPlayer);
     }
 
-    private float eval(GameRules.GameState state) {
+    protected float eval(GameRules.GameState state) {
         return evaluator.eval(state, min, max);
     }
 
+    int calls = 0;
+
     public PosAndScore minimax(int depth, int player, OpenPositions openPositions) {
+        calls = 0;
         this.max = player;
         this.min = (player % 2) + 1;
         this.openPositions = openPositions;
-        return minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
+        PosAndScore bla = minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
+        System.out.println("single threaded calls: " + calls);
+        return bla;
     }
 
     protected PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {
+        calls++;
         PosAndScore best = new PosAndScore(-1, -1, null); // (position, score, move)
         if (playerNr == max)
             best.score = Integer.MIN_VALUE;
@@ -92,6 +98,15 @@ public class MiniMaxHelper {
             this.pos = pos;
             this.score = score;
             this.move = move;
+        }
+
+        public synchronized void setIf(boolean lower, PosAndScore posAndScore) {
+            if (pos == -1 || (lower && score < posAndScore.score) || (!lower && score > posAndScore.score)) {
+
+                this.pos = posAndScore.pos;
+                this.score = posAndScore.score;
+                this.move = posAndScore.move;
+            }
         }
 
         @Override

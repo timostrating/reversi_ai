@@ -17,6 +17,12 @@ public class GameBoard2D {
         this.board = new int[cellCount];
     }
 
+    public GameBoard2D clone() {
+        GameBoard2D newBoard = new GameBoard2D(boardSize);
+        newBoard.board = board.clone();
+        return newBoard;
+    }
+
     public void reset(Callback onReset) {
         reset();
         onReset.callback();

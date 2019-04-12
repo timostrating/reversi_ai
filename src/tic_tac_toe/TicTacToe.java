@@ -92,7 +92,6 @@ public class TicTacToe extends GameRules {
         @Override public int remove(int posIndex, int playerNr) { return remove(posIndex); }
 
         @Override public void add(int posIndex, int pos, int playerNr) {  add(posIndex, pos); }
-
     }
 
 }
