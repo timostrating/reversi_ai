@@ -91,8 +91,6 @@ class LobbyPane extends GridPane {
         onlinePlayersLabel.setPadding(new Insets(5, 0,0,0));
 
         // set style for labels and primary pane
-        onlineLabel.setStyle(" -fx-border-width: 0 0 2 0; -fx-border-color: black;");
-        offlineLabel.setStyle(" -fx-border-width: 0 0 2 0; -fx-border-color: black;");
         this.setStyle("-fx-background-image: url(\"GUI/pictures/kermitBack.jpg\");  \n" +
                 "-fx-background-repeat: stretch;   \n" +
                 "-fx-background-size: 576 316;\n" +
@@ -239,7 +237,6 @@ class LobbyPane extends GridPane {
             if (result.get() == buttonYes){
                 connection.getToServer().setChallengeAccept(Integer.parseInt(message.get("CHALLENGENUMBER")));
                 connection.getFromServer().onChallenge.unregister(onChallenge);
-                connection.getToServer().subscribeGame(gameList.getSelectionModel().getSelectedItem());
                 BorderPane QueuePane = new QueuePane(ai.selectedProperty().getValue());
                 Scene scene = new Scene(QueuePane, 576, 316);
                 CompositionRoot.getInstance().lobby.setScene(scene);

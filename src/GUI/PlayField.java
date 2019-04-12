@@ -144,6 +144,8 @@ public class PlayField {
 
         forfeitButton.setOnAction(event -> CompositionRoot.getInstance().connection.getToServer().setForfeit());
 
+
+
     }
 
     private static ImageView getPicture(String player) {
@@ -170,8 +172,10 @@ public class PlayField {
 
     }
 
+
     private void displayWinScreen(GameState gamestate) {
         winPane = new VBox();
+        winPane.getStylesheets().add("GUI/playFieldStyle.css");
         winPane.setAlignment(Pos.CENTER);
         Label winningPlayer;
         if (gamestate == GameState.PLAYER_1_WINS) {
@@ -209,7 +213,8 @@ public class PlayField {
 
         winningPlayer.setStyle("-fx-font-size: 6em; -fx-text-fill: white;");
         winPane.getChildren().add(winningPlayer);
-        Button continueTournament = new Button("Door gaan met het toernooi");
+        Label padLab = new Label("");
+        Button continueTournament = new Button("Doorgaan met het toernooi");
         Button back = new Button("Terug naar lobby");
 
 
@@ -230,7 +235,7 @@ public class PlayField {
             CompositionRoot.getInstance().lobby.setScene(scene1);
 
         });
-        winPane.getChildren().addAll(back, continueTournament);
+        winPane.getChildren().addAll(continueTournament, padLab, back);
 
         Scene winScene = new Scene(winPane, 1000, 700);
         CompositionRoot.getInstance().lobby.setScene(winScene);

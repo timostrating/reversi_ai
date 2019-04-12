@@ -1,3 +1,8 @@
+.grid {
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: black;
+}
+
 .combo-box {
     -fx-pref-width: 150;
     -fx-background-color: white;
@@ -22,8 +27,7 @@
     -fx-pref-width: 150;
 }
 
-.combo-box .list-cell
-{
+.combo-box .list-cell {
     -fx-background: white;
     -fx-background-color: transparent;
     -fx-text-fill: black;
