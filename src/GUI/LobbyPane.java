@@ -29,14 +29,13 @@ class LobbyPane extends GridPane {
 
     LobbyPane() {
 
-        this.getStylesheets().add("/GUI/lobbyPaneStyle.css");
+        this.getStylesheets().add("/GUI/lobbyPaneStyle.css"); //get stylesheet for the gridpane
 
         // setting horizontal and vertical gap for the primary gridpane
         this.setHgap(5);
         this.setVgap(5);
 
-        // set the padding for the primary gridpane
-        this.setPadding(new Insets(15,15,15,15));
+        this.setPadding(new Insets(15,15,15,15)); // set the padding for the primary gridpane
 
         // make a list and button gridpane
         listGrid = new GridPane();
@@ -50,17 +49,13 @@ class LobbyPane extends GridPane {
 
         buttonGrid.setPadding(new Insets(0,15,15,15)); // set padding for button gridpane
 
-        // getting connection
-        connection = CompositionRoot.getInstance().connection;
+        connection = CompositionRoot.getInstance().connection; // getting connection from the compositionroot
 
-        // update online player list
-        updateOnlinePlayers();
+        updateOnlinePlayers(); // update online player list
 
-        // register for online events
-        registerOnlineEvents();
+        registerOnlineEvents(); // register for online events
 
-        // get the gamelist from the server
-        connection.getToServer().getGameList();
+        connection.getToServer().getGameList(); // get the gamelist from the server
 
         // create labels for list gridpane
         Label onlinePlayersLabel = new Label("Online spelers");
@@ -79,8 +74,7 @@ class LobbyPane extends GridPane {
         Button challengeButton = new Button("Speler uitdagen");
         Button logoutButton = new Button("Uitloggen");
 
-        // create checkbox for button gridpane
-        CheckBox isAiCheckBox = new CheckBox();
+        CheckBox isAiCheckBox = new CheckBox(); // create checkbox for button gridpane
 
         // Set the position for labels and buttons to the center
         GridPane.setHalignment(onlinePlayersLabel, HPos.CENTER);
@@ -101,7 +95,7 @@ class LobbyPane extends GridPane {
         offlineLabel.setStyle(" -fx-border-width: 0 0 2 0; -fx-border-color: black;");
         this.setStyle("-fx-background-image: url(\"GUI/pictures/kermitBack.jpg\");  \n" +
                 "-fx-background-repeat: stretch;   \n" +
-                "-fx-background-size: 550 300;\n" +
+                "-fx-background-size: 576 316;\n" +
                 "-fx-background-position: center center;\n");
 
         listGrid.setStyle("-fx-background-color: rgb(255,255,255,0.9); -fx-background-radius: 5;");
@@ -124,30 +118,29 @@ class LobbyPane extends GridPane {
         buttonGrid.add(reversiButton, 1,5);
         buttonGrid.add(logoutButton, 1, 6);
 
-        // add checkbox to button gridpane
-        buttonGrid.add(isAiCheckBox, 1,2);
+        buttonGrid.add(isAiCheckBox, 1,2); // add checkbox to button gridpane
 
         // add list gridpane and button gridpane to the primary gridpane
         this.add(listGrid, 0, 0);
         this.add(buttonGrid, 1, 0);
 
-        //challenge button
+        // action on pressing the challenge button
         challengeButton.setOnAction(event -> {
             connection.getToServer().setChallenge(playerList.getSelectionModel().getSelectedItem(), gameList.getSelectionModel().getSelectedItem());
             BorderPane QueuePane = new QueuePane(isAiCheckBox.selectedProperty().getValue());
-            Scene scene = new Scene(QueuePane, 500, 400);
+            Scene scene = new Scene(QueuePane, 576, 316);
             CompositionRoot.getInstance().lobby.setScene(scene);
         });
 
-        //queue button
+        // action on pressing the queue button
         queueButton.setOnAction(event -> {
             connection.getToServer().subscribeGame(gameList.getSelectionModel().getSelectedItem());
             BorderPane QueuePane = new QueuePane(isAiCheckBox.selectedProperty().getValue());
-            Scene scene = new Scene(QueuePane, 500, 400);
+            Scene scene = new Scene(QueuePane, 576, 316);
             CompositionRoot.getInstance().lobby.setScene(scene);
         });
 
-        // game Button
+        // action on pressing game Button
         ticTacToeButton.setOnAction(event -> {
             PlayField playField = PlayField.createGameAndPlayField(Arcade.GameFactory.TicTacToe, OFFLINE_AI_VS_PLAYER);
             CompositionRoot.getInstance().lobby.setScene(playField.getScene());
@@ -157,7 +150,7 @@ class LobbyPane extends GridPane {
             CompositionRoot.getInstance().lobby.setScene(playField.getScene());
         });
 
-        //logout Button
+        // action on pressing the logout Button
         logoutButton.setOnAction(e -> {
             connection.closeConnection();
             connection.getToServer().setLogout();
@@ -167,6 +160,7 @@ class LobbyPane extends GridPane {
         });
     }
 
+    // update the onlineplayer list
     private void updateOnlinePlayers(){
         new Thread(() -> {
             boolean started = false, currScene = false;
@@ -182,14 +176,15 @@ class LobbyPane extends GridPane {
         }).start();
     }
 
+    // register to all the online events
     private void registerOnlineEvents(){
         connection.getFromServer().onChallenge.register(onChallenge);
         connection.getFromServer().onGameList.register(onGameList);
     }
 
+    // getting games from the server and putting them in a combobox
     private void gameTypesToBox(String[] message) {
         gameList = new ComboBox<>();
-
         for(String game : message){
             gameList.getItems().add(game);
         }
@@ -198,6 +193,7 @@ class LobbyPane extends GridPane {
         Platform.runLater(() -> buttonGrid.add(gameList, 0,2));
     }
 
+    // getting the online players and putting them in a listview
     private void playerListToList(String[] message){
         Platform.runLater(() -> {
             if(playerList == null) {
@@ -206,7 +202,6 @@ class LobbyPane extends GridPane {
                 playerList.setPrefHeight(200);
                 listGrid.add(playerList, 0,1);
             }
-
             for(String name : message) {
                 if (!playerList.getItems().contains(name)) {
                     if(!name.equals(LoginPane.username)) {
@@ -225,6 +220,7 @@ class LobbyPane extends GridPane {
         });
     }
 
+    // getting an alert of confirmation on a challenge receive
     private void getChallenge(HashMap<String, String> message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -245,7 +241,7 @@ class LobbyPane extends GridPane {
                 connection.getFromServer().onChallenge.unregister(onChallenge);
                 connection.getToServer().subscribeGame(gameList.getSelectionModel().getSelectedItem());
                 BorderPane QueuePane = new QueuePane(ai.selectedProperty().getValue());
-                Scene scene = new Scene(QueuePane, 500, 400);
+                Scene scene = new Scene(QueuePane, 576, 316);
                 CompositionRoot.getInstance().lobby.setScene(scene);
             } else if(result.get() == buttonNo){
                 alert.close();
@@ -253,6 +249,7 @@ class LobbyPane extends GridPane {
         });
     }
 
+    // actions on all the callbacks received
     private CallbackWithParam<String[]> onGameList = this::gameTypesToBox;
     private CallbackWithParam<String[]> onPlayerList = this::playerListToList;
     private CallbackWithParam<HashMap<String, String>> onChallenge = this::getChallenge;

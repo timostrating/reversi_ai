@@ -217,14 +217,14 @@ public class PlayField {
             Connection connection = CompositionRoot.getInstance().connection;
             connection.getToServer().subscribeGame("Reversi");
             BorderPane QueuePane = new QueuePane(true);
-            Scene scene = new Scene(QueuePane, 500, 400);
+            Scene scene = new Scene(QueuePane, 576, 316);
             CompositionRoot.getInstance().lobby.setScene(scene);
         });
 
         back.setOnAction(e -> {
 
             GridPane lobby = new LobbyPane();
-            Scene scene1 = new Scene(lobby, 550, 300);
+            Scene scene1 = new Scene(lobby, 576, 316);
             Image cursor = new Image("GUI/pictures/kermitCursor.png");
             scene1.setCursor(new ImageCursor(cursor));
             CompositionRoot.getInstance().lobby.setScene(scene1);

@@ -22,36 +22,37 @@ public class LoginPane extends BorderPane {
     private Alert alertInfo;
 
     LoginPane(){
-        connection = CompositionRoot.getInstance().connection;
+        connection = CompositionRoot.getInstance().connection; // get the connection from the compositionroot
 
-        //Adding icon and title to the title bar
+        alertInfo = new Alert(Alert.AlertType.INFORMATION); // creating new Alert for information
 
-        alertInfo = new Alert(Alert.AlertType.INFORMATION);
+        this.setPadding(new Insets(5, 0, 0, 60)); //set padding of the Borderpane
 
-        this.setPadding(new Insets(5, 0, 0, 60));
+        HBox hBox = new HBox(); //create hbox
 
-        HBox hBox = new HBox();
-
+        // create gridpane and set padding and v, h gap
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(0, 0, 0, 0));
         gridPane.setHgap(5);
         gridPane.setVgap(5);
 
+        // create labels and textfields for the borderpane (connection)
         Label hostLabel = new Label("Host");
         Label ipAdressLabel = new Label("Ip adress");
         TextField hostText = new TextField("localhost");
         TextField ipAdressText = new TextField("7789");
 
+        //create label, textfield and button to log in
         Label loginLabel = new Label("Gebruikersnaam");
         TextField loginTextField = new TextField();
-        Button loginButton = new Button();
+        Button loginButton = new Button("Login");
 
+        // set focus on the login text field
         hostText.setFocusTraversable(false);
         ipAdressText.setFocusTraversable(false);
         loginTextField.setFocusTraversable(true);
 
-        loginButton.setText("Login");
-
+        // set style to all the elements of the borderpane
         this.setStyle("-fx-background-image: url(\"GUI/pictures/kermit.jpg\");");
         loginLabel.setStyle("-fx-font-size: 20; -fx-padding: 5 20 0 20");
         loginTextField.setStyle("-fx-background-color: rgb(255,255,255,0.7); -fx-text-fill: black; -fx-border-color: rgb(0,0,0,0.3); -fx-border-width: 3; -fx-border-radius: 3;");
@@ -60,7 +61,10 @@ public class LoginPane extends BorderPane {
         ipAdressLabel.setStyle("-fx-font-size: 12");
         hostText.setStyle("-fx-font-size: 12");
         ipAdressText.setStyle("-fx-font-size: 12");
+        this.setTop(hBox);
+        this.setCenter(gridPane);
 
+        // add all nodes to the borderpane
         gridPane.add(hostLabel, 0, 0);
         gridPane.add(hostText, 1, 0);
         gridPane.add(ipAdressLabel, 0, 1);
@@ -68,15 +72,10 @@ public class LoginPane extends BorderPane {
         gridPane.add(loginLabel, 0,8, 2, 1);
         gridPane.add(loginTextField, 0,9, 2,1);
         gridPane.add(loginButton, 0,10,2,1);
-
-        this.setId("borderPane");
-        gridPane.setId("gridPane");
-        loginButton.setId("loginButton");
-        loginTextField.setId("text-field");
-
         GridPane.setHalignment(loginButton, HPos.CENTER);
         GridPane.setHalignment(loginLabel, HPos.CENTER);
 
+        // login button action
         loginButton.setOnAction(event -> {
             if(connection.connect(hostText.getText(), Integer.parseInt(ipAdressText.getText()))) {
                 username = loginTextField.getText();
@@ -91,20 +90,15 @@ public class LoginPane extends BorderPane {
             }
         });
 
-        this.setTop(hBox);
-        this.setCenter(gridPane);
-
-        //LoginButton with pressing Enter
-        loginTextField.setOnKeyPressed(event -> { if(event.getCode() == KeyCode.ENTER){ loginButton.fire(); } });
+        loginTextField.setOnKeyPressed(event -> { if(event.getCode() == KeyCode.ENTER){ loginButton.fire(); } }); //LoginButton with pressing the enter key
     }
 
-    private CallbackWithParam<String[]> onPlayerList = this::validatePlayer;
-
-    private void validatePlayer(String[] playerList){
-        if(validPlayerName(playerList)) {
+    // check if name is valid
+    private void validateUsername(String[] playerList){
+        if(availableUsername(playerList)) {
             connection.getToServer().setLogin(username);
             GridPane lobby = new LobbyPane();
-            Scene scene1 = new Scene(lobby, 550, 300);
+            Scene scene1 = new Scene(lobby, 576, 316);
             CompositionRoot.getInstance().lobby.setScene(scene1);
         } else {
             Platform.runLater(() -> {
@@ -116,7 +110,8 @@ public class LoginPane extends BorderPane {
         connection.getFromServer().onPlayerList.unregister(onPlayerList);
     }
 
-    private boolean validPlayerName(String[] playerList) {
+    // check if name is available
+    private boolean availableUsername(String[] playerList) {
         for(String player : playerList){
             if(username.toLowerCase().equals(player.toLowerCase())){
                 return false;
@@ -124,4 +119,7 @@ public class LoginPane extends BorderPane {
         }
         return true;
     }
+
+    //action on getting notified from the callback
+    private CallbackWithParam<String[]> onPlayerList = this::validateUsername;
 }
