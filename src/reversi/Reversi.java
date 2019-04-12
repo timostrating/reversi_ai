@@ -24,6 +24,9 @@ public class Reversi extends GameRules {
             0       // score for player 2
     };
 
+    private int xCells = 0;
+    private int oCells = 0;
+
     private double[][] scores = {
             {1.01, -.43, .38,  .07,  0,    .42,  -.2,  1.02},
             {-.27, -.74, -.16, -.14, -.13, -.25, -.65, -.39},
@@ -51,13 +54,30 @@ public class Reversi extends GameRules {
         return openPositions;
     }
 
-    private void setOnBoardAndNotify(int x, int y, int playerNr) {
+    private void setOnBoardAndNotify(int x, int y, int playerNr) { setOnBoardAndNotify(x, y,playerNr , true);}
+    private void setOnBoardAndNotify(int x, int y, int playerNr, boolean permanent) {
         board.set(x, y, playerNr);
+        if (permanent) {
+            if (playerNr == CellState.X.ordinal()) {
+                xCells++;
+            } else {
+                oCells++;
+            }
+        }
         openPositions.onChange(x, y);
     }
 
-    private void flipOnBoardAndNotify(int x, int y, int playerNr) {
+    private void flipOnBoardAndNotify(int x, int y, int playerNr, boolean permanent) {
         board.set(x, y, playerNr);
+        if (permanent) {
+            if (playerNr == CellState.X.ordinal()) {
+                xCells++;
+                oCells--;
+            } else {
+                oCells++;
+                xCells--;
+            }
+        }
         openPositions.onChange(x, y);
     }
 
@@ -66,23 +86,21 @@ public class Reversi extends GameRules {
         return openPositions.getOpenPositions(p.getNr()).size() > 0;
     }
 
+    /**
+     * We trust in the fact that openpositions is implemented correctly
+     */
     public GameState getGameSpecificState() {
-        if (!board.containsCell(CellState.O.ordinal())) // player 2 is outplayed
-            return GameState.PLAYER_1_WINS;
-        if (!board.containsCell(CellState.X.ordinal())) // player 1 is outplayed
-            return GameState.PLAYER_2_WINS;
-
-        boolean canMove = openPositions.openOPositions.size() > 0 || openPositions.openXPositions.size() > 0;
-
-        if (canMove && board.containsCell(CellState.EMPTY.ordinal()))
+        if (openPositions.openOPositions.size() > 0 || openPositions.openXPositions.size() > 0)
             return GameState.PLAYING;
 
-        int score_X = board.amount(CellState.X.ordinal());
-        int score_O = board.amount(CellState.O.ordinal());
-
-        if (score_X == score_O)
+        if (xCells == 0) // player 1 is outplayed
+            return GameState.PLAYER_2_WINS;
+        if (oCells == 0) // player 2 is outplayed
+            return GameState.PLAYER_1_WINS;
+        if (xCells == oCells)
             return GameState.DRAW;
-        if (score_X > score_O)
+
+        if (xCells > oCells)
             return GameState.PLAYER_1_WINS;
         return GameState.PLAYER_2_WINS;
     }
@@ -129,9 +147,9 @@ public class Reversi extends GameRules {
 
                 @Override
                 public void doMove(boolean permanent) {
-                    setOnBoardAndNotify(x, y, playerNr);
+                    setOnBoardAndNotify(x, y, playerNr, permanent);
                     for (int[] pos : flips) {
-                        flipOnBoardAndNotify(pos[0], pos[1], playerNr);
+                        flipOnBoardAndNotify(pos[0], pos[1], playerNr, permanent);
                         playerScores[playerNr] += scores[pos[1]][pos[0]]; // Y first X second!!!
                     }
 
@@ -143,10 +161,10 @@ public class Reversi extends GameRules {
 
                 @Override
                 public void undoMove() {
-                    setOnBoardAndNotify(x, y, 0);
+                    setOnBoardAndNotify(x, y, 0, false);
                     playerScores[playerNr] -= scores[y][x];
                     for (int[] pos : flips) {
-                        flipOnBoardAndNotify(pos[0], pos[1], (playerNr % 2) + 1);
+                        flipOnBoardAndNotify(pos[0], pos[1], (playerNr % 2) + 1, false);
                         playerScores[playerNr] -= scores[pos[1]][pos[0]];
                     }
                 }

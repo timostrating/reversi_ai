@@ -43,7 +43,7 @@ public class ReversiAIMiniMax extends Player {
     public Move getInput() {
         openPositions = reversi.getOpenPositions();
         MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(7, getNr(), openPositions);
-        System.out.println(best);
+        System.out.println("__Player_"+getNr() +"__ "+ best.toString());
         return best.move;
     }
 
