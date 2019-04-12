@@ -370,8 +370,8 @@ public class PlayField {
     private static void registerDefaultCallBacks(GameRules game, PlayField playField) {
         Platform.runLater(playField::redraw); // TODO this is a hack
 
-        game.onValidMovePlayed.register((pair0 -> {
-            Platform.runLater(() -> playField.setPicture(game, pair0.getKey(), pair0.getValue()));
+        game.onPermanentMovePlayed.register((move -> {
+            Platform.runLater(() -> playField.setPicture(game, move.toI(), move.playerNr()));
             if (game instanceof Reversi) {
                 Platform.runLater(playField::redraw); // TODO this is a hack
                 try {
@@ -383,6 +383,6 @@ public class PlayField {
         }));
 
         game.onGameEnded.register(() -> Platform.runLater(() -> playField.displayWinScreen(game.getGameState())));
-        game.onValidMovePlayed.register(i -> System.out.println(game));
+        game.onPermanentMovePlayed.register(i -> System.out.println(game));
     }
 }

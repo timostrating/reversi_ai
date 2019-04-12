@@ -30,7 +30,7 @@ public class ReversiAIMiniMax extends Player {
             if (state == DRAW)
                 return 100f;
 
-            return reversi.playerScores[max] - reversi.playerScores[min];
+            return reversi.playerScores[getNr() - 1][max] - reversi.playerScores[getNr() - 1][min];
         }
     }
 
@@ -43,7 +43,7 @@ public class ReversiAIMiniMax extends Player {
     public Move getInput() {
         openPositions = reversi.getOpenPositions();
         MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(7, getNr(), openPositions);
-        System.out.println("__Player_"+getNr() +"__ "+ best.toString());
+//        System.out.println("__Player_"+getNr() +"__ "+ best.toString());
         return best.move;
     }
 

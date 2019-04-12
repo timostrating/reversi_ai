@@ -57,11 +57,16 @@ public class TicTacToe extends GameRules {
                 public int toI() { return i; }
 
                 @Override
+                public int playerNr() {
+                    return playerNr;
+                }
+
+                @Override
                 public void doMove(boolean permanent) {
                     board.set(i, CellState.values()[playerNr].ordinal());
                     openPositions.filter(i, playerNr);
                     if (permanent) {
-                        onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(i, playerNr)));
+                        onPermanentMovePlayed.notifyObjects(o -> o.callback(this));
                     }
                 }
 

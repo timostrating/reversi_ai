@@ -12,7 +12,9 @@ public abstract class GameRules implements Runnable {
 
     public Delegate<Callback> onNextPlayer = new Delegate<>();
     public Delegate<Callback> onGameEnded = new Delegate<>();
-    public Delegate<CallbackWithParam<Pair<Integer, Integer>>> onValidMovePlayed = new Delegate<>();
+    public Delegate<CallbackWithParam<Move>> onPermanentMovePlayed = new Delegate<>();
+    public Delegate<CallbackWithParam<Move>> onTemporaryMove = new Delegate<>();
+    public Delegate<CallbackWithParam<Move>> onTemporaryUndoMove = new Delegate<>();
 
     private Player[] players;
     private Referee referee;

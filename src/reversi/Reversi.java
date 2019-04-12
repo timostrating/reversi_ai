@@ -4,12 +4,11 @@ import game_util.GameBoard2D;
 import game_util.GameRules;
 import game_util.Move;
 import game_util.Player;
-import javafx.util.Pair;
+import util.CallbackWithParam;
+import util.Delegate;
 import util.OpenPositions;
 import util.Utils;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -21,16 +20,20 @@ public class Reversi extends GameRules {
     public OpenPositionsReversi openPositions;
 
     public GameBoard2D board;
-    public float[] playerScores = {
+    public float[][] playerScores = {{
             -9999,  // score for non exisiting player
             0,      // score for player 1
             0       // score for player 2
-    };
+    }, {
+            -9999,  // score for non exisiting player
+            0,      // score for player 1
+            0       // score for player 2
+    }};
 
     private int xCells = 0;
     private int oCells = 0;
 
-    private double[][] scores = {
+    public final static double[][] DEFAULT_SCORES = {
             {1.01, -.43, .38,  .07,  0,    .42,  -.2,  1.02},
             {-.27, -.74, -.16, -.14, -.13, -.25, -.65, -.39},
             {.56,  -.3,  .12,  .05,  -.04, .07,  -.15, .48},
@@ -41,10 +44,17 @@ public class Reversi extends GameRules {
             {.96,  -.42, .67,  -.02, -.03, .81,  -.51, 1.01}
     };
 
+    private double[][][] scores;
+
     public Reversi() {
+        this(DEFAULT_SCORES, DEFAULT_SCORES);
+    }
+
+    public Reversi(double[][] scores0, double[][] scores1) {
         this.board = new GameBoard2D(BOARD_SIZE);
         openPositions = new OpenPositionsReversi(board);
         board.reset(this::reset);
+        scores = new double[][][]{scores0, scores1};
     }
 
     public Reversi(Reversi reversi) {
@@ -122,6 +132,10 @@ public class Reversi extends GameRules {
         return getMove(i, playerNr) != null;
     }
 
+    // we cache the notifier, because constructing new notifiers takes time.
+    private Move moveToBeNotified;
+    private Delegate.Notifier<CallbackWithParam<Move>> moveNotifier = o -> o.callback(moveToBeNotified);
+
     @Override
     public Move getMove(int input, int playerNr) {
         int x = board.iToX(input), y = board.iToY(input);
@@ -159,26 +173,35 @@ public class Reversi extends GameRules {
                 public int toI() { return input; }
 
                 @Override
+                public int playerNr() {
+                    return playerNr;
+                }
+
+                @Override
                 public void doMove(boolean permanent) {
                     setOnBoardAndNotify(x, y, playerNr);
                     for (int[] pos : flips) {
                         flipOnBoardAndNotify(pos[0], pos[1], playerNr);
-                        playerScores[playerNr] += scores[pos[1]][pos[0]]; // Y first X second!!!
+                        playerScores[0][playerNr] += scores[0][pos[1]][pos[0]]; // Y first X second!!!
+                        playerScores[1][playerNr] += scores[1][pos[1]][pos[0]]; // Y first X second!!!
                     }
 
-                    playerScores[playerNr] += scores[y][x];
+                    playerScores[0][playerNr] += scores[0][y][x];
+                    playerScores[1][playerNr] += scores[1][y][x];
 
                     if (permanent)
-                        onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(input, playerNr)));
+                        onPermanentMovePlayed.notifyObjects(o -> o.callback(this));
                 }
 
                 @Override
                 public void undoMove() {
                     setOnBoardAndNotify(x, y, 0);
-                    playerScores[playerNr] -= scores[y][x];
+                    playerScores[0][playerNr] -= scores[0][y][x];
+                    playerScores[1][playerNr] -= scores[1][y][x];
                     for (int[] pos : flips) {
                         flipOnBoardAndNotify(pos[0], pos[1], (playerNr % 2) + 1);
-                        playerScores[playerNr] -= scores[pos[1]][pos[0]];
+                        playerScores[0][playerNr] -= scores[0][pos[1]][pos[0]];
+                        playerScores[1][playerNr] -= scores[1][pos[1]][pos[0]];
                     }
                 }
             };
