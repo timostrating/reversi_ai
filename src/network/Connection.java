@@ -10,12 +10,13 @@ public class Connection {
 
     private FromServer fromServer;
     private ToServer toServer;
+    private Socket socket;
 
     public final Delegate<CallbackWithParam<Boolean>> onConnection = new Delegate<>();
 
     public boolean connect(String host, int port) {
         try (Socket testConnection = new Socket(host, port)){
-            Socket socket = new Socket(host, port);
+            socket = new Socket(host, port);
             fromServer = new FromServer(socket);
             toServer = new ToServer(socket);
 
@@ -30,6 +31,14 @@ public class Connection {
         } catch (IOException e) {
             onConnection.notifyObjects(o -> o.callback(false));
             return false;
+        }
+    }
+
+    public void closeConnection(){
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

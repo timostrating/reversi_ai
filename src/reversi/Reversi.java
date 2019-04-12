@@ -27,6 +27,9 @@ public class Reversi extends GameRules {
             0       // score for player 2
     };
 
+    private int xCells = 0;
+    private int oCells = 0;
+
     private double[][] scores = {
             {1.01, -.43, .38,  .07,  0,    .42,  -.2,  1.02},
             {-.27, -.74, -.16, -.14, -.13, -.25, -.65, -.39},
@@ -59,15 +62,34 @@ public class Reversi extends GameRules {
         setOnBoardAndNotify(x, y, playerNr, board, openPositions);
     }
     private void setOnBoardAndNotify(int x, int y, int playerNr, GameBoard2D board, OpenPositionsReversi openPositions) {
+        int oldV = board.get(x,y);
+        if (oldV == 1 && playerNr == 0)
+            xCells--;
+        else if (oldV == 2 && playerNr == 0)
+            oCells--;
+
         board.set(x, y, playerNr);
+
+        if (playerNr == CellState.X.ordinal())
+            xCells++;
+        else
+            oCells++;
         openPositions.onChange(x, y);
     }
 
     private void flipOnBoardAndNotify(int x, int y, int playerNr) {
         flipOnBoardAndNotify(x, y, playerNr, board, openPositions);
     }
+
     private void flipOnBoardAndNotify(int x, int y, int playerNr, GameBoard2D board, OpenPositionsReversi openPositions) {
         board.set(x, y, playerNr);
+        if (playerNr == CellState.X.ordinal()) {
+            xCells++;
+            oCells--;
+        } else {
+            oCells++;
+            xCells--;
+        }
         openPositions.onChange(x, y);
     }
 
@@ -76,27 +98,25 @@ public class Reversi extends GameRules {
         return openPositions.getOpenPositions(p.getNr()).size() > 0;
     }
 
+    /**
+     * We trust in the fact that openpositions is implemented correctly
+     */
     public GameState getGameSpecificState() {
         return getGameSpecificState(board, openPositions);
     }
 
     public GameState getGameSpecificState(GameBoard2D board, OpenPositionsReversi openPositions) {
-        if (!board.containsCell(CellState.O.ordinal())) // player 2 is outplayed
-            return GameState.PLAYER_1_WINS;
-        if (!board.containsCell(CellState.X.ordinal())) // player 1 is outplayed
-            return GameState.PLAYER_2_WINS;
-
-        boolean canMove = openPositions.openOPositions.size() > 0 || openPositions.openXPositions.size() > 0;
-
-        if (canMove && board.containsCell(CellState.EMPTY.ordinal()))
+        if (openPositions.openOPositions.size() > 0 || openPositions.openXPositions.size() > 0)
             return GameState.PLAYING;
 
-        int score_X = board.amount(CellState.X.ordinal());
-        int score_O = board.amount(CellState.O.ordinal());
-
-        if (score_X == score_O)
+        if (xCells == 0) // player 1 is outplayed
+            return GameState.PLAYER_2_WINS;
+        if (oCells == 0) // player 2 is outplayed
+            return GameState.PLAYER_1_WINS;
+        if (xCells == oCells)
             return GameState.DRAW;
-        if (score_X > score_O)
+
+        if (xCells > oCells)
             return GameState.PLAYER_1_WINS;
         return GameState.PLAYER_2_WINS;
     }

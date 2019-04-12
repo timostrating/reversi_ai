@@ -23,69 +23,81 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import network.Connection;
 import reversi.Reversi;
 import tic_tac_toe.TicTacToe;
 import util.CallbackWithParam;
 import util.CompositionRoot;
+import util.StringUtils;
 
 import java.util.ArrayList;
 
 public class PlayField {
 
-    private static final Integer STARTTIME = 10; // TODO not hardcode
     private static final int GAME_VIEW_SIZE = 600;
     // Images
-    private static Image kermit = new Image("GUI/pictures/Kermitgezicht.jpg", 60, 60, false,true);
-    private static Image o = new Image("GUI/pictures/o.png", 60, 60, false, true);
-    private static Image x = new Image("GUI/pictures/x.png", 60, 60, false, true);
-    private static Image black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true);
-    private static Image white = new Image("GUI/pictures/whitePiece.png", 60, 60, false, true);
+    private static Image kermit = new Image("GUI/pictures/kermitPiece.gif", 60, 60, false,true),
+            o = new Image("GUI/pictures/o.png", 60, 60, false, true),
+            x = new Image("GUI/pictures/x.png", 60, 60, false, true),
+            black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true),
+            white = new Image("GUI/pictures/whitePiece.png", 60, 60, false, true);
     private VBox[] panes;
     public volatile int guiPlayerInput = -1; // MOET -1 zijn in het begin GuiPlayer heeft infiniate loop op de verandering van deze variable
     private Scene scene;
-    private int player = 0;
-
+    private Label player1;
+    private Label player2;
+    private Label currentPlayer;
+    private HBox currentPlayerPane, timerPane;
+    private boolean switching = true;
     private GameRules gameRules;
     private boolean guiPlayerIsPlaying = false;
-
+    VBox winPane;
 
     PlayField(int boardSize, GameRules gameRules) { this(boardSize, boardSize, gameRules); }
     PlayField(int rows, int columns, GameRules gameRules) {
         CompositionRoot.getInstance().lobby.playField = this;
         this.gameRules = gameRules;
 
-        // Current Player
-        Label currentPlayer = new Label("Kees");
+        GridPane gridPane = new GridPane();
+        gridPane.setStyle("-fx-background-color: white;");
+
+        // Current player
+        currentPlayer = new Label("");
         currentPlayer.setStyle("-fx-font-size: 3em;");
-        HBox playerPane = new HBox();
-        playerPane.setSpacing(200);
-        playerPane.setAlignment(Pos.CENTER);
-        playerPane.getChildren().add(currentPlayer);
-
-        // Player List
-        Label player1 = new Label("Player 1 has 10 points");
-        Label player2 = new Label("Player 2 has 13 points");
-        player1.setPadding(new Insets(50, 0, 0, 0));
-        player1.setStyle("-fx-font-size: 2em;");
-        player2.setStyle("-fx-font-size: 2em;");
-        VBox scorePane = new VBox();
-        scorePane.getChildren().addAll(player1, player2);
-
+        currentPlayer.setPadding(new Insets(10, 0,0,40));
+        currentPlayerPane = new HBox();
+        currentPlayerPane.getChildren().add(currentPlayer);
 
         // Timer
-        // Bind the timerLabel text property to the timeSeconds property
-        Label timerLabel = new Label();
-        IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
-        timerLabel.textProperty().bind(timeSeconds.asString());
-        timerLabel.setTextFill(Color.BLACK);
-        timerLabel.setStyle("-fx-font-size: 3em;");
+        timerPane = new HBox();
+        timerPane.setPadding(new Insets(10, 350,0,0));
+        timerPane.getChildren().add(createTimer());
 
-        timeSeconds.set(STARTTIME);
-        Timeline timeline = new Timeline();
-        timeline.getKeyFrames().add( new KeyFrame(Duration.seconds(STARTTIME + 1), new KeyValue(timeSeconds, 0)));
-        timeline.playFromStart();
+        BorderPane top = new BorderPane();
+        top.setStyle("-fx-background-color: white; -fx-border; -fx-border-width: 0 0 2 0; -fx-border-color: black;");
+        top.setLeft(currentPlayerPane);
+        top.setRight(timerPane);
 
-        playerPane.getChildren().add(timerLabel);
+        // forfeit button
+        Button forfeitButton = new Button("Opgeven");
+
+        // Player List
+        player1 = new Label("");
+        player2 = new Label("");
+        player1.setPadding(new Insets(10, 20, 0, 20));
+        player2.setPadding(new Insets(10, 20, 0, 20));
+        player1.setStyle("-fx-font-size: 2em;");
+        player2.setStyle("-fx-font-size: 2em;");
+        ImageView blackGamePiece = new ImageView(black);
+        ImageView whiteGamePiece = new ImageView(white);
+        VBox scorePane = new VBox();
+        gridPane.add(blackGamePiece, 0,0);
+        gridPane.add(whiteGamePiece, 0,1);
+        gridPane.add(player1, 1,0);
+        gridPane.add(player2, 1,1);
+        gridPane.add(forfeitButton, 0,4);
+        scorePane.getChildren().addAll(gridPane);
+
 
 
         GridPane game = new GridPane();
@@ -112,11 +124,6 @@ public class PlayField {
                     if (guiPlayerIsPlaying) {
                         System.out.println("GuiPlayer clicked on: ("+total % rows+", " +total / columns+") i = "+total);
                         setGuiPlayerInput(total);
-
-                        if (gameRules instanceof TicTacToe) {
-                            pane.getChildren().add(getPicture((player == 0) ? "o" : "x"));
-                            pane.setDisable(true);
-                        }
                     }
                 });
                 pane.getStyleClass().add("game-grid-cell");
@@ -127,12 +134,17 @@ public class PlayField {
         }
 
         BorderPane totalPane = new BorderPane();
-        totalPane.setTop(playerPane);
+        totalPane.setStyle("-fx-background-color: white;");
+        totalPane.setTop(top);
         totalPane.setCenter(game);
         totalPane.setRight(scorePane);
 
         scene = new Scene(totalPane, 1000, 700, Color.WHITE);
         scene.getStylesheets().add("/GUI/game.css");
+
+        forfeitButton.setOnAction(event -> {
+            CompositionRoot.getInstance().connection.getToServer().setForfeit();
+        });
 
     }
 
@@ -161,23 +173,56 @@ public class PlayField {
     }
 
     void displayWinScreen(GameState gamestate) {
-        VBox winPane = new VBox();
+        winPane = new VBox();
         winPane.setAlignment(Pos.CENTER);
-        winPane.setStyle("-fx-background-color: Chartreuse;");
         Label winningPlayer;
         if (gamestate == GameState.PLAYER_1_WINS) {
-            winningPlayer = new Label("Player 1 has won!");
+            if (gameRules.getPlayer(0).getName() != null) {
+                if(gameRules.getPlayer(0).getName().equals(LoginPane.username)) {
+                    winningPlayer = new Label("Je hebt gewonnen!");
+                    setWinStyle();
+                } else {
+                    winningPlayer = new Label("Je hebt verloren!");
+                    setLoseStyle();
+                }
+            } else {
+                winningPlayer = new Label("Speler 1 heeft gewonnen!");
+            }
+        } else if (gamestate == GameState.PLAYER_2_WINS) {
+            if (gameRules.getPlayer(1).getName() != null) {
+                if (gameRules.getPlayer(1).getName().equals(LoginPane.username)) {
+                    winningPlayer = new Label("Je hebt gewonnen!");
+                    setWinStyle();
+                } else {
+                    winningPlayer = new Label("Je hebt verloren!");
+                    setLoseStyle();
+                }
+            } else {
+                winningPlayer = new Label("Speler 2 heeft gewonnen!");
+            }
+        }  else { // else if (gamestate == GameState.DRAW)
+            winningPlayer = new Label("Het is gelijk spel geworden!");
+            winPane.setStyle("-fx-background-image: url(\"GUI/pictures/pokemonHand.gif\");\n" +
+                    "-fx-background-repeat: stretch;   \n" +
+                    "-fx-background-size: 1000 700;\n" +
+                    "-fx-background-position: center center;\n" +
+                    "-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);");
         }
-        else if (gamestate == GameState.PLAYER_2_WINS) {
-            winningPlayer = new Label("Player 2 has won!");
-        }
-        else { // else if (gamestate == GameState.DRAW)
-            winningPlayer = new Label("It's a draw!");
 
-        }
-        winningPlayer.setStyle("-fx-font-size: 8em;");
+        winningPlayer.setStyle("-fx-font-size: 6em; -fx-text-fill: white;");
         winPane.getChildren().add(winningPlayer);
+        Button continueTournament = new Button("Door gaan met het toernooi");
         Button back = new Button("Terug naar lobby");
+
+
+        continueTournament.setOnAction(e -> {
+            Connection connection = CompositionRoot.getInstance().connection;
+            connection.getToServer().subscribeGame("Reversi");
+            BorderPane QueuePane = new QueuePane(true);
+            Scene scene = new Scene(QueuePane, 500, 400);
+            CompositionRoot.getInstance().lobby.setScene(scene);
+        });
+
         back.setOnAction(e -> {
 
             GridPane lobby = new LobbyPane();
@@ -187,7 +232,7 @@ public class PlayField {
             CompositionRoot.getInstance().lobby.setScene(scene1);
 
         });
-        winPane.getChildren().add(back);
+        winPane.getChildren().addAll(back, continueTournament);
 
         Scene winScene = new Scene(winPane, 1000, 700);
         CompositionRoot.getInstance().lobby.setScene(winScene);
@@ -197,6 +242,22 @@ public class PlayField {
 
     public Scene getScene() { return scene; }
     public VBox[] getPane() { return panes; }
+
+    private void setWinStyle(){
+        winPane.setStyle("-fx-background-image: url(\"GUI/pictures/kermitDance.gif\");;\n" +
+                "    -fx-background-repeat: stretch;   \n" +
+                "    -fx-background-size: 1000 700;\n" +
+                "    -fx-background-position: center center;\n");
+    }
+
+    private void setLoseStyle(){
+        winPane.setStyle("-fx-background-image: url(\"GUI/pictures/kermitDark.gif\");\n" +
+                "-fx-background-repeat: stretch;   \n" +
+                "-fx-background-size: 1000 700;\n" +
+                "-fx-background-position: center center;\n" +
+                "-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);");
+
+    }
 
     ArrayList<Integer> lijstje = new ArrayList<>();
     public void setGuiPlayerInput(int position) {
@@ -228,6 +289,13 @@ public class PlayField {
 
     public void redraw() {
         if (gameRules instanceof Reversi) { // TODO remove if possible
+            if (gameRules.getPlayer(0).getName() != null) {
+                player1.setText(StringUtils.capitalize(gameRules.getPlayer(0).getName()));
+                player2.setText(StringUtils.capitalize(gameRules.getPlayer(1).getName()));
+                currentPlayerPane.getChildren().set(0, getCurrentPlayer());
+            }
+
+            timerPane.getChildren().set(0,createTimer());
 
             Reversi reversi = (Reversi) gameRules;
             for (int i=0; i<panes.length; i++)
@@ -235,9 +303,9 @@ public class PlayField {
 
             for (int i=0; i<panes.length; i++) {
                 if (reversi.board.get(i) == 1)
-                    panes[i].getChildren().add(getPicture("x"));
+                    panes[i].getChildren().add(getPicture("black"));
                 if (reversi.board.get(i) == 2)
-                    panes[i].getChildren().add(getPicture("o"));
+                    panes[i].getChildren().add(getPicture("white"));
             }
         }
     }
@@ -251,19 +319,20 @@ public class PlayField {
         ONLINE_REMOTE_VS_HUMAN(RefereeFactory.NetworkedReferee, PlayerFactory.RemotePlayer, PlayerFactory.HumanPlayer);
 
         public final RefereeFactory refereeFactory;
+
         public final PlayerFactory first;
         public final PlayerFactory second;
-
         StandardGameType(RefereeFactory refereeFactory, PlayerFactory first, PlayerFactory second) {
             this.refereeFactory = refereeFactory;
             this.first = first;
             this.second = second;
         }
-    }
 
+    }
     public static PlayField createGameAndPlayField(GameFactory gameFactory, StandardGameType standardGameType) {
         return createGameAndPlayField(gameFactory, standardGameType, (e)->{} );
     }
+
     public static PlayField createGameAndPlayField(GameFactory gameFactory, StandardGameType standardGameType, CallbackWithParam<GameRules> BeforeGameStart) {
 
         Arcade arcade = CompositionRoot.getInstance().arcade;
@@ -277,6 +346,31 @@ public class PlayField {
 
         return playField;
     }
+    private Label createTimer() {
+        Integer startTime = 10;
+        Label timerLabel = new Label();
+        Timeline timeline = new Timeline();
+        IntegerProperty timeSeconds = new SimpleIntegerProperty(startTime);
+        timerLabel.textProperty().bind(timeSeconds.asString());
+        timerLabel.setTextFill(Color.BLACK);
+        timerLabel.setStyle("-fx-font-size: 3em;");
+        timeSeconds.set(startTime);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(startTime + 1), new KeyValue(timeSeconds, 0)));
+        timeline.playFromStart();
+
+        return timerLabel;
+    }
+
+    public Label getCurrentPlayer() {
+        if(switching) {
+            currentPlayer.setText("Aan zet: " + StringUtils.capitalize(gameRules.getPlayer(0).getName()));
+            switching = false;
+        } else if (!switching){
+            currentPlayer.setText("Aan zet: " + StringUtils.capitalize(gameRules.getPlayer(1).getName()));
+            switching = true;
+        }
+        return currentPlayer;
+    }
 
     private static void registerDefaultCallBacks(GameRules game, PlayField playField) {
         Platform.runLater(playField::redraw); // TODO this is a hack
@@ -285,6 +379,11 @@ public class PlayField {
             Platform.runLater(() -> playField.setPicture(game, pair0.getKey(), pair0.getValue()));
             if (game instanceof Reversi) {
                 Platform.runLater(playField::redraw); // TODO this is a hack
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }));
 
