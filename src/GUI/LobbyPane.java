@@ -13,6 +13,7 @@ import network.Connection;
 import util.ArrayUtils;
 import util.CallbackWithParam;
 import util.CompositionRoot;
+import util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -21,13 +22,15 @@ import static GUI.PlayField.StandardGameType.OFFLINE_AI_VS_PLAYER;
 
 public class LobbyPane extends GridPane {
     private Connection connection;
-    private ChoiceBox gameList;
+    private ComboBox gameList;
     private ListView<String> playerList;
     private GridPane listGrid;
     private GridPane buttonGrid;
     private LoginPane loginPane;
 
     public LobbyPane() {
+
+        this.getStylesheets().add("/GUI/lobbyPaneStyle.css");
 
         // setting horizontal and vertical gap for the primary gridpane
         this.setHgap(5);
@@ -61,12 +64,14 @@ public class LobbyPane extends GridPane {
         connection.getToServer().getGameList();
 
         // create labels for list gridpane
-        Label onlinePlayers = new Label("Online spelers");
-        Label username = new Label("Ingelogd als: " + LoginPane.username);
+        Label onlinePlayersLabel = new Label("Online spelers");
+        Label usernameLabel = new Label("Ingelogd als: " + StringUtils.capitalize(LoginPane.username));
 
         // create labels for button gridpane
-        Label gameType = new Label("Spel selecteren");
-        Label offlineLabel = new Label("Offline spelen");
+        Label gameTypeLabel = new Label("Spel selecteren");
+        Label onlineLabel = new Label("                     Online spelen                     ");
+        Label offlineLabel = new Label("                     Offline spelen                     ");
+        Label isAiLabel = new Label("Met Ai spelen");
 
         // create buttons for button gridpane
         Button ticTacToeButton = new Button("Tic Tac Toe");
@@ -76,31 +81,52 @@ public class LobbyPane extends GridPane {
         Button logoutButton = new Button("Uitloggen");
 
         // create checkbox for button gridpane
-        CheckBox isAiCheckBox = new CheckBox("De Ai laten spelen");
+        CheckBox isAiCheckBox = new CheckBox();
 
         // Set the position for labels and buttons to the center
-        GridPane.setHalignment(onlinePlayers, HPos.CENTER);
+        GridPane.setHalignment(onlinePlayersLabel, HPos.CENTER);
         GridPane.setHalignment(offlineLabel, HPos.CENTER);
         GridPane.setHalignment(reversiButton, HPos.CENTER);
         GridPane.setHalignment(ticTacToeButton, HPos.CENTER);
+        GridPane.setHalignment(onlineLabel, HPos.CENTER);
+        GridPane.setHalignment(usernameLabel, HPos.CENTER);
+        GridPane.setHalignment(gameTypeLabel, HPos.CENTER);
+        GridPane.setHalignment(isAiLabel, HPos.CENTER);
+        GridPane.setHalignment(isAiCheckBox, HPos.CENTER);
+
+        onlineLabel.setPadding(new Insets(5, 0,0,0));
+        onlinePlayersLabel.setPadding(new Insets(5, 0,0,0));
+
+        // set style for labels and primary pane
+        onlineLabel.setStyle(" -fx-border-width: 0 0 2 0; -fx-border-color: black;");
+        offlineLabel.setStyle(" -fx-border-width: 0 0 2 0; -fx-border-color: black;");
+        this.setStyle("-fx-background-image: url(\"GUI/pictures/kermitBack.jpg\");  \n" +
+                "-fx-background-repeat: stretch;   \n" +
+                "-fx-background-size: 550 300;\n" +
+                "-fx-background-position: center center;\n");
+
+        listGrid.setStyle("-fx-background-color: rgb(255,255,255,0.9); -fx-background-radius: 5;");
+        buttonGrid.setStyle("-fx-background-color: rgb(255,255,255,0.9); -fx-background-radius: 5;");
 
         // add labels to the list gridpane
-        listGrid.add(onlinePlayers, 0,0);
-        listGrid.add(username, 0, 2);
+        listGrid.add(onlinePlayersLabel, 0,0);
+        listGrid.add(usernameLabel, 0, 2);
 
         // add labels to the button gridpane
-        buttonGrid.add(gameType, 0,0);
-        buttonGrid.add(offlineLabel, 0, 3, 2,1);
+        buttonGrid.add(isAiLabel, 1,1);
+        buttonGrid.add(onlineLabel, 0, 0, 2,1);
+        buttonGrid.add(gameTypeLabel, 0,1);
+        buttonGrid.add(offlineLabel, 0, 4, 2,1);
 
         // add buttons to the button gridpane
-        buttonGrid.add(queueButton, 0,2);
-        buttonGrid.add(challengeButton, 1,2);
-        buttonGrid.add(ticTacToeButton, 0, 4);
-        buttonGrid.add(reversiButton, 1,4);
-        buttonGrid.add(logoutButton, 1, 8);
+        buttonGrid.add(queueButton, 0,3);
+        buttonGrid.add(challengeButton, 1,3);
+        buttonGrid.add(ticTacToeButton, 0, 5);
+        buttonGrid.add(reversiButton, 1,5);
+        buttonGrid.add(logoutButton, 1, 6);
 
         // add checkbox to button gridpane
-        buttonGrid.add(isAiCheckBox, 1,1);
+        buttonGrid.add(isAiCheckBox, 1,2);
 
         // add list gridpane and button gridpane to the primary gridpane
         this.add(listGrid, 0, 0);
@@ -163,19 +189,20 @@ public class LobbyPane extends GridPane {
     }
 
     private void gameTypesToBox(String[] message) {
-        gameList = new ChoiceBox();
+        gameList = new ComboBox();
+
         for(String game : message){
             gameList.getItems().add(game);
         }
         gameList.setValue(message[0]);
         connection.getFromServer().onGameList.unregister(onGameList);
-        Platform.runLater(() -> buttonGrid.add(gameList, 0,1));
+        Platform.runLater(() -> buttonGrid.add(gameList, 0,2));
     }
 
     private void playerListToList(String[] message){
         Platform.runLater(() -> {
             if(playerList == null) {
-                playerList = new ListView<String>();
+                playerList = new ListView();
                 playerList.setPrefWidth(200);
                 playerList.setPrefHeight(200);
                 listGrid.add(playerList, 0,1);

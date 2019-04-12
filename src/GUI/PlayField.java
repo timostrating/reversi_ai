@@ -74,7 +74,7 @@ public class PlayField {
         timerPane.getChildren().add(createTimer());
 
         BorderPane top = new BorderPane();
-        top.setStyle("-fx-background-color: white; -fx-border; -fx-border-width: 0 0 2 0; -fx-border-color: black;");
+        top.setStyle("-fx-background-color: white; -fx-border-width: 0 0 2 0; -fx-border-color: black;");
         top.setLeft(currentPlayerPane);
         top.setRight(timerPane);
 
