@@ -2,10 +2,10 @@ package tic_tac_toe;
 
 import game_util.GameBoard2D;
 import game_util.GameRules;
-import javafx.util.Pair;
 import game_util.Move;
 import util.OpenPositions;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 import static game_util.BoardHelper.areAllEqual;
@@ -57,11 +57,16 @@ public class TicTacToe extends GameRules {
                 public int toI() { return i; }
 
                 @Override
+                public int playerNr() {
+                    return playerNr;
+                }
+
+                @Override
                 public void doMove(boolean permanent) {
                     board.set(i, CellState.values()[playerNr].ordinal());
                     openPositions.filter(i, playerNr);
                     if (permanent) {
-                        onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(i, playerNr)));
+                        onPermanentMovePlayed.notifyObjects(o -> o.callback(this));
                     }
                 }
 
@@ -69,6 +74,8 @@ public class TicTacToe extends GameRules {
                 public void undoMove() {
                     board.set(i, 0);
                     openPositions.add(i);
+                    // Force sorted when minimax is adding Items back in the list
+                    Collections.sort(openPositions);
                 }
             };
         }

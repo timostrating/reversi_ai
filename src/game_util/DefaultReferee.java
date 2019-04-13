@@ -9,6 +9,8 @@ import static game_util.GameRules.GameState.PLAYER_2_WINS;
 
 public class DefaultReferee implements Referee {
 
+    public static final int TURN_TIME_MS = 1000_000;
+
     protected GameRules game;
 
     public DefaultReferee(GameRules game) {
@@ -40,7 +42,7 @@ public class DefaultReferee implements Referee {
             inputResolved.set(true); // OP DEZE PLEK LATEN
         });
 
-        long timeout = System.currentTimeMillis() + 100000_000;
+        long timeout = System.currentTimeMillis() + TURN_TIME_MS;
 
         while (!inputResolved.get()) {
             if (System.currentTimeMillis() >= timeout) {

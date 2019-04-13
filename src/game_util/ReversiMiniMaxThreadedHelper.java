@@ -75,7 +75,7 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
         GameRules.GameState state = reversi.getGameSpecificState();
 
         if (depth == 0 || state != GameRules.GameState.PLAYING) { // TODO
-            float score = eval(state, reversi.playerScores);
+            float score = eval(state, null);
             best.score = score;
             return best;
         }

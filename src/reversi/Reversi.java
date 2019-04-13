@@ -1,7 +1,6 @@
 package reversi;
 
 import game_util.*;
-import javafx.util.Pair;
 import util.OpenPositions;
 import util.Utils;
 
@@ -15,32 +14,44 @@ public class Reversi extends GameRules {
 
     public OpenPositionsReversi openPositions;
 
-    public GameBoard board;
-    public float[] playerScores = {
+    public BitGameBoard2D board;
+    public float[][] playerScores = {{
             -9999,  // score for non exisiting player
             0,      // score for player 1
             0       // score for player 2
-    };
+    }, {
+            -9999,  // score for non exisiting player
+            0,      // score for player 1
+            0       // score for player 2
+    }};
 
     private int xCells = 0;
     private int oCells = 0;
 
-    private double[][] scores = {
+    public final static double[][] DEFAULT_SCORES = {
             {1.01, -.43, .38,  .07,  0,    .42,  -.2,  1.02},
             {-.27, -.74, -.16, -.14, -.13, -.25, -.65, -.39},
             {.56,  -.3,  .12,  .05,  -.04, .07,  -.15, .48},
-            {.01,  -.08, .01,  -01,  -.04, -.02, -.12, .03},
+            {.01,  -.08, .01,  -.01,  -.04, -.02, -.12, .03},
             {-.1,  -.08, .01,  -.01, -.03, .02,  -.04, -.2},
             {.59,  -.23, .06,  .01,  .04,  .06,  -.19, .35},
             {-.06, -.55, -.18, -.08, -.15, -.31, -.82, -.58},
             {.96,  -.42, .67,  -.02, -.03, .81,  -.51, 1.01}
     };
 
+    private double[][][] scores;
+
     public Reversi() {
+        this(DEFAULT_SCORES, DEFAULT_SCORES);
+    }
+
+    public Reversi(double[][] scores0, double[][] scores1) {
         this.board = new BitGameBoard2D(BOARD_SIZE);
+
         openPositions = new OpenPositionsReversi(board);
 
         board.reset(this::reset);
+        scores = new double[][][]{scores0, scores1};
     }
 
     public Reversi(Reversi reversi) {
@@ -73,7 +84,7 @@ public class Reversi extends GameRules {
 
         if (playerNr == CellState.X.ordinal())
             xCells++;
-        else
+        else if (playerNr == CellState.O.ordinal())
             oCells++;
         openPositions.onChange(x, y);
     }
@@ -107,16 +118,15 @@ public class Reversi extends GameRules {
                 return GameState.PLAYER_2_WINS;
             if (oCells == 0) // player 2 is outplayed
                 return GameState.PLAYER_1_WINS;
-        } else {
-            if (xCells == oCells)
-                return GameState.DRAW;
-
-            if (xCells > oCells)
-                return GameState.PLAYER_1_WINS;
-
-            return GameState.PLAYER_2_WINS;
         }
-        throw new RuntimeException("We evaluate the game wrong");
+
+        if (xCells == oCells)
+            return GameState.DRAW;
+
+        if (xCells > oCells)
+            return GameState.PLAYER_1_WINS;
+
+        return GameState.PLAYER_2_WINS;
     }
 
     public boolean isValidMove(int i, int playerNr) {
@@ -131,6 +141,7 @@ public class Reversi extends GameRules {
             return null;
 
         LinkedList<int[]> flips = new LinkedList<>();
+//        long mask = 0;
 
         for (BoardDirection dir : BoardDirection.values()) {
             int n = 1;
@@ -141,8 +152,10 @@ public class Reversi extends GameRules {
                 if (board.get(newX, newY) == CellState.fromNr(playerNr).ordinal()) {
                     if (hasVisitedOpponent) {
 
-                        while (n-- > 1)
-                            flips.add(new int[] {x + n * dir.changeX, y + n * dir.changeY});
+                        while (n-- > 1) {
+//                            mask |= 1L << board.xyToI(x + n * dir.changeX, y + n * dir.changeY);
+                            flips.add(new int[]{x + n * dir.changeX, y + n * dir.changeY});
+                        }
 
                     }
                     break;
@@ -154,32 +167,63 @@ public class Reversi extends GameRules {
                 }
             }
         }
-        if (flips.size() > 0) {
+        if (flips.size() > 0) { // If we added anything to the mask the set is valid  hasVisitedOpponent has been true
             return new Move() {
+//                BitGameBoard2D oldBoard = null;
+//                OpenPositionsReversi oldOpenPositions = null;
+//                int oldXCells = 0;
+//                int oldOCells = 0;
+//                float[] playerScores0;
+//                float[] playerScores1;
+
                 @Override
                 public int toI() { return input; }
 
                 @Override
+                public int playerNr() {
+                    return playerNr;
+                }
+
+                @Override
                 public void doMove(boolean permanent) {
+//                    oldBoard = board.clone();
+//                    oldOpenPositions = openPositions.clone(board);
+//                    oldXCells = xCells;
+//                    oldOCells = oCells;
+//                    playerScores0 = playerScores[0].clone();
+//                    playerScores1 = playerScores[1].clone();
+
                     setOnBoardAndNotify(x, y, playerNr);
                     for (int[] pos : flips) {
                         flipOnBoardAndNotify(pos[0], pos[1], playerNr);
-                        playerScores[playerNr] += scores[pos[1]][pos[0]]; // Y first X second!!!
+                        playerScores[0][playerNr] += scores[0][pos[1]][pos[0]]; // Y first X second!!!
+                        playerScores[1][playerNr] += scores[1][pos[1]][pos[0]]; // Y first X second!!!
                     }
 
-                    playerScores[playerNr] += scores[y][x];
+                    playerScores[0][playerNr] += scores[0][y][x];
+                    playerScores[1][playerNr] += scores[1][y][x];
+
 
                     if (permanent)
-                        onValidMovePlayed.notifyObjects(o -> o.callback(new Pair<>(input, playerNr)));
+                        onPermanentMovePlayed.notifyObjects(o -> o.callback(this));
                 }
 
                 @Override
                 public void undoMove() {
+//                    board = oldBoard;
+//                    openPositions.setCloneBack(oldBoard, oldOpenPositions);
+//                    xCells = oldXCells;
+//                    oCells = oldOCells;
+//                    playerScores[0] = playerScores0;
+//                    playerScores[1] = playerScores1;
+
                     setOnBoardAndNotify(x, y, 0);
-                    playerScores[playerNr] -= scores[y][x];
+                    playerScores[0][playerNr] -= scores[0][y][x];
+                    playerScores[1][playerNr] -= scores[1][y][x];
                     for (int[] pos : flips) {
                         flipOnBoardAndNotify(pos[0], pos[1], (playerNr % 2) + 1);
-                        playerScores[playerNr] -= scores[pos[1]][pos[0]];
+                        playerScores[0][playerNr] -= scores[0][pos[1]][pos[0]];
+                        playerScores[1][playerNr] -= scores[1][pos[1]][pos[0]];
                     }
                 }
             };
@@ -276,7 +320,7 @@ public class Reversi extends GameRules {
 
             if (!Utils.any(arrows[x][y])) {
                 getOpenPositions(playerNr).add(board.xyToI(x, y));
-                Collections.sort(getOpenPositions(playerNr));
+                Collections.sort(getOpenPositions(playerNr)); // TODO we force the linked list now to sort it self. The data structure should force this
             }
 
             arrows[x][y][dir.ordinal()] = true;

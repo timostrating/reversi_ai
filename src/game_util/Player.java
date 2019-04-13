@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Player {
 
-    private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+    private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(8, 8, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
     private String name;
     private int nr;

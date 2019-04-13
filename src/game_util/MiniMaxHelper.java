@@ -36,9 +36,9 @@ public class MiniMaxHelper {
         this.max = player;
         this.min = (player % 2) + 1;
         this.openPositions = openPositions;
-        PosAndScore bla = minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
-        System.out.println("single threaded calls: " + calls);
-        return bla;
+        PosAndScore best = minimax(depth, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
+//        System.out.println("single threaded calls: " + calls);
+        return best;
     }
 
     protected PosAndScore minimax(int depth, float alpha, float beta, int playerNr) {

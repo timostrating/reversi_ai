@@ -37,6 +37,7 @@ public class TicTacToeAIMiniMax extends Player {
     @Override
     public Move getInput() {
         MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(999, getNr(), game.openPositions);
+        System.out.println(game.openPositions);
         System.out.println(best);
         return best.move;
     }

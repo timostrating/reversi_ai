@@ -4,6 +4,7 @@ import game_util.Arcade;
 import game_util.Arcade.GameFactory;
 import game_util.Arcade.PlayerFactory;
 import game_util.Arcade.RefereeFactory;
+import game_util.DefaultReferee;
 import game_util.GameRules;
 import game_util.GameRules.GameState;
 import javafx.animation.KeyFrame;
@@ -355,7 +356,7 @@ public class PlayField {
         return playField;
     }
     private Label createTimer() {
-        Integer startTime = 10;
+        Integer startTime = DefaultReferee.TURN_TIME_MS / 1000;
         Label timerLabel = new Label();
         Timeline timeline = new Timeline();
         IntegerProperty timeSeconds = new SimpleIntegerProperty(startTime);
@@ -383,8 +384,8 @@ public class PlayField {
     private static void registerDefaultCallBacks(GameRules game, PlayField playField) {
         Platform.runLater(playField::redraw); // TODO this is a hack
 
-        game.onValidMovePlayed.register((pair0 -> {
-            Platform.runLater(() -> playField.setPicture(game, pair0.getKey(), pair0.getValue()));
+        game.onPermanentMovePlayed.register((move -> {
+            Platform.runLater(() -> playField.setPicture(game, move.toI(), move.playerNr()));
             if (game instanceof Reversi) {
                 Platform.runLater(playField::redraw); // TODO this is a hack
                 try {
@@ -396,6 +397,6 @@ public class PlayField {
         }));
 
         game.onGameEnded.register(() -> Platform.runLater(() -> playField.displayWinScreen(game.getGameState())));
-        game.onValidMovePlayed.register(i -> System.out.println(game));
+        game.onPermanentMovePlayed.register(i -> System.out.println(game));
     }
 }

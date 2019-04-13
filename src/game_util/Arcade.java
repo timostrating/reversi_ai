@@ -2,10 +2,7 @@ package game_util;
 
 import GUI.GUIPlayer;
 import network.RemotePlayer;
-import reversi.Reversi;
-import reversi.ReversiAIMiniMax;
-import reversi.ReversiAIMiniMaxThreaded;
-import reversi.ReversiAIRandom;
+import reversi.*;
 import tic_tac_toe.TicTacToe;
 import tic_tac_toe.TicTacToeAIMiniMax;
 import tic_tac_toe.TicTacToeAIScore;
@@ -37,6 +34,7 @@ public class Arcade {
         TicTacToeAIMiniMax(g -> new TicTacToeAIMiniMax((TicTacToe) g)),
         ReversiAIRandom(g -> new ReversiAIRandom((Reversi) g)),
         ReversiAIMiniMax(g -> new ReversiAIMiniMax((Reversi) g)),
+        ReversiAIMiniMaxOptimized(g -> new ReversiAIMiniMaxOptimized((Reversi) g)),
         ReversiAIMiniMaxThreaded(g -> new ReversiAIMiniMaxThreaded((Reversi) g)),
         BestAvailableAI(game -> {
             if (game instanceof TicTacToe)
@@ -78,9 +76,9 @@ public class Arcade {
         Arcade arcade = new Arcade();
 
 //        GameRules game_util = arcade.createGame(GameFactory.TicTacToe, RefereeFactory.DefaultReferee, PlayerFactory.TicTacToeAIMiniMax, PlayerFactory.TicTacToeAIMiniMax);
-        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMaxThreaded, PlayerFactory.ReversiAIMiniMaxThreaded);
+        GameRules game = arcade.createGame(GameFactory.Reversi, RefereeFactory.DefaultReferee, PlayerFactory.ReversiAIMiniMaxOptimized, PlayerFactory.ReversiAIMiniMax);
         game.onNextPlayer.register(() -> System.out.println(game));
-//        game.onValidMovePlayed.register((i) -> System.out.println(game));
+//        game.onPermanentMovePlayed.register((i) -> System.out.println(game));
         game.onGameEnded.register(() -> {
             System.err.println(game.getGameState());
             System.err.println(game);

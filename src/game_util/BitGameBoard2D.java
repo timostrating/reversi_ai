@@ -16,7 +16,7 @@ public class BitGameBoard2D implements GameBoard {
     }
 
     @Override
-    public GameBoard clone() {
+    public BitGameBoard2D clone() {
         BitGameBoard2D clone = new BitGameBoard2D(boardSize);
         clone.setMasks(boardX, boardO);
         return clone;

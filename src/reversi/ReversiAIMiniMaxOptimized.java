@@ -4,12 +4,11 @@ import game_util.*;
 
 import static game_util.GameRules.GameState.*;
 
-public class ReversiAIMiniMax extends Player {
-
+public class ReversiAIMiniMaxOptimized extends Player {
     private Reversi reversi;
 
     Reversi.OpenPositionsReversi openPositions;
-    MiniMaxHelper miniMaxHelper;
+    MiniMaxHelperCached miniMaxHelper;
 
     class ReversiEvaluator implements MiniMaxHelper.Evaluator {
 
@@ -31,19 +30,16 @@ public class ReversiAIMiniMax extends Player {
         }
     }
 
-    public ReversiAIMiniMax(Reversi reversi) {
+    public ReversiAIMiniMaxOptimized(Reversi reversi) {
         this.reversi = reversi;
-        miniMaxHelper = new MiniMaxHelper(reversi, reversi.board, new ReversiEvaluator());
+        miniMaxHelper = new MiniMaxHelperCached(reversi, reversi.board, new ReversiEvaluator());
     }
 
     @Override
     public Move getInput() {
         openPositions = reversi.getOpenPositions();
-        MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(6, getNr(), openPositions);
+        MiniMaxHelper.PosAndScore best = miniMaxHelper.minimax(7, getNr(), openPositions);
 //        System.out.println("__Player_"+getNr() +"__ "+ best.toString());
-//        System.out.println(openPositions);
-//        System.out.println(reversi.board);
         return best.move;
     }
-
 }

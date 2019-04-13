@@ -21,6 +21,7 @@ public class TicTacToeAI {
         game.onGameEnded.register(printBoard);
         game.run();
 
+        System.out.print(game.getGameState() );
         assert game.getGameState() == GameRules.GameState.DRAW;
         assert game.onNextPlayer.getTimesNotified() == 9;
     }
