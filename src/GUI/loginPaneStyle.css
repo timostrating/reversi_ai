@@ -25,9 +25,10 @@
     -fx-alignment: center;
     -fx-border-color: #4CAF50;
     -fx-border-top-color: white;
-    -fx-border-width: 1 1 1 1;
+    -fx-border-width: 2 2 2 2;
     -fx-border-radius: 3;
     -fx-insets: 0;
+    -fx-padding-top: 25px;
 }
 
 .text-field:focused {
@@ -36,6 +37,6 @@
     -fx-background-color: transparent;
     -fx-alignment: center;
     -fx-border-color: #4CAF50;
-    -fx-border-width: 0 1 2 1;
+    -fx-border-width: 2 2 2 2;
     -fx-border-radius: 3;
 }
