@@ -5,10 +5,19 @@
     -fx-padding: 10 ;
 }
 .game-grid-cell {
-    -fx-background-color: white, #4da011;
+    -fx-background-color: black, white ;
+       -fx-background-insets: 0, 0 1 1 0 ;
+       -fx-background-color: white, #4da011;
+       -fx-background-insets: 0, 2 2 2 2 ;
+       -fx-background-radius: 5;
+}
+.game-tic-grid-cell {
+    -fx-background-color: white;
+    -fx-border-style: solid;
+    -fx-border-color: black;
+    -fx-border-width: 5px;
     -fx-background-insets: 0, 2 2 2 2 ;
     -fx-background-radius: 5;
-
 }
 .game-grid-cell.first-row {
     -fx-background-insets: 0, 2 2 2 2 ;

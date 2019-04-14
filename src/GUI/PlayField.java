@@ -37,8 +37,8 @@ public class PlayField {
     private static final int GAME_VIEW_SIZE = 600;
     // Images
     private static Image kermit = new Image("GUI/pictures/kermitPiece.gif", 60, 60, false,true),
-            o = new Image("GUI/pictures/o.png", 60, 60, false, true),
-            x = new Image("GUI/pictures/x.png", 60, 60, false, true),
+            o = new Image("GUI/pictures/o.png", 150, 150, false, true),
+            x = new Image("GUI/pictures/x.png", 150, 150, false, true),
             black = new Image("GUI/pictures/blackPiece.png", 60, 60, false, true),
             white = new Image("GUI/pictures/whitePiece.png", 60, 60, false, true);
     private VBox[] panes;
@@ -134,7 +134,12 @@ public class PlayField {
                         setGuiPlayerInput(total);
                     }
                 });
-                pane.getStyleClass().add("game-grid-cell");
+                if (gameRules instanceof TicTacToe) {
+                    pane.getStyleClass().add("game-tic-grid-cell");
+                }
+                else if (gameRules instanceof Reversi){
+                    pane.getStyleClass().add("game-grid-cell");
+                }
                 if (x == 0) { pane.getStyleClass().add("first-column"); }
                 if (y == 0) { pane.getStyleClass().add("first-row"); }
                 game.add(pane, x, y);
