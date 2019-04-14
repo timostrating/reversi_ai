@@ -106,10 +106,12 @@ public class Reversi extends GameRules {
         if (openPositions.openOPositions.size() > 0 || openPositions.openXPositions.size() > 0)
             return GameState.PLAYING;
 
-        if (xCells == 0) // player 1 is outplayed
-            return GameState.PLAYER_2_WINS;
-        if (oCells == 0) // player 2 is outplayed
-            return GameState.PLAYER_1_WINS;
+        if (xCells + oCells < CELL_COUNT) {
+            if (xCells == 0) // player 1 is outplayed
+                return GameState.PLAYER_2_WINS;
+            if (oCells == 0) // player 2 is outplayed
+                return GameState.PLAYER_1_WINS;
+        }
         if (xCells == oCells)
             return GameState.DRAW;
 
