@@ -223,8 +223,7 @@ class LobbyPane extends GridPane {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Inkomende uitdaging");
-            alert.setHeaderText("");
-            alert.setContentText("Wil je een potje " + message.get("GAMETYPE").toLowerCase() + " spelen met " + message.get("CHALLENGER"));
+            alert.setHeaderText("Wil je een potje " + message.get("GAMETYPE").toLowerCase() + " spelen met " + message.get("CHALLENGER"));
 
             ButtonType buttonYes = new ButtonType("Ja");
             ButtonType buttonNo = new ButtonType("Nee");
