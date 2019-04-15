@@ -26,7 +26,7 @@ public class Lobby extends Application {
         BorderPane loginView = new LoginPane();
         primaryStage.setTitle("Super Kermit Bro's");
         primaryStage.getIcons().add(new Image("/GUI/pictures/kermitPiece.gif"));
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         Scene scene = new Scene(loginView, 576, 316);
         scene.setCursor(new ImageCursor(cursor));
 
