@@ -1,5 +1,4 @@
 package util;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
@@ -16,10 +15,6 @@ public class Delegate<T> {
     private int timesNotified = 0;
 
     public Delegate() { }
-    public Delegate(boolean multiThreaded) {
-        if (multiThreaded)
-            throw new NotImplementedException();
-    }
 
     public int getTimesNotified() {
         return timesNotified;
