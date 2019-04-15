@@ -1,7 +1,5 @@
 package game_util;
 
-import util.Callback;
-
 public class GameBoard2D implements GameBoard {
 
     int[] board;
@@ -40,37 +38,8 @@ public class GameBoard2D implements GameBoard {
         return false;
     }
 
-    public int xyToI(int x, int y) {
-        return y * boardSize + x;
-    }
-
-    public int iToX(int i) {
-        return i % boardSize;
-    }
-
-    public int iToY(int i) {
-        return i / boardSize;
-    }
-
-    public boolean isInBounds(int i) {
-        return i >= 0 && i < cellCount;
-    }
-
-    public boolean isInBounds(int x, int y) {
-        return x >= 0 && x < boardSize && y >= 0 && y < boardSize;
-    }
-
-
-    public int get(int x, int y) {
-        return board[y * boardSize + x];
-    }
-
     public int get(int i) {
         return board[i];
-    }
-
-    public void set(int x, int y, int v) {
-        board[y * boardSize + x] = v;
     }
 
     public void set(int i, int v) {

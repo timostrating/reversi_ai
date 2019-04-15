@@ -25,14 +25,25 @@ public class LearnScores {
         }
     }
 
+    public final static double[][] DEPTH_7_VERSION_3 = {
+            {1.010000 	,-0.270000 	,0.560000 	,-0.253853 	,-0.253853 	,0.560000 	,-0.270000 	,1.010000},
+            {-0.270000 	,-0.740000 	,-0.384101 	,-0.080000 	,-0.080000 	,-0.384101 	,-0.740000 	,-0.270000},
+            {0.560000 	,-0.384101 	,-0.239954 	,-0.155662 	,-0.155662 	,-0.239954 	,-0.384101 	,0.560000},
+            {-0.253853 	,-0.080000 	,-0.155662 	,-0.010000 	,-0.010000 	,-0.155662 	,-0.080000 	,-0.253853},
+            {-0.253853 	,-0.080000 	,-0.155662 	,-0.010000 	,-0.010000 	,-0.155662 	,-0.080000 	,-0.253853},
+            {0.560000 	,-0.384101 	,-0.239954 	,-0.155662 	,-0.155662 	,-0.239954 	,-0.384101 	,0.560000},
+            {-0.270000 	,-0.740000 	,-0.384101 	,-0.080000 	,-0.080000 	,-0.384101 	,-0.740000 	,-0.270000},
+            {1.010000 	,-0.270000 	,0.560000 	,-0.253853 	,-0.253853 	,0.560000 	,-0.270000 	,1.010000},
+    };
+
     public static void main(String[] args) throws InterruptedException {
         LearnScores learnScores = new LearnScores();
 
         Bot[] currentGeneration = {
-                new Bot(Reversi.DEFAULT_SCORES, 0),
-                new Bot(Reversi.DEFAULT_SCORES, 0),
-                new Bot(Reversi.DEFAULT_SCORES, 0),
-                new Bot(Reversi.DEFAULT_SCORES, 0)
+                new Bot(DEPTH_7_VERSION_3, 0),
+                new Bot(DEPTH_7_VERSION_3, 0),
+                new Bot(DEPTH_7_VERSION_3, 0),
+                new Bot(DEPTH_7_VERSION_3, 0)
         };
 
         while (true) {
@@ -119,10 +130,10 @@ public class LearnScores {
                                                  old[3][3]
         };
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             int j = (int) (Math.random() * a.length);
             // gradient descent:
-            a[j] += (Math.random() - .5) * Math.min(.01f, (100f - generationNr) / 100f);
+            a[j] += (Math.random() - .2);
         }
 
         double[][] _new = new double[][] {

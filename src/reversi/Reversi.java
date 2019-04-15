@@ -14,7 +14,7 @@ public class Reversi extends GameRules {
 
     public OpenPositionsReversi openPositions;
 
-    public BitGameBoard2D board;
+    public GameBoard2D board;
     public float[][] playerScores = {{
             -9999,  // score for non exisiting player
             0,      // score for player 1
@@ -46,7 +46,7 @@ public class Reversi extends GameRules {
     }
 
     public Reversi(double[][] scores0, double[][] scores1) {
-        this.board = new BitGameBoard2D(BOARD_SIZE);
+        this.board = new GameBoard2D(BOARD_SIZE);
 
         openPositions = new OpenPositionsReversi(board);
 

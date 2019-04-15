@@ -49,7 +49,7 @@ public class MiniMaxHelperCached extends MiniMaxHelper {
 
             if (m.toI() == board.xyToI(0, 0) || m.toI() == board.xyToI(7, 0) ||
                 m.toI() == board.xyToI(0, 7) || m.toI() == board.xyToI(7, 7))
-                break; // KillerMove Detection
+                return posAndScore;
 
             if (beta <= alpha)
                 break;

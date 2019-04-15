@@ -8,12 +8,15 @@ import tic_tac_toe.TicTacToeAIMiniMax;
 import tic_tac_toe.TicTacToeAIScore;
 
 /**
- * The Arcade class is a Factory for the games and different kind of players
+ * The Arcade class is a Factory for the games and its different kind of components
  */
 public class Arcade {
 
     @FunctionalInterface interface China { Object aliExpress(GameRules game); }
 
+    /**
+     * A list of games you can play
+     */
     public enum GameFactory {
         TicTacToe(3, g -> new TicTacToe()),
         Reversi(8, g -> new Reversi());
@@ -26,6 +29,9 @@ public class Arcade {
         public GameRules toObject() { return (GameRules) china.aliExpress(null); }
     }
 
+    /**
+     * A list of all players, Ai and human
+     */
     public enum PlayerFactory {
         HumanPlayer(g -> new HumanPlayer(g)),
         GUIPlayer(g -> new GUIPlayer(g)),
@@ -50,6 +56,9 @@ public class Arcade {
         public Player toObject(GameRules game) { return (Player) china.aliExpress(game); }
     }
 
+    /**
+     * The type of referee you want. In other words do you play ONline or OFFline
+     */
     public enum RefereeFactory {
         DefaultReferee(game_util.DefaultReferee::new),
         NetworkedReferee(game_util.NetworkedReferee::new);
@@ -72,6 +81,9 @@ public class Arcade {
         return game;
     }
 
+    /**
+     * A default test game
+     */
     public static void main(String[] args) {
         Arcade arcade = new Arcade();
 

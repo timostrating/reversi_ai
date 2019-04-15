@@ -7,6 +7,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static game_util.GameRules.GameState.PLAYER_1_WINS;
 import static game_util.GameRules.GameState.PLAYER_2_WINS;
 
+/**
+ * The default referee enforces the game rules including the rule that someone must react in 10 seconds
+ */
 public class DefaultReferee implements Referee {
 
     public static final int TURN_TIME_MS = 1000_000;

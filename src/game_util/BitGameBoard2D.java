@@ -1,5 +1,8 @@
 package game_util;
 
+/**
+ * The Game board implemented as 2 longs
+ */
 public class BitGameBoard2D implements GameBoard {
 
     long boardX;

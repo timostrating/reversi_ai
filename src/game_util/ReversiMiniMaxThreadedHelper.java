@@ -122,6 +122,11 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
             );
 
             m.undoMove();
+
+            if (m.toI() == board.xyToI(0, 0) || m.toI() == board.xyToI(7, 0) ||
+                m.toI() == board.xyToI(0, 7) || m.toI() == board.xyToI(7, 7))
+                return posAndScore;
+
             posAndScore.pos = pos;
             posAndScore.move = m;
 
