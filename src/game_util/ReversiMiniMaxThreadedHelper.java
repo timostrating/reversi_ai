@@ -11,8 +11,8 @@ import static game_util.GameRules.GameState.*;
 
 public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
 
-    final static int MAX_THREADS = 8;
-    private static final ThreadPoolExecutor POOL = new ThreadPoolExecutor(MAX_THREADS, MAX_THREADS, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+    public int maxThreads = 8;
+    private ThreadPoolExecutor pool;
 
     Reversi reversi;
 
@@ -37,9 +37,12 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
 
     }
 
-    public ReversiMiniMaxThreadedHelper(Reversi reversi, GameBoard2D board) {
+    public ReversiMiniMaxThreadedHelper(Reversi reversi, GameBoard2D board, int maxThreads) {
         super(reversi, board, null);
         this.reversi = reversi;
+        this.maxThreads = maxThreads;
+        if (maxThreads > 0)
+            pool = new ThreadPoolExecutor(maxThreads, maxThreads, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
     }
 
     @Override
@@ -87,7 +90,7 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
             Move m = reversi.getMove(pos, playerNr);
             m.doMove(false);
 
-            if (threadsInUse < MAX_THREADS && startDepth == depth) {
+            if (threadsInUse < maxThreads && startDepth == depth) {
                 threadsInUse++;
                 waitForThreads.incrementAndGet();
                 // send work to a waiting thread.
@@ -95,7 +98,7 @@ public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
                 Reversi clonedReversi = new Reversi(reversi);
                 float clonedAlpha = alpha, clonedBeta = beta;
 
-                POOL.execute(() -> {
+                pool.execute(() -> {
 
                     PosAndScore posAndScore = minimax(
                             depth-1, clonedAlpha, clonedBeta, (playerNr%2) +1,

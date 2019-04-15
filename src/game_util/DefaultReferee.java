@@ -40,7 +40,7 @@ public class DefaultReferee implements Referee {
             inputResolved.set(true); // OP DEZE PLEK LATEN
         });
 
-        long timeout = System.currentTimeMillis() + 100000_000;
+        long timeout = System.currentTimeMillis() + 10_000;
 
         while (!inputResolved.get()) {
             if (System.currentTimeMillis() >= timeout) {
