@@ -4,6 +4,10 @@ import GUI.Lobby;
 import game_util.Arcade;
 import network.Connection;
 
+/**
+ * We implemented a hacky version of the composistionRoot design pattern.
+ * It ended up hacky do to the javafx UI that required to be run on a specific thread.
+ */
 public class CompositionRoot {
 
     static CompositionRoot compositionRoot = null;

@@ -9,6 +9,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static game_util.GameRules.GameState.*;
 
+/**
+ * This is the multithreaded implementation of minimax
+ */
 public class ReversiMiniMaxThreadedHelper extends MiniMaxHelper {
 
     final static int MAX_THREADS = 8;

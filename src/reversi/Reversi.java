@@ -8,11 +8,12 @@ import javafx.util.Pair;
 import util.OpenPositions;
 import util.Utils;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+/**
+ * out implementation of the Reversi game rules
+ */
 public class Reversi extends GameRules {
 
     public static final int BOARD_SIZE = 8;
@@ -30,7 +31,7 @@ public class Reversi extends GameRules {
     private int xCells = 0;
     private int oCells = 0;
 
-    private double[][] scores = {
+    private double[][] scores = { // These scores are from the tournament branch where we trained these scores over 24 hours on multiple computers
         {1.010000 	,-0.270000 	,0.560000 	,-0.253853 	,-0.253853 	,0.560000 	,-0.270000 	,1.010000},
         {-0.270000 	,-0.740000 	,-0.384101 	,-0.080000 	,-0.080000 	,-0.384101 	,-0.740000 	,-0.270000},
         {0.560000 	,-0.384101 	,-0.239954 	,-0.155662 	,-0.155662 	,-0.239954 	,-0.384101 	,0.560000},

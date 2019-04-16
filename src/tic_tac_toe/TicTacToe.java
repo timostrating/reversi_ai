@@ -6,10 +6,14 @@ import javafx.util.Pair;
 import game_util.Move;
 import util.OpenPositions;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 import static game_util.BoardHelper.areAllEqual;
 
+/**
+ * out implementation of the TicTacToe game rules
+ */
 public class TicTacToe extends GameRules {
 
     public static final int BOARD_SIZE = 3;
@@ -69,6 +73,9 @@ public class TicTacToe extends GameRules {
                 public void undoMove() {
                     board.set(i, 0);
                     openPositions.add(i);
+
+                    // Force sorted when minimax is adding Items back in the list
+                    Collections.sort(openPositions);
                 }
             };
         }

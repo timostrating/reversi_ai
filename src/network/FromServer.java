@@ -9,6 +9,9 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.HashMap;
 
+/**
+ * All data we get from the server will end up in one of the delegates that are on top of this file.
+ */
 public class FromServer implements Runnable {
     public final Delegate<CallbackWithParam<HashMap<String, String>>> onChallengeCanceled = new Delegate<>();
     public final Delegate<CallbackWithParam<HashMap<String, String>>> onChallenge = new Delegate<>();

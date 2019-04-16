@@ -7,6 +7,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static game_util.GameRules.GameState.PLAYER_1_WINS;
 import static game_util.GameRules.GameState.PLAYER_2_WINS;
 
+/**
+ * The default referee forces the rules of the game and forces the players to react in a reasonable amount.
+ */
 public class DefaultReferee implements Referee {
 
     protected GameRules game;

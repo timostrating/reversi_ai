@@ -1,9 +1,6 @@
 package game_util;
 
 import util.Callback;
-import util.EnormousInt;
-
-import java.math.BigInteger;
 
 public class GameBoard2D {
 
@@ -100,28 +97,5 @@ public class GameBoard2D {
         }
 
         return new String(sb);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        throw new RuntimeException("You are not allowed to compare Boards with equals");
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.parseInt(hashBoard());
-    }
-
-    private String hashBoard() {
-        BigInteger score = new EnormousInt(0);
-
-        for (int i = 0; i < cellCount; i++) {
-            score = score.add(new EnormousInt(board[i]).multiply(new EnormousInt(3).pow(i)));
-        }
-
-        System.err.println(Integer.MAX_VALUE);
-        score = score.mod(EnormousInt.MAX_PRIME_LESS_THAN_INTEGER_MAXVALUE);
-
-        return score.toString();
     }
 }

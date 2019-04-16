@@ -7,6 +7,9 @@ import util.Delegate;
 
 import java.util.Arrays;
 
+/**
+ * Every game must be a set of rules. The game rules is also responsible for providing general rules for all games like illegal moves means disqualified.
+ */
 public abstract class GameRules implements Runnable {
     public enum GameState {PLAYING, DRAW, PLAYER_1_WINS, PLAYER_2_WINS  /* PLAYER_3.4.5..N_WINS*/ }
 

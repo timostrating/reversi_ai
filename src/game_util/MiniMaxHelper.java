@@ -31,6 +31,13 @@ public class MiniMaxHelper {
 
     int calls = 0;
 
+    /**
+     * The minimax algorithm
+     * @param depth the maximum depth the algorithm should go
+     * @param player wich player wants to to a set
+     * @param openPositions the current openPositions for the player wo want to do the set
+     * @return the maximum scoring set.
+     */
     public PosAndScore minimax(int depth, int player, OpenPositions openPositions) {
         calls = 0;
         this.max = player;
