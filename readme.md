@@ -4,7 +4,7 @@ We implemented a revresi AI using a multithreaded minimax and by giving every po
 These scores where optimized by playing thousands of games over the duration of 24 hours and keeping the best scoring AI.
 We used gradient decent in order to move in smaller and smaller steps in the right direction.
 
-Our groep finished first with our reversi AI at our local school tournament. We successfully won against 25 other groups from the Hanze University of Applied Sciences.
+Our team finished first with our reversi AI at our local school tournament. We successfully won against 25 other groups from the Hanze University of Applied Sciences.
 
 ## Team
 
